@@ -1,0 +1,33 @@
+#!/bin/bash
+
+##########################################
+#### download & extract linux kernel #####
+##########################################
+
+# remove old folder
+##rmdir systemx86
+
+# create systemx86 folder
+##mkdir systemx86 -p
+cd systemx86
+
+# download linux kernel
+##wget https://www.kernel.org/pub/linux/kernel/v3.x/linux-3.16.6.tar.xz
+
+# extract package
+##tar xpvf linux-3.16.6.tar.xz
+
+# clear download
+##rm -f linux-3.16.6.tar.xz
+
+##########################################
+#### linux kernel configuration      #####
+##########################################
+
+# 
+cd linux-3.16.6
+ARCH=i386 make -j4 allnoconfig 
+
+## verschieben von .config
+
+
