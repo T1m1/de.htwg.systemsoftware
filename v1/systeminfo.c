@@ -20,7 +20,7 @@ int main (int argc, char *argv[])
 	printf("\nFree Ram: %ldMB", (sys_info.freeram / 1024) / 1024);
 	printf("\nProcess count: %d", sys_info.procs);
 	printf("\nPage size: %ld Bytes", getpagesize());
-	printf("\n");
+	printf("\n\n");
 	
 	return 0;
 }
