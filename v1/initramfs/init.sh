@@ -1,4 +1,4 @@
-#!/bin/busybox sh /bin/sh
+#!/bin/busybox sh 
 
 # Say Hello
 echo '######################'
