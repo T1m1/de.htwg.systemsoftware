@@ -9,16 +9,17 @@
 
 # create systemx86 folder
 ##mkdir systemx86 -p
-cd systemx86
+#cd systemx86
 
 # download linux kernel
-##wget https://www.kernel.org/pub/linux/kernel/v3.x/linux-3.16.6.tar.xz
+wget https://www.kernel.org/pub/linux/kernel/v3.x/linux-3.16.6.tar.xz
 
 # extract package
-##tar xpvf linux-3.16.6.tar.xz
+tar xpvf linux-3.16.6.tar.xz
 
-# clear download
-##rm -f linux-3.16.6.tar.xz
+#initialize
+gcc --static -m32 systeminfo.c -o systeminfo
+mv systeminfo initramfs/systeminfo
 
 ##########################################
 #### linux kernel configuration      #####
@@ -26,8 +27,16 @@ cd systemx86
 
 # 
 cd linux-3.16.6
-ARCH=i386 make -j4 allnoconfig 
+make allnoconfig 
+mv ../.config .config
+make oldconfig
+ARCH=i386 make -j4  
 
-## verschieben von .config
+#run kernel
+qemu -kernel arch/boot/x86/bzImage
 
 
+# clean up
+cd ..
+rm -f linux-3.16.6.tar.xz
+rm -f initramfs/systeminfo

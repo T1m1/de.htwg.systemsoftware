@@ -1,0 +1,24 @@
+dir /dev 755 0 0
+dir /sbin 755 0 0
+dir /bin 755 0 0
+dir /usr 755 0 0
+dir /usr/bin 755 0 0
+dir /etc 755 0 0
+dir /var 755 0 0
+dir /tmp 755 0 0
+dir /proc 755 0 0
+dir /sys 755 0 0
+dir /mnt 755 0 0
+
+
+nod /dev/console 644 0 0 c 5 1
+nod /dev/loop0 644 0 0 b 7 0
+
+nod /dev/tty 666 0 5 c 5 0
+#nod /dev/tty0 666 0 4 c 4 2
+
+slink /bin/sh busybox 777 0 0
+file /bin/busybox ../initramfs/busybox 755 0 0
+file /init ../initramfs/init.sh 755 0 0
+
+file /bin/systeminfo ../initramfs/systeminfo 755 0 0
