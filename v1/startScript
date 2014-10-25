@@ -20,16 +20,11 @@ tar xpvf linux-3.16.6.tar.xz
 #initialize
 gcc --static -m32 systeminfo.c -o systeminfo
 mv systeminfo initramfs/systeminfo
+mv .config linux-3.16.6/ .config
 
-##########################################
-#### linux kernel configuration      #####
-##########################################
-
-# 
+# compile kernel
 cd linux-3.16.6
-make allnoconfig 
-mv ../.config .config
-make oldconfig
+make clean
 ARCH=i386 make -j4  
 
 #run kernel
