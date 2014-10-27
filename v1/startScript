@@ -4,12 +4,17 @@
 #### download & extract linux kernel #####
 ##########################################
 
+home=$HOME'/system86/'
+
 # remove old folder
-##rmdir systemx86
+rmdir $home
 
 # create systemx86 folder
-##mkdir systemx86 -p
-#cd systemx86
+mkdir $home -p
+
+# copy files and navigate to folder
+cp -rf files/ $home
+cd $home
 
 # download linux kernel
 wget https://www.kernel.org/pub/linux/kernel/v3.x/linux-3.16.6.tar.xz
@@ -18,8 +23,12 @@ wget https://www.kernel.org/pub/linux/kernel/v3.x/linux-3.16.6.tar.xz
 tar xpvf linux-3.16.6.tar.xz
 
 #initialize
-gcc --static -m32 systeminfo.c -o systeminfo
+mkdir initramfs/
+gcc --static -m32 files/systeminfo.c -o systeminfo
+
 mv systeminfo initramfs/systeminfo
+mv files/init.sh initramfs/
+mv files/busybox initramfs/
 
 ##########################################
 #### linux kernel configuration      #####
@@ -27,9 +36,8 @@ mv systeminfo initramfs/systeminfo
 
 # 
 cd linux-3.16.6
-make allnoconfig 
-mv ../.config .config
-make oldconfig
+make clean
+mv ../files/.config .config
 ARCH=i386 make -j4  
 
 #run kernel
