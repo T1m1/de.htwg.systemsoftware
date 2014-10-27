@@ -34,17 +34,20 @@ mv files/busybox initramfs/
 #### linux kernel configuration      #####
 ##########################################
 
-# 
-cd linux-3.16.6
+# compile kernel
+cd linux-3.16.6/
 make clean
 mv ../files/.config .config
 ARCH=i386 make -j4  
 
-#run kernel
-qemu -kernel arch/boot/x86/bzImage
-
-
 # clean up
 cd ..
 rm -f linux-3.16.6.tar.xz
-rm -f initramfs/systeminfo
+rm -rf initramfs/
+rm -rf files/
+
+#run kernel
+qemu -kernel arch/x86/boot/bzImage
+
+
+
