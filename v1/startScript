@@ -42,12 +42,12 @@ ARCH=i386 make -j4
 
 # clean up
 cd ..
-rm -f linux-3.16.6.tar.xz
-rm -rf initramfs/
-rm -rf files/
+#rm -f linux-3.16.6.tar.xz
+#rm -rf initramfs/
+#rm -rf files/
 
 #run kernel
-qemu -kernel arch/x86/boot/bzImage
+qemu -kernel linux-3.16.6/arch/x86/boot/bzImage
 
 
 

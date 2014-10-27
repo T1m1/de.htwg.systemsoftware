@@ -5,6 +5,7 @@ echo '######################'
 echo 'Starting system'
 echo '######################'
 
+
 /bin/busybox --install -s /bin/
 
 #mount
@@ -13,6 +14,8 @@ mount -t proc proc /proc
 mount -t sysfs none /sys
 mount -t tmpfs none /tmp
 echo '--> done'
+
+echo 0 > /proc/sys/kernel/printk
 
 #start init program and display system infos
 echo '--> start binary'
