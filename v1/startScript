@@ -1,28 +1,17 @@
 #!/bin/bash
-
-##########################################
-#### download & extract linux kernel #####
-##########################################
-
 home=$HOME'/system86/'
 
-# remove old folder
+#### prepare folder structure & copy needed files ####
 rmdir $home
-
-# create systemx86 folder
 mkdir $home -p
-
-# copy files and navigate to folder
 cp -rf files/ $home
 cd $home
 
-# download linux kernel
+#### download & extract linux kernel #####
 wget https://www.kernel.org/pub/linux/kernel/v3.x/linux-3.16.6.tar.xz
-
-# extract package
 tar xpvf linux-3.16.6.tar.xz
 
-#initialize
+#### compile binary & initialize ####
 mkdir initramfs/
 gcc --static -m32 files/systeminfo.c -o systeminfo
 
@@ -30,24 +19,17 @@ mv systeminfo initramfs/systeminfo
 mv files/init.sh initramfs/
 mv files/busybox initramfs/
 
-##########################################
-#### linux kernel configuration      #####
-##########################################
-
-# compile kernel
+#### linux kernel configuration #####
 cd linux-3.16.6/
 make clean
 mv ../files/.config .config
 ARCH=i386 make -j4  
 
-# clean up
+#### clean up ####
 cd ..
 #rm -f linux-3.16.6.tar.xz
 #rm -rf initramfs/
 #rm -rf files/
 
-#run kernel
-qemu -kernel linux-3.16.6/arch/x86/boot/bzImage
-
-
-
+#### run kernel in qemu ####
+qemu -kernel linux-3.16.6/arch/x86/boot/bzImage -nographic -append "console=ttyS0"
