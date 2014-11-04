@@ -1,0 +1,82 @@
+#!/bin/bash
+
+#TODO Wo soll die v2arm dann liegen? -> im linux folder oder davor?
+
+
+ARCH_ARM=arm
+CROSS_COMPILER_ARM=/opt/toolchains/arm-buildroot-linux-uclibcgnueabihf-4.9.1/bin/arm-buildroot-linux-uclibcgnueabihf-
+IMAGE_PATH="arch/arm/boot/zImage"
+LINUX_VERSION=linux-3.16.6
+LINUX_PACKAGE=$LINUX_VERSION.tar.xz
+SOURCE=https://www.kernel.org/pub/linux/kernel/v3.x/$LINUX_PACKAGE
+
+
+compile()
+{
+	make ARCH=$ARCH_ARM CROSS_COMPILE=$CROSS_COMPILER_ARM -j4
+}
+
+defconfig()
+{
+	make ARCH=$ARCH_ARM CROSS_COMPILE=$CROSS_COMPILER_ARM vexpress_defconfig
+}
+
+qemu_start()
+{
+	QEMU_AUDIO_DRV=none qemu-system-arm -kernel $IMAGE_PATH -M vexpress-a9 \
+	-nographic -append "console=ttyAMA0"
+}
+
+# download & extract linux kernel
+source()
+{
+	wget $SOURCE
+	tar xpvf $LINUX_PACKAGE
+	rm -f $LINUX_PACKAGE
+	cp v2arm $LINUX_VERSION
+}
+
+copy()
+{
+	cp v2arm $LINUX_VERSION
+}
+
+
+help()
+{
+	echo "--------------------------------------------------------"
+	echo "usage:"
+	echo "./v2arm -e [function]"
+	echo ""
+	echo "functions:"
+	echo ".....source:		download linux source"
+	echo ".....defconfig: 	creates a default config"
+	echo ".....compile:		complie kernel"
+	echo ".....qemu_start:	starts qemu with compiled kernel"
+	echo "--------------------------------------------------------"
+	
+}
+
+while getopts ":e:h" opt; do
+		case $opt in
+			e)
+				cmd=$OPTARG
+				;;
+			h)	
+				help
+				;;
+			:)
+				echo "missing argument"
+				;;
+			?)
+				help
+				;;
+			*)
+				echo "not yet implemented"
+				help
+				;;
+		esac
+done
+
+$cmd
+
