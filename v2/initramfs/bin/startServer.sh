@@ -1,4 +1,4 @@
-#!/bin/sh sh 
+#!/bin/sh
 
 ifconfig lo up
 ifconfig eth0 up

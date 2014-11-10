@@ -43,7 +43,6 @@ all()
 		compile_app
 		initrd
 		qemu_start
-		
 	
 }
 
@@ -83,7 +82,10 @@ compile_kernel()
 
 defconfig_kernel()
 {
-	cd $KERNEL_PATH &&  make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER vexpress_defconfig
+	# not using defconfig
+	#cd $KERNEL_PATH &&  make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER vexpress_defconfig
+	
+	cd $HOME_PATH && cp .config_kernel $KERNEL_PATH/.config
 }
 
 
@@ -103,14 +105,14 @@ menu_busybox()
 qemu_start()
 {
 	cd $KERNEL_PATH && QEMU_AUDIO_DRV=none qemu-system-arm -kernel  $IMAGE_PATH -m 128M -M vexpress-a9 \
-	-nographic -append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" 
+	-nographic -append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" -initrd ../rootfs.cpio.gz
 }
 
 qemu_net()
 {
 	cd $KERNEL_PATH && QEMU_AUDIO_DRV=none qemu-system-arm -kernel $IMAGE_PATH -m 128M -M vexpress-a9 \
 	-nographic -append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" \
-	-net nic,macaddr=00:00:00:00:00:1C,vlan=0\
+	-net nic,macaddr=00:00:00:00:00:1D,vlan=0\
 	-net vde,sock="/tmp/vde2-tap0.ctl",vlan=0 
 }
 

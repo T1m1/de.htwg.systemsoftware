@@ -39,6 +39,11 @@ echo 'done'
 echo 'Starting Server'
 #sh /usr/bin/startServer
 
+udhcpc -s /etc/udhcpc/simple.script
+ifconfig lo 127.0.0.1
+route add -host 127.0.0.1 lo
+httpd -h /www/ &
+
 #end
 echo '--> Starting shell'
 setsid cttyhack sh
