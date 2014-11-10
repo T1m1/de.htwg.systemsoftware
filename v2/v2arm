@@ -60,21 +60,13 @@ compile_app()
 ################# initrd ################
 initrd()
 {
+	# compile busybox and copy in initramfs
 	cd $BUSYBOX_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER
-
-	# copy busybox into v2/initramfs/bin
+	cd $HOME_PATH && cp $BUSYBOX_PATH/busybox initramfs/bin/
 	
-	# 
-	
-	## copy start script und files for udhcpc
-	#cd $HOME_PATH && cp -f $INITRAMFS_PATH/bin/startServer $BUSYBOX_PATH/_install/usr/bin/startServer
-	#cd $BUSYBOX_PATH/_install/usr/bin && chmod +x startServer
-	#cd $HOME_PATH && cp -r scripts/udhcp $BUSYBOX_PATH/_install/etc/udhcpc
-
-	# create image
-	#cd $BUSYBOX_PATH/_install && find . | cpio -o --format=newc > ../../rootfs.img
-	#rm -rf $BUSYBOX_PATH/_install/
-
+	# pack www folder and copy it into initramfs
+	cd $HOME_PATH &&  tar cfv web.tar www/
+	cd $HOME_PATH &&  tar cfv udhcpc.tar scripts/udhcpc/
 
 }
 
@@ -117,7 +109,7 @@ qemu_start()
 qemu_net()
 {
 	cd $KERNEL_PATH && QEMU_AUDIO_DRV=none qemu-system-arm -kernel $IMAGE_PATH -M vexpress-a9 \
-	-nographic -initrd ../rootfs.img -append "rdinit=/sbin/init console=ttyAMA0" \
+	-nographic -append "rdinit=/sbin/init console=ttyAMA0" \
 	-net nic,model=lan9118, macaddr=00:00:00:00:00:A5 \
 	-net vde,sock="/tmp/vde2-tab0.ct1"
 }

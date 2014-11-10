@@ -16,7 +16,7 @@ mount -t sysfs none /sys
 mount -t tmpfs none /tmp
 echo '--> done'
 
-
+# populate dev
 mdev -s
 
 
@@ -25,6 +25,12 @@ echo 0 > /proc/sys/kernel/printk
 #start init program and display system infos
 echo '--> start binary'
 ./bin/start
+
+# unpack scripts for server
+tar xfv www/web.tar
+tar xfv 
+
+rm -f www/web.tar
 
 
 #end

@@ -9,6 +9,7 @@ dir /tmp 755 0 0
 dir /proc 755 0 0
 dir /sys 755 0 0
 dir /mnt 755 0 0
+dir /www 755 0 0
 
 nod /dev/console 644 0 0 c 5 1
 nod /dev/loop0 644 0 0 b 7 0
@@ -17,3 +18,5 @@ file /init ../v2/initramfs/init.sh 755 0 0
 file /bin/busybox ../v2/initramfs/bin/busybox 755 0 0
 file /bin/start ../v2/initramfs/bin/start 755 0 0
 file /usr/bin/startServer ../v2/initramfs/bin/startServer 755 0 0
+file /www/web.tar ../v2/web.tar 755 0 0
+file /etc/udhcpc.tar ../v2/udhcpc.tar 755 0 0
