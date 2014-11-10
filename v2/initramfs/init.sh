@@ -27,10 +27,13 @@ echo '--> start binary'
 ./bin/start
 
 # unpack scripts for server
+echo 'unpack needed files'
 tar xfv www/web.tar
-tar xfv 
+tar xfv etc/udhcpc.tar
 
+rm -f etc/udhcpc.tar
 rm -f www/web.tar
+echo 'done'
 
 
 #end

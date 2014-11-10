@@ -108,10 +108,10 @@ qemu_start()
 
 qemu_net()
 {
-	cd $KERNEL_PATH && QEMU_AUDIO_DRV=none qemu-system-arm -kernel $IMAGE_PATH -M vexpress-a9 \
-	-nographic -append "rdinit=/sbin/init console=ttyAMA0" \
-	-net nic,model=lan9118, macaddr=00:00:00:00:00:A5 \
-	-net vde,sock="/tmp/vde2-tab0.ct1"
+	cd $KERNEL_PATH && QEMU_AUDIO_DRV=none qemu-system-arm -kernel $IMAGE_PATH -m 128M -M vexpress-a9 \
+	-nographic -append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" \
+	-net nic,model=lan9118\
+	-net vde,sock="/tmp/vde2-tap0.ctl"
 }
 
 
