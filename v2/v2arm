@@ -32,7 +32,7 @@ BUSYBOX_SOURCE=http://busybox.net/downloads/$BUSYBOX_PACKAGE
 ################# tools #################
 comile_app()
 {
-	($CROSS_COMPILER)gcc -static -o systeminfo.c start
+	$CROSS_COMPILERgcc -static -o start systeminfo.c 
 	mv start $INITRAMFS_PATH/bin/start
 }
 
@@ -45,12 +45,20 @@ initrd()
 	
 	# copy needed files in rootfs
 	cp -r $INITRAMFS_PATH/etc $BUSYBOX_PATH/_install/etc
+	cp $INITRAMFS_PATH/bin/start $BUSYBOX_PATH/_install/bin/start
 	
+	# set permission
+	chmod +x $BUSYBOX_PATH/_install/etc/init.d/rcS
+	chmod +x $BUSYBOX_PATH/_install/bin/start
 	
 	## copy start script und files for udhcpc
 	cp -f $INITRAMFS_PATH/bin/startServer $BUSYBOX_PATH/_install/usr/bin/startServer
 	cd $BUSYBOX_PATH/_install/usr/bin && chmod +x startServer
 	cp -r scripts/udhcp $(BUSYBOX_PATH)/_install/etc/udhcpc
+
+	# create image
+	cd $BUSYBOX_PATH/_install && find . | cpio -o --format=newc > ../rootfs.img
+
 }
 
 ################# KERNEL ##################
@@ -86,13 +94,13 @@ menu_busybox()
 qemu_start()
 {
 	cd $KERNEL_PATH && QEMU_AUDIO_DRV=none qemu-system-arm -kernel $IMAGE_PATH -M vexpress-a9 \
-	-nographic -append "console=ttyAMA0"
+	-nographic -append "console=ttyAMA0" -initrd ../rootfs.img.gz
 }
 
 qemu_net()
 {
 	cd $KERNEL_PATH && QEMU_AUDIO_DRV=none qemu-system-arm -kernel $IMAGE_PATH -M vexpress-a9 \
-	-nographic -initrd $BUSYBOX_PATH/rootfs.img -append "rdinit=/sbin/init console=ttyAMA0" \
+	-nographic -initrd ../rootfs.img -append "rdinit=/sbin/init console=ttyAMA0" \
 	-net nic,model=lan9118, macaddr=00:00:00:00:00:A5 \
 	-net vde,sock="/tmp/vde2-tab0.ct1"
 }
