@@ -28,13 +28,16 @@ echo '--> start binary'
 
 # unpack scripts for server
 echo 'unpack needed files'
-tar xfv www/web.tar
-tar xfv etc/udhcpc.tar
+tar xfv /www/web.tar
+tar xfv /etc/udhcpc.tar
+mv /scripts/udhcpc /etc/udhcpc
 
 rm -f etc/udhcpc.tar
 rm -f www/web.tar
 echo 'done'
 
+echo 'Starting Server'
+#sh /usr/bin/startServer
 
 #end
 echo '--> Starting shell'

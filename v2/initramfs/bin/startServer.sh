@@ -1,7 +1,7 @@
-#!/bin/sh
+#!/bin/sh sh 
 
 ifconfig lo up
 ifconfig eth0 up
 udhcpc -i eth0 -s /etc/udhcpc/simple.script
 
-/usr/sbin/httpd -h /www/
+httpd -h /www/
