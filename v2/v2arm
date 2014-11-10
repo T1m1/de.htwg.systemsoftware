@@ -13,7 +13,7 @@ LINUX_VERSION=linux-3.16.6
 BUSYBOX_VERSION=busybox-1.22.1
 
 # cross compiler
-CROSS_COMPILER=/opt/toolchains/arm-buildroot-linux-uclibcgnueabihf-4.9.1/bin/arm-buildroot-linux-uclibcgnueabihf-
+CROSS_COMPILER=/group/labworks/toolchain/buildroot.git/output/host/usr/bin/arm-buildroot-linux-uclibcgnueabihf-
 
 # kernel architecture
 ARCH=arm
