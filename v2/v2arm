@@ -110,7 +110,7 @@ menu_busybox()
 #################### QEMU ##################
 qemu_start()
 {
-	cd $KERNEL_PATH && QEMU_AUDIO_DRV=none qemu-system-arm -initrd ../rootfs.cpio.gz -kernel  $IMAGE_PATH -m 128M -M vexpress-a9 \
+	cd $KERNEL_PATH && QEMU_AUDIO_DRV=none qemu-system-arm -kernel  $IMAGE_PATH -m 128M -M vexpress-a9 \
 	-nographic -append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" 
 }
 
