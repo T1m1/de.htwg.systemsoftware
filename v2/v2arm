@@ -30,10 +30,29 @@ LINUX_PACKAGE=$LINUX_VERSION.tar.xz
 LINUX_SOURCE=https://www.kernel.org/pub/linux/kernel/v3.x/$LINUX_PACKAGE
 BUSYBOX_PACKAGE=$BUSYBOX_VERSION.tar.bz2
 BUSYBOX_SOURCE=http://busybox.net/downloads/$BUSYBOX_PACKAGE
-################# tools #################
-comile_app()
+
+
+
+################# all ###################
+all()
 {
-	$CROSS_COMPILERgcc -static -o start systeminfo.c 
+		source
+		defconfig_kernel
+		defconfig_busybox
+		compile_kernel
+		compile_app
+		initrd
+		qemu_start
+		
+	
+}
+
+
+################# tools #################
+compile_app()
+{
+	/group/labworks/toolchain/buildroot.git/output/host/usr/bin/arm-buildroot-linux-uclibcgnueabihf-gcc \
+	-static -o start systeminfo.c 
 	mv start $INITRAMFS_PATH/bin/start
 }
 
@@ -41,24 +60,21 @@ comile_app()
 ################# initrd ################
 initrd()
 {
-	#cd $BUSYBOX_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER install
-	cd $BUSYBOX_PATH && mkdir dev proc sys tmp lib
+	cd $BUSYBOX_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER
 
-	# copy needed files in rootfs
-	cd $HOME_PATH && cp -r $INITRAMFS_PATH/etc $BUSYBOX_PATH/_install/etc
-	cd $HOME_PATH && cp $INITRAMFS_PATH/bin/start $BUSYBOX_PATH/_install/bin/start
+	# copy busybox into v2/initramfs/bin
 	
-	# set permission
-	chmod +x $BUSYBOX_PATH/_install/etc/init.d/rcS
-	chmod +x $BUSYBOX_PATH/_install/bin/start
+	# 
 	
 	## copy start script und files for udhcpc
-	cd $HOME_PATH && cp -f $INITRAMFS_PATH/bin/startServer $BUSYBOX_PATH/_install/usr/bin/startServer
-	cd $BUSYBOX_PATH/_install/usr/bin && chmod +x startServer
-	cd $HOME_PATH && cp -r scripts/udhcp $BUSYBOX_PATH/_install/etc/udhcpc
+	#cd $HOME_PATH && cp -f $INITRAMFS_PATH/bin/startServer $BUSYBOX_PATH/_install/usr/bin/startServer
+	#cd $BUSYBOX_PATH/_install/usr/bin && chmod +x startServer
+	#cd $HOME_PATH && cp -r scripts/udhcp $BUSYBOX_PATH/_install/etc/udhcpc
 
 	# create image
-	cd $BUSYBOX_PATH/_install && find . | cpio -o --format=newc > ../../rootfs.img
+	#cd $BUSYBOX_PATH/_install && find . | cpio -o --format=newc > ../../rootfs.img
+	#rm -rf $BUSYBOX_PATH/_install/
+
 
 }
 
@@ -94,8 +110,8 @@ menu_busybox()
 #################### QEMU ##################
 qemu_start()
 {
-	cd $KERNEL_PATH && QEMU_AUDIO_DRV=none qemu-system-arm -kernel $IMAGE_PATH -M vexpress-a9 \
-	-nographic -append "root=/dev/ram rdinit=/sbin/init console=ttyAMA0" -initrd ../rootfs.img
+	cd $KERNEL_PATH && QEMU_AUDIO_DRV=none qemu-system-arm -initrd ../rootfs.cpio.gz -kernel  $IMAGE_PATH -m 128M -M vexpress-a9 \
+	-nographic -append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" 
 }
 
 qemu_net()
