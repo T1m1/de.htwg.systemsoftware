@@ -21,7 +21,7 @@ ARCH=arm
 # paths
 KERNEL_PATH=../$LINUX_VERSION
 BUSYBOX_PATH=../$BUSYBOX_VERSION
-INITRAMFS_PATH=initramfs/bin
+INITRAMFS_PATH=initramfs
 IMAGE_PATH="arch/arm/boot/zImage"
 
 # --------
@@ -29,17 +29,26 @@ LINUX_PACKAGE=$LINUX_VERSION.tar.xz
 LINUX_SOURCE=https://www.kernel.org/pub/linux/kernel/v3.x/$LINUX_PACKAGE
 BUSYBOX_PACKAGE=$BUSYBOX_VERSION.tar.bz2
 BUSYBOX_SOURCE=http://busybox.net/downloads/$BUSYBOX_PACKAGE
+################# tools #################
+comile_app()
+{
+	($CROSS_COMPILER)gcc -static -o systeminfo.c start
+	mv start $INITRAMFS_PATH/bin/start
+}
 
 
 ################# initrd ################
 initrd()
 {
-	# steffen stuff...
-	#
-	#
+	cd $BUSYBOX_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER install
+	cd $BUSYBOX_PATH && mkdir dev proc sys tmp lib
+	
+	# copy needed files in rootfs
+	cp -r $INITRAMFS_PATH/etc $BUSYBOX_PATH/_install/etc
+	
 	
 	## copy start script und files for udhcpc
-	cp -f $INITRAMFS_PATH/startServer $BUSYBOX_PATH/_install/usr/bin/startServer
+	cp -f $INITRAMFS_PATH/bin/startServer $BUSYBOX_PATH/_install/usr/bin/startServer
 	cd $BUSYBOX_PATH/_install/usr/bin && chmod +x startServer
 	cp -r scripts/udhcp $(BUSYBOX_PATH)/_install/etc/udhcpc
 }
