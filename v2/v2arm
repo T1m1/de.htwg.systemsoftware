@@ -23,6 +23,7 @@ KERNEL_PATH=../$LINUX_VERSION
 BUSYBOX_PATH=../$BUSYBOX_VERSION
 INITRAMFS_PATH=initramfs
 IMAGE_PATH="arch/arm/boot/zImage"
+HOME_PATH=$PWD
 
 # --------
 LINUX_PACKAGE=$LINUX_VERSION.tar.xz
@@ -40,24 +41,24 @@ comile_app()
 ################# initrd ################
 initrd()
 {
-	cd $BUSYBOX_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER install
+	#cd $BUSYBOX_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER install
 	cd $BUSYBOX_PATH && mkdir dev proc sys tmp lib
-	
+
 	# copy needed files in rootfs
-	cp -r $INITRAMFS_PATH/etc $BUSYBOX_PATH/_install/etc
-	cp $INITRAMFS_PATH/bin/start $BUSYBOX_PATH/_install/bin/start
+	cd $HOME_PATH && cp -r $INITRAMFS_PATH/etc $BUSYBOX_PATH/_install/etc
+	cd $HOME_PATH && cp $INITRAMFS_PATH/bin/start $BUSYBOX_PATH/_install/bin/start
 	
 	# set permission
 	chmod +x $BUSYBOX_PATH/_install/etc/init.d/rcS
 	chmod +x $BUSYBOX_PATH/_install/bin/start
 	
 	## copy start script und files for udhcpc
-	cp -f $INITRAMFS_PATH/bin/startServer $BUSYBOX_PATH/_install/usr/bin/startServer
+	cd $HOME_PATH && cp -f $INITRAMFS_PATH/bin/startServer $BUSYBOX_PATH/_install/usr/bin/startServer
 	cd $BUSYBOX_PATH/_install/usr/bin && chmod +x startServer
-	cp -r scripts/udhcp $(BUSYBOX_PATH)/_install/etc/udhcpc
+	cd $HOME_PATH && cp -r scripts/udhcp $BUSYBOX_PATH/_install/etc/udhcpc
 
 	# create image
-	cd $BUSYBOX_PATH/_install && find . | cpio -o --format=newc > ../rootfs.img
+	cd $BUSYBOX_PATH/_install && find . | cpio -o --format=newc > ../../rootfs.img
 
 }
 
@@ -82,7 +83,7 @@ defconfig_kernel()
 
 defconfig_busybox()
 {
-	cd $BUSYBOX_PATH && make ARCH=$ARCHdefconfig
+	cd $BUSYBOX_PATH && make ARCH=$ARCH defconfig
 }
 
 menu_busybox()
@@ -94,7 +95,7 @@ menu_busybox()
 qemu_start()
 {
 	cd $KERNEL_PATH && QEMU_AUDIO_DRV=none qemu-system-arm -kernel $IMAGE_PATH -M vexpress-a9 \
-	-nographic -append "console=ttyAMA0" -initrd ../rootfs.img.gz
+	-nographic -append "root=/dev/ram rdinit=/sbin/init console=ttyAMA0" -initrd ../rootfs.img
 }
 
 qemu_net()
