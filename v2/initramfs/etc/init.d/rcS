@@ -1,6 +1,0 @@
-#!/bin/sh
-sbin/mdev -s
-
-loadkmap < /usr/de.map
-
-/bin/start
