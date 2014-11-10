@@ -144,8 +144,8 @@ help()
 	echo "functions:"
 	echo ".....source:		download linux source"
 	echo ".....defconfig_kernel: 	creates a default kernel config"
-	echo ".....defconfig_busybox: 	creates a default busybox config"
-	echo ".....compile_kernel:		complie kernel"
+	echo ".....defconfig_busybox: 	creates a (default) busybox config"
+	echo ".....compile_kernel:		compile kernel"
 	echo ".....qemu_start:	starts qemu with compiled kernel"
 	echo "--------------------------------------------------------"
 	
