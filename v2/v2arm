@@ -57,7 +57,7 @@ initrd()
 	cp -r scripts/udhcp $(BUSYBOX_PATH)/_install/etc/udhcpc
 
 	# create image
-	cd $BUSYBOX_PATH/_install && find . | cpio -o --format=newc > ../rootfs.img
+	cd $BUSYBOX_PATH/_install && find . | cpio -o --format=newc > ../../rootfs.img
 
 }
 
@@ -93,8 +93,8 @@ menu_busybox()
 #################### QEMU ##################
 qemu_start()
 {
-	cd $KERNEL_PATH && QEMU_AUDIO_DRV=none qemu-system-arm -kernel $IMAGE_PATH -M vexpress-a9 \
-	-nographic -append "console=ttyAMA0" -initrd ../rootfs.img.gz
+	cd $KERNEL_PATH &&  QEMU_AUDIO_DRV=none qemu-system-arm -initrd ../rootfs.img -kernel $IMAGE_PATH -M vexpress-a9 \
+	-nographic -append "rdinit=/sbin/init console=ttyAMA0" 
 }
 
 qemu_net()
