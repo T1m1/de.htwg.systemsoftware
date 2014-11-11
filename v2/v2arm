@@ -43,43 +43,30 @@ all()
 		defconfig_kernel
 		defconfig_busybox
 		
-		# init files
-		compile_app
-		initrd
+		# init
+		init
 		
-		# compile kernel
+		# compile
 		compile_kernel
-		
-		# start server
-		qemu_net
 	
 }
 
+############## run without loading #######
 run() 
-{
-		# init files
-		compile_app
-		initrd
-		
-		# compile kernel
-		compile_kernel
-		
+{		
 		# start server
 		qemu_net
-}
-
-################# tools #################
-compile_app()
-{
-	/group/labworks/toolchain/buildroot.git/output/host/usr/bin/arm-buildroot-linux-uclibcgnueabihf-gcc \
-	-static -o start systeminfo.c 
-	mv start $INITRAMFS_PATH/bin/start
 }
 
 
 ################# initrd ################
-initrd()
+init()
 {
+	# compile c app
+	/group/labworks/toolchain/buildroot.git/output/host/usr/bin/arm-buildroot-linux-uclibcgnueabihf-gcc \
+	-static -o start systeminfo.c 
+	mv start $INITRAMFS_PATH/bin/start
+	
 	# compile busybox and copy in initramfs
 	cd $BUSYBOX_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER
 	cd $HOME_PATH && cp $BUSYBOX_PATH/busybox initramfs/bin/
@@ -101,22 +88,16 @@ compile_kernel()
 	cd $KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER -j4
 }
 
-defconfig_kernel()
-{
-	# not using defconfig
-	#cd $KERNEL_PATH &&  make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER vexpress_defconfig
-	
+config_kernel()
+{	
 	cd $HOME_PATH && cp .config_kernel $KERNEL_PATH/.config
 }
 
 
 ################# BUSYBOX ##################
 
-defconfig_busybox()
-{
-	# not using defconfig
-	#cd $BUSYBOX_PATH && make ARCH=$ARCH defconfig
-	
+config_busybox()
+{	
 	cd $HOME_PATH && cp .my_busybox_config $BUSYBOX_PATH/.config
 }
 
@@ -147,15 +128,22 @@ source()
 	cd ..
 	# linux source
 	wget $LINUX_SOURCE
-	tar xpvf $LINUX_PACKAGE
+	tar xpvf $LINUX_PACKAGE 
 	rm -f $LINUX_PACKAGE
 	
 	# busybox source
 	wget $BUSYBOX_SOURCE
-	tar xpvf $BUSYBOX_PACKAGE
+	tar xpvf $BUSYBOX_PACKAGE 
 	rm -f $BUSYBOX_PACKAGE
 }
 
+################# show info ###############
+info() 
+{
+		echo 'QEMU'
+		echo 'Machine Types:'
+		qemu-system-arm -machine ?
+}
 
 
 ################## HELP ######################
@@ -166,11 +154,15 @@ help()
 	echo "./v2arm -e [function]"
 	echo ""
 	echo "functions:"
-	echo ".....source:		download linux source"
-	echo ".....defconfig_kernel: 	creates a default kernel config"
-	echo ".....defconfig_busybox: 	creates a (default) busybox config"
-	echo ".....compile_kernel:		compile kernel"
-	echo ".....qemu_start:	starts qemu with compiled kernel"
+	echo ".....source:			download linux source"
+	echo ".....config_kernel: 	creates a kernel config"
+	echo ".....config_busybox: 	creates a busybox config"
+	echo ".....compile_kernel:	compile kernel"
+	echo ".....init:			initialize all needed files for kernel"
+	echo ".....qemu_net:		starts qemu with compiled kernel"
+	echo ".....all:				does all above, without starting qemu"
+	echo "........................................................"
+	echo ".....menu_<X>			either <busybox> or <kernel> for the menuconfig"
 	echo "--------------------------------------------------------"
 	
 }
