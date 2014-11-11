@@ -19,7 +19,6 @@ echo '---> done'
 # populate dev
 mdev -s
 
-
 echo 0 > /proc/sys/kernel/printk
 
 #start init program and display system infos
@@ -31,14 +30,15 @@ echo '---> unpack needed files'
 tar xfv /www/web.tar | > /dev/null
 tar xfv /etc/udhcpc.tar | > /dev/null
 mv /scripts/udhcpc /etc/udhcpc
-rm -rf /scripts
 
+# remove archives
+rm -rf /scripts
 rm -f etc/udhcpc.tar
 rm -f www/web.tar
 echo '---> done'
 
+# start server
 echo '----> Starting Server'
-#sh /usr/bin/startServer
 
 udhcpc -s /etc/udhcpc/simple.script
 ifconfig lo 127.0.0.1

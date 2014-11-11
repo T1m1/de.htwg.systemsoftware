@@ -55,6 +55,18 @@ all()
 	
 }
 
+run() 
+{
+		# init files
+		compile_app
+		initrd
+		
+		# compile kernel
+		compile_kernel
+		
+		# start server
+		qemu_net
+}
 
 ################# tools #################
 compile_app()
