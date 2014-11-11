@@ -148,12 +148,13 @@ info()
 ################# clean  ##################
 clean()
 {
+	cd $KERNEL_PATH && make mrproper
+	cd $BUSYBOX_PATH && make clean
 	cd $HOME_PATH && rm -f *.tar
 	cd $HOME_PATH && rm -f *.log
 	cd $HOME_PATH/initramfs/bin && rm -f busybox 
 	cd $HOME_PATH/initramfs/bin && rm -f start
-	cd $KERNEL_PATH && make mrproper
-	cd $BUSYBOX_PATH && make clean
+
 }
 
 
