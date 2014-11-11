@@ -40,8 +40,8 @@ all()
 		source
 		
 		# set config
-		defconfig_kernel
-		defconfig_busybox
+		config_kernel
+		config_busybox
 		
 		# init
 		init
