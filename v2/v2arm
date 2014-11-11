@@ -36,13 +36,22 @@ BUSYBOX_SOURCE=http://busybox.net/downloads/$BUSYBOX_PACKAGE
 ################# all ###################
 all()
 {
+		# load
 		source
+		
+		# set config
 		defconfig_kernel
 		defconfig_busybox
-		compile_kernel
+		
+		# init files
 		compile_app
 		initrd
-		qemu_start
+		
+		# compile kernel
+		compile_kernel
+		
+		# start server
+		qemu_net
 	
 }
 
@@ -93,7 +102,10 @@ defconfig_kernel()
 
 defconfig_busybox()
 {
-	cd $BUSYBOX_PATH && make ARCH=$ARCH defconfig
+	# not using defconfig
+	#cd $BUSYBOX_PATH && make ARCH=$ARCH defconfig
+	
+	cd $HOME_PATH && cp .my_busybox_config $BUSYBOX_PATH/.config
 }
 
 menu_busybox()

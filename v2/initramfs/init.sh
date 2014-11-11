@@ -10,11 +10,11 @@ echo 'Starting system'
 echo '######################'
 
 #mount
-echo '--> Mounting...'
+echo '---> Mounting...'
 mount -t proc proc /proc
 mount -t sysfs none /sys
 mount -t tmpfs none /tmp
-echo '--> done'
+echo '---> done'
 
 # populate dev
 mdev -s
@@ -23,20 +23,21 @@ mdev -s
 echo 0 > /proc/sys/kernel/printk
 
 #start init program and display system infos
-echo '--> start binary'
+echo '---> start binary'
 ./bin/start
 
 # unpack scripts for server
-echo 'unpack needed files'
-tar xfv /www/web.tar
-tar xfv /etc/udhcpc.tar
+echo '---> unpack needed files'
+tar xfv /www/web.tar | > /dev/null
+tar xfv /etc/udhcpc.tar | > /dev/null
 mv /scripts/udhcpc /etc/udhcpc
+rm -rf /scripts
 
 rm -f etc/udhcpc.tar
 rm -f www/web.tar
-echo 'done'
+echo '---> done'
 
-echo 'Starting Server'
+echo '----> Starting Server'
 #sh /usr/bin/startServer
 
 udhcpc -s /etc/udhcpc/simple.script
