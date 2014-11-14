@@ -80,7 +80,7 @@ init()
 ################# KERNEL ##################
 menu_kernel()
 {
-	cd $KERNEL_PATH && make ARCH=$ARCH menuconfig
+	cd $KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER  menuconfig
 }
 
 compile_kernel()
