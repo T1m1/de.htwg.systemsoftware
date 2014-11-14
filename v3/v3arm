@@ -8,6 +8,12 @@
 # /[folderXY]/initramfs/
 #
 
+
+
+# dtb files
+DTB_BCM=bcm2835-rpi-b.dtb
+DTB_VEXPRESS=vexpress-v2p-ca9.dtb
+
 # versions
 LINUX_VERSION=linux-3.16.6
 BUSYBOX_VERSION=busybox-1.22.1
@@ -25,6 +31,10 @@ INITRAMFS_PATH=initramfs
 IMAGE_PATH="arch/arm/boot/zImage"
 HOME_PATH=$PWD
 
+# patch file
+PATCH_NAME=linux-smsc95xx_allow_mac_setting.patch
+PATCH_FILE=$HOME_PATH/patch/$PATCH_NAME
+
 # --------
 LINUX_PACKAGE=$LINUX_VERSION.tar.xz
 LINUX_SOURCE=https://www.kernel.org/pub/linux/kernel/v3.x/$LINUX_PACKAGE
@@ -38,6 +48,9 @@ all()
 {
 		# load
 		source
+		
+		# patch
+		patch_kernel
 		
 		# set config
 		config_kernel
@@ -85,7 +98,7 @@ menu_kernel()
 
 compile_kernel()
 {
-	cd $KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER -j4
+	cd $KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER -j5
 }
 
 config_kernel()
@@ -93,6 +106,22 @@ config_kernel()
 	cd $HOME_PATH && cp .config_kernel $KERNEL_PATH/.config
 }
 
+defconfig_kernel()
+{	
+	cd $HOME_PATH && cp bcmrpi_defconfig $KERNEL_PATH/.config
+}
+
+
+make_bcm_dtb() 
+{
+	cd $KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER $DTB_BCMs
+}
+
+patch_kernel()
+{
+	cd $KERNEL_PATH && make clean
+	cd $KERNEL_PATH && patch -p1 < $PATCH_FILE
+}
 
 ################# BUSYBOX ##################
 
@@ -170,6 +199,7 @@ help()
 	echo ".....config_kernel: 	creates a kernel config"
 	echo ".....config_busybox: 	creates a busybox config"
 	echo ".....compile_kernel:	compile kernel"
+	echo ".....patch_kernel:	patch kernel"
 	echo ".....init:			initialize all needed files for kernel"
 	echo ".....qemu_net:		starts qemu with compiled kernel"
 	echo ".....all:				does all above, without starting qemu"
