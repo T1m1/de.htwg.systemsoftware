@@ -1,0 +1,206 @@
+#!/bin/bash
+
+# REQUIRED folder structure:
+#
+# /linux
+# /busybox
+# /[folderXY]/v2arm
+# /[folderXY]/initramfs/
+#
+
+# versions
+LINUX_VERSION=linux-3.16.6
+BUSYBOX_VERSION=busybox-1.22.1
+
+# cross compiler
+CROSS_COMPILER=/group/labworks/toolchain/buildroot.git/output/host/usr/bin/arm-buildroot-linux-uclibcgnueabihf-
+
+# kernel architecture
+ARCH=arm
+
+# paths
+KERNEL_PATH=../$LINUX_VERSION
+BUSYBOX_PATH=../$BUSYBOX_VERSION
+INITRAMFS_PATH=initramfs
+IMAGE_PATH="arch/arm/boot/zImage"
+HOME_PATH=$PWD
+
+# --------
+LINUX_PACKAGE=$LINUX_VERSION.tar.xz
+LINUX_SOURCE=https://www.kernel.org/pub/linux/kernel/v3.x/$LINUX_PACKAGE
+BUSYBOX_PACKAGE=$BUSYBOX_VERSION.tar.bz2
+BUSYBOX_SOURCE=http://busybox.net/downloads/$BUSYBOX_PACKAGE
+
+
+
+################# all ###################
+all()
+{
+		# load
+		source
+		
+		# set config
+		config_kernel
+		config_busybox
+		
+		# init
+		init
+		
+		# compile
+		compile_kernel
+	
+}
+
+############## run without loading #######
+run() 
+{		
+		# start server
+		qemu_net
+}
+
+
+################# initrd ################
+init()
+{
+	# compile c app
+	/group/labworks/toolchain/buildroot.git/output/host/usr/bin/arm-buildroot-linux-uclibcgnueabihf-gcc \
+	-static -o start systeminfo.c 
+	mv start $INITRAMFS_PATH/bin/start
+	
+	# compile busybox and copy in initramfs
+	cd $BUSYBOX_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER
+	cd $HOME_PATH && cp $BUSYBOX_PATH/busybox initramfs/bin/
+	
+	# pack www folder and copy it into initramfs
+	cd $HOME_PATH &&  tar cfv web.tar www/
+	cd $HOME_PATH &&  tar cfv udhcpc.tar scripts/udhcpc/
+
+}
+
+################# KERNEL ##################
+menu_kernel()
+{
+	cd $KERNEL_PATH && make ARCH=$ARCH menuconfig
+}
+
+compile_kernel()
+{
+	cd $KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER -j4
+}
+
+config_kernel()
+{	
+	cd $HOME_PATH && cp .config_kernel $KERNEL_PATH/.config
+}
+
+
+################# BUSYBOX ##################
+
+config_busybox()
+{	
+	cd $HOME_PATH && cp .my_busybox_config $BUSYBOX_PATH/.config
+}
+
+menu_busybox()
+{
+	cd $BUSYBOX_PATH && make ARCH=$ARCH menuconfig
+}
+
+#################### QEMU ##################
+qemu_start()
+{
+	cd $KERNEL_PATH && QEMU_AUDIO_DRV=none qemu-system-arm -kernel  $IMAGE_PATH -m 128M -M vexpress-a9 \
+	-nographic -append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" -initrd ../rootfs.cpio.gz
+}
+
+qemu_net()
+{
+	cd $KERNEL_PATH && QEMU_AUDIO_DRV=none qemu-system-arm -kernel $IMAGE_PATH -m 128M -M vexpress-a9 \
+	-nographic -append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" \
+	-net nic,macaddr=00:00:00:00:00:1D,vlan=0\
+	-net vde,sock="/tmp/vde2-tap0.ctl",vlan=0 
+}
+
+
+################## SOURCE ###############
+source()
+{
+	cd ..
+	# linux source
+	wget $LINUX_SOURCE
+	tar xpvf $LINUX_PACKAGE 
+	rm -f $LINUX_PACKAGE
+	
+	# busybox source
+	wget $BUSYBOX_SOURCE
+	tar xpvf $BUSYBOX_PACKAGE 
+	rm -f $BUSYBOX_PACKAGE
+}
+
+################# show info ###############
+info() 
+{
+		echo 'QEMU'
+		echo 'Machine Types:'
+		qemu-system-arm -machine ?
+}
+
+################# clean  ##################
+clean()
+{
+	cd $KERNEL_PATH && make mrproper
+	cd $BUSYBOX_PATH && make clean
+	cd $HOME_PATH && rm -f *.tar
+	cd $HOME_PATH && rm -f *.log
+	cd $HOME_PATH/initramfs/bin && rm -f busybox 
+	cd $HOME_PATH/initramfs/bin && rm -f start
+
+}
+
+
+################## HELP ######################
+help()
+{
+	echo "--------------------------------------------------------"
+	echo "usage:"
+	echo "./v2arm -e [function]"
+	echo ""
+	echo "functions:"
+	echo ".....source:			download linux source"
+	echo ".....config_kernel: 	creates a kernel config"
+	echo ".....config_busybox: 	creates a busybox config"
+	echo ".....compile_kernel:	compile kernel"
+	echo ".....init:			initialize all needed files for kernel"
+	echo ".....qemu_net:		starts qemu with compiled kernel"
+	echo ".....all:				does all above, without starting qemu"
+	echo ".....run:				easy call for qemu_net"
+	echo ".....clean:				clean ALL generated files (busybox, kernel, ..)"
+	echo "........................................................"
+	echo ".....menu_<X>			either <busybox> or <kernel> for the menuconfig"
+	echo "--------------------------------------------------------"
+	
+}
+
+while getopts ":e:h" opt; do
+		case $opt in
+			e)
+				cmd=$OPTARG
+				;;
+			h)	
+				help
+				;;
+			:)
+				echo "missing argument"
+				;;
+			?)
+				help
+				;;
+			*)
+				echo "not yet implemented"
+				help
+				;;
+		esac
+done
+
+$cmd
+
