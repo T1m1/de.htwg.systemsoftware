@@ -28,6 +28,7 @@ ARCH=arm
 # paths
 KERNEL_PATH=../$LINUX_VERSION
 BUSYBOX_PATH=../$BUSYBOX_VERSION
+BUILDROOT_PATH=../buildroot
 INITRAMFS_PATH=initramfs
 IMAGE_PATH="arch/arm/boot/zImage"
 HOME_PATH=$PWD
@@ -89,6 +90,12 @@ init()
 	cd $HOME_PATH &&  tar cfv web.tar www/
 	cd $HOME_PATH &&  tar cfv udhcpc.tar scripts/udhcpc/
 
+}
+
+################ buildroot ################
+menu_buildroot() 
+{
+	cd $BUILDROOT_PATH && make menuconfig
 }
 
 ################# KERNEL ##################

@@ -2,3 +2,4 @@ busybox-1.22.1/
 linux-3.16.6/
 v2/initramfs/bin/busybox
 *.tar
+buildroot
