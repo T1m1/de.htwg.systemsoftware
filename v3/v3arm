@@ -13,6 +13,7 @@
 # dtb files
 DTB_BCM=bcm2835-rpi-b.dtb
 DTB_VEXPRESS=vexpress-v2p-ca9.dtb
+DTB_VEXPRESS_PATH=arch/arm/boot/dts/$DTB_VEXPRESS
 
 # versions
 LINUX_VERSION=linux-3.16.6
@@ -23,7 +24,7 @@ CROSS_COMPILER=/group/labworks/toolchain/buildroot.git/output/host/usr/bin/arm-b
 
 # kernel architecture
 ARCH=arm
-
+	
 # paths
 KERNEL_PATH=../$LINUX_VERSION
 BUSYBOX_PATH=../$BUSYBOX_VERSION
@@ -61,7 +62,7 @@ all()
 		
 		# compile
 		compile_kernel
-	
+		make_bcm_dtb
 }
 
 ############## run without loading #######
@@ -77,8 +78,8 @@ init()
 {
 	# compile c app
 	/group/labworks/toolchain/buildroot.git/output/host/usr/bin/arm-buildroot-linux-uclibcgnueabihf-gcc \
-	-static -o start systeminfo.c 
-	mv start $INITRAMFS_PATH/bin/start
+	-static -o scripts/start scripts/systeminfo.c 
+	mv scripts/start $INITRAMFS_PATH/bin/start
 	
 	# compile busybox and copy in initramfs
 	cd $BUSYBOX_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER
@@ -114,7 +115,13 @@ defconfig_kernel()
 
 make_bcm_dtb() 
 {
-	cd $KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER $DTB_BCMs
+	cd $KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER $DTB_BCM
+}
+
+
+make_vexpress_dtb() 
+{
+	cd $KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER $DTB_VEXPRESS_PATH
 }
 
 patch_kernel()
@@ -147,7 +154,17 @@ qemu_net()
 	cd $KERNEL_PATH && QEMU_AUDIO_DRV=none qemu-system-arm -kernel $IMAGE_PATH -m 128M -M vexpress-a9 \
 	-nographic -append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" \
 	-net nic,macaddr=00:00:00:00:00:1D,vlan=0\
-	-net vde,sock="/tmp/vde2-tap0.ctl",vlan=0 
+	-net vde,sock="/tmp/vde2-tap0.ctl",vlan=0\
+	-dtb $DTB_VEXPRESS_PATH
+}
+
+qemu_serial()
+{
+	cd $KERNEL_PATH && QEMU_AUDIO_DRV=none qemu-system-arm -kernel $IMAGE_PATH -m 128M -M vexpress-a9 \
+	-nographic -serial stdio -append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" \
+	-net nic,macaddr=00:00:00:00:00:1D,vlan=0\
+	-net vde,sock="/tmp/vde2-tap0.ctl",vlan=0\
+	-dtb $DTB_VEXPRESS_PATH
 }
 
 
