@@ -161,10 +161,13 @@ qemu_net()
 qemu_serial()
 {
 	cd $KERNEL_PATH && QEMU_AUDIO_DRV=none qemu-system-arm -kernel $IMAGE_PATH -m 128M -M vexpress-a9 \
-	-nographic -serial stdio -append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" \
+	-nographic -serial pty -append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" \
 	-net nic,macaddr=00:00:00:00:00:1D,vlan=0\
 	-net vde,sock="/tmp/vde2-tap0.ctl",vlan=0\
 	-dtb $DTB_VEXPRESS_PATH
+	
+	# conect with ... screen /dev/pts/33
+	# then... system_reset
 }
 
 
