@@ -44,6 +44,15 @@ BUSYBOX_PACKAGE=$BUSYBOX_VERSION.tar.bz2
 BUSYBOX_SOURCE=http://busybox.net/downloads/$BUSYBOX_PACKAGE
 
 
+test()
+{
+	cd $BUILDROOT_PATH/output/images && QEMU_AUDIO_DRV=none qemu-system-arm -kernel zImage -m 128M -M vexpress-a9 \
+	-nographic -append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" \
+	-initrd rootfs.cpio\
+	-net nic,macaddr=00:00:00:00:00:1D,vlan=0\
+	-net vde,sock="/tmp/vde2-tap0.ctl",vlan=0
+}
+
 
 ################# all ###################
 all()
@@ -95,7 +104,13 @@ init()
 ################ buildroot ################
 menu_buildroot() 
 {
-	cd $BUILDROOT_PATH && make menuconfig
+	cd $BUILDROOT_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER menuconfig
+}
+
+compile_buildroot()
+{
+	cd $BUILDROOT_PATH && make source
+	cd $BUILDROOT_PATH && make 
 }
 
 ################# KERNEL ##################
@@ -193,15 +208,16 @@ source()
 	wget $BUSYBOX_SOURCE
 	tar xpvf $BUSYBOX_PACKAGE 
 	rm -f $BUSYBOX_PACKAGE
+	
+	source_buildroot
 }
 
-get_buildroot()
+source_buildroot()
 {
 	git clone git://git.buildroot.net/buildroot buildroot
 	cd buildroot
 	git reset --hard 80e406090893ab5a7b5d78e4d243d12fca2b22fb
 	rm -rf .git
-	
 }
 
 
@@ -234,19 +250,32 @@ help()
 	echo "./v2arm -e [function]"
 	echo ""
 	echo "functions:"
+	echo ""
+	echo "  SOURCE:"
 	echo ".....source:			download linux source"
-	echo ".....config_kernel: 	creates a kernel config"
+	echo ".....source_buildroot: get buildroot source"
+	echo ""
+	echo "  BUSYBOX:"
 	echo ".....config_busybox: 	creates a busybox config"
+	echo ""
+	echo "  KERNEL:"		
+	echo ".....config_kernel: 	creates a kernel config"
 	echo ".....compile_kernel:	compile kernel"
 	echo ".....patch_kernel:	patch kernel"
+	echo ""
+	echo "  BUILDROOT:"
+	echo ".....compile_buildroot:	compile buildroot"	
+	echo ""
+	echo "  STUFF:"
 	echo ".....init:			initialize all needed files for kernel"
 	echo ".....qemu_net:		starts qemu with compiled kernel"
 	echo ".....all:				does all above, without starting qemu"
 	echo ".....run:				easy call for qemu_net"
-	echo ".....clean:				clean ALL generated files (busybox, kernel, ..)"
+	echo ".....clean:			clean ALL generated files (busybox, kernel, ..)"
 	echo "........................................................"
-	echo ".....menu_<X>			either <busybox> or <kernel> for the menuconfig"
+	echo ".....menu_<X>			either <busybox> or <kernel> of <buildroot> for the menuconfig"
 	echo "--------------------------------------------------------"
+	
 	
 }
 
