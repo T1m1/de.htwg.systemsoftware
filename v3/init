@@ -15,8 +15,7 @@ dir /usr/sbin 755 0 0
 nod /dev/console 644 0 0 c 5 1
 nod /dev/loop0 644 0 0 b 7 0
 
-file /init ../v3/initramfs/init.sh 755 0 0
-file /bin/busybox ../v3/initramfs/bin/busybox 755 0 0
+file /etc/init ../v3/initramfs/init.sh 755 0 0
 file /bin/start ../v3/initramfs/bin/start 755 0 0
 file /www/web.tar ../v3/web.tar 755 0 0
 file /etc/udhcpc.tar ../v3/udhcpc.tar 755 0 0
