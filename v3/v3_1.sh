@@ -1,6 +1,25 @@
 #!/bin/sh
 
 
+
+
+help ()
+{
+	echo "Usage: ./v3_1.sh [OPTIONS]"
+	echo ""
+	echo "excample call: ./v3_1.sh -dn -pa"
+	echo ""
+	echo " -dn		download sources"
+	echo " -pa		patch"
+	echo " -cp		copy gitlab sources"	
+	echo " -co		compile"
+	echo " -qe		start qemu"
+}
+
+
+##################### main ########################
+
+
 ARGS=`getopt -o d:p:c:q: -- "$@"`
 
 eval set -- "$ARGS"
