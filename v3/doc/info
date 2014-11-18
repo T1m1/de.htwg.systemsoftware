@@ -100,3 +100,5 @@ I = Maximale Belastung = 0,008A
 
 U = R * I =>
 R = U / I => 3,3V / 0,008A => 412,5 Ohm
+
+### Gibt es eine Standardkonfiguration?
