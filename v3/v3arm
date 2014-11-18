@@ -211,7 +211,7 @@ source()
 source_buildroot()
 {
 	git clone git://git.buildroot.net/buildroot ../buildroot
-	cd buildroot
+	cd ../buildroot
 	git reset --hard 80e406090893ab5a7b5d78e4d243d12fca2b22fb
 	rm -rf .git
 }
