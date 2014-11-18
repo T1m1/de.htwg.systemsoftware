@@ -14,13 +14,15 @@ help ()
 	echo " -cp		copy gitlab sources"	
 	echo " -co		compile"
 	echo " -qe		start qemu"
+	echo " -h		help"
+	
 }
 
 
 ##################### main ########################
 
 
-ARGS=`getopt -o d:p:c:q: -- "$@"`
+ARGS=`getopt -o hd:p:c:q: -- "$@"`
 
 eval set -- "$ARGS"
 
@@ -33,7 +35,7 @@ do
 			then
 				echo "download source"
 			else
-				echo "error"
+				help
 			fi
 			shift 2;;
 		'-p')
@@ -41,7 +43,7 @@ do
 			then
 				echo "patchen"
 			else
-				echo "error"
+				help
 			fi
 			shift 2;;
 		'-c')
@@ -54,7 +56,7 @@ do
 					echo "kopieren der gitsource"
 				fi
 			else
-				echo "error"
+				help
 			fi
 			shift 2;;
 		'-q')
@@ -62,9 +64,12 @@ do
 			then
 				echo "qemu starten"
 			else
-				echo "error"
+				help
 			fi
 			shift 2;;
+		'-h')
+			help
+			break;;
 		*)
 			break;;
 	esac
