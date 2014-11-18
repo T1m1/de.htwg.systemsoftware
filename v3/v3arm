@@ -26,8 +26,6 @@ CROSS_COMPILER=/group/labworks/toolchain/buildroot.git/output/host/usr/bin/arm-b
 ARCH=arm
 	
 # paths
-KERNEL_PATH=../$LINUX_VERSION
-BUSYBOX_PATH=../$BUSYBOX_VERSION
 BUILDROOT_PATH=../buildroot
 INITRAMFS_PATH=initramfs
 IMAGE_PATH="arch/arm/boot/zImage"
@@ -58,10 +56,8 @@ test()
 all()
 {
 		# load
-		source
-		
-		# patch
-		patch_kernel
+		source_buildroot
+
 		
 		# set config
 		config_kernel
@@ -189,29 +185,10 @@ qemu_serial()
 }
 
 
-
-
-################## SOURCE ###############
-source()
-{
-	cd ..
-	# linux source
-	wget $LINUX_SOURCE
-	tar xpvf $LINUX_PACKAGE 
-	rm -f $LINUX_PACKAGE
-	
-	# busybox source
-	wget $BUSYBOX_SOURCE
-	tar xpvf $BUSYBOX_PACKAGE 
-	rm -f $BUSYBOX_PACKAGE
-	
-	source_buildroot
-}
-
 source_buildroot()
 {
 	git clone git://git.buildroot.net/buildroot ../buildroot
-	cd buildroot
+	cd ../buildroot
 	git reset --hard 80e406090893ab5a7b5d78e4d243d12fca2b22fb
 	rm -rf .git
 }
