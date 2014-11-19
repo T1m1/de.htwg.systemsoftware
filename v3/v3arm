@@ -201,6 +201,19 @@ source_buildroot()
 	cd $BUILDROOT_PATH && make defconfig BR2_DEFCONFIG=$BR2_CONFIG
 }
 
+source()
+{
+	cd ..
+	wget $LINUX_SOURCE
+	tar xpvf $LINUX_PACKAGE 
+	rm -f $LINUX_PACKAGE
+	
+	# busybox source
+	wget $BUSYBOX_SOURCE
+	tar xpvf $BUSYBOX_PACKAGE 
+	rm -f $BUSYBOX_PACKAGE
+}
+
 make_br()
 {
 	cd $BUILDROOT_PATH && make source

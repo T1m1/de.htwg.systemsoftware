@@ -3,6 +3,7 @@
 
 HOME_PATH=$PWD
 
+V3ARM_APP=./v3arm
 # patch file
 PATCH_NAME=linux-smsc95xx_allow_mac_setting.patch
 PATCH_FILE=$HOME_PATH/patch/$PATCH_NAME
@@ -41,23 +42,13 @@ help ()
 download_source()
 {
 	echo "download source..."
-	cd ..
-	# linux source
-	wget $LINUX_SOURCE
-	tar xpvf $LINUX_PACKAGE 
-	rm -f $LINUX_PACKAGE
-	
-	# busybox source
-	wget $BUSYBOX_SOURCE
-	tar xpvf $BUSYBOX_PACKAGE 
-	rm -f $BUSYBOX_PACKAGE
+	$V3ARM_APP -e source
 }
 
 patch()
 {
 	echo "patch kernel..."
-	cd $KERNEL_PATH && make clean
-	cd $KERNEL_PATH && patch -p1 < $PATCH_FILE
+	$V3ARM_APP -e patch_kernel
 }
 
 compile()
