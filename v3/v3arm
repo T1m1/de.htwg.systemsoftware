@@ -62,7 +62,6 @@ all()
 		source_buildroot
 
 		
-		# set config
 		config_kernel
 		config_busybox
 		
@@ -83,6 +82,23 @@ run()
 
 
 ################# initrd ################
+init_v3_1()
+{
+	# compile c app
+	/group/labworks/toolchain/buildroot.git/output/host/usr/bin/arm-buildroot-linux-uclibcgnueabihf-gcc \
+	-static -o scripts/start scripts/systeminfo.c 
+	mv scripts/start $INITRAMFS_PATH/bin/start
+	
+	# compile busybox and copy in initramfs
+	cd $BUSYBOX_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER
+	cd $HOME_PATH && cp $BUSYBOX_PATH/busybox initramfs/bin/
+	
+	# pack www folder and copy it into initramfs
+	cd $HOME_PATH &&  tar cfv web.tar www/
+	cd $HOME_PATH &&  tar cfv udhcpc.tar scripts/udhcpc/
+
+}
+
 init()
 {
 	# compile c app
@@ -90,6 +106,7 @@ init()
 	-static -o scripts/start scripts/systeminfo.c 
 	mv scripts/start $INITRAMFS_PATH/bin/start
 	
+
 	# pack www folder and copy it into initramfs
 	cd $HOME_PATH &&  tar cfv web.tar www/
 	cd $HOME_PATH &&  tar cfv udhcpc.tar scripts/udhcpc/
