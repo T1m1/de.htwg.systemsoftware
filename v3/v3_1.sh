@@ -1,26 +1,9 @@
 #!/bin/sh
 
 
+## defines
 HOME_PATH=$PWD
-
 V3ARM_APP=./v3arm
-# patch file
-PATCH_NAME=linux-smsc95xx_allow_mac_setting.patch
-PATCH_FILE=$HOME_PATH/patch/$PATCH_NAME
-
-# paths
-KERNEL_PATH=../$LINUX_VERSION
-BUSYBOX_PATH=../$BUSYBOX_VERSION
-
-# versions
-LINUX_VERSION=linux-3.17.2
-BUSYBOX_VERSION=busybox-1.22.1
-
-# --------
-LINUX_PACKAGE=$LINUX_VERSION.tar.xz
-LINUX_SOURCE=https://www.kernel.org/pub/linux/kernel/v3.x/$LINUX_PACKAGE
-BUSYBOX_PACKAGE=$BUSYBOX_VERSION.tar.bz2
-BUSYBOX_SOURCE=http://busybox.net/downloads/$BUSYBOX_PACKAGE
 
 
 help ()
@@ -53,7 +36,16 @@ patch()
 
 compile()
 {
-	echo "compilieren"
+	echo "compile kernel..."
+	# prepare config
+	$V3ARM_APP -e config_kernel
+	$V3ARM_APP -e config_busybox
+	# init
+	$V3ARM_APP -e init_v3_1
+	# compile
+	$V3ARM_APP -e du compile_kernel
+	$V3ARM_APP -e make_bcm_dtb
+	
 }
 
 git_source()
@@ -63,7 +55,7 @@ git_source()
 
 start_qemu()
 {
-	echo "qemu starten"
+	$V3ARM_APP -e qemu_net
 }
 
 
