@@ -19,6 +19,32 @@ help ()
 }
 
 
+download_source()
+{
+	echo "download source"
+}
+
+patch()
+{
+	echo "patchen"
+}
+
+compile()
+{
+	echo "compilieren"
+}
+
+git_source()
+{
+	echo "kopieren der gitsource"
+}
+
+start_qemu()
+{
+	echo "qemu starten"
+}
+
+
 ##################### main ########################
 
 
@@ -26,6 +52,7 @@ ARGS=`getopt -o hd:p:c:q: -- "$@"`
 
 eval set -- "$ARGS"
 
+argument=0
 
 while true;
 do
@@ -33,44 +60,56 @@ do
 		'-d')
 			if [ "$2" = "n" ] 
 			then
-				echo "download source"
+				download_source
 			else
 				help
 			fi
+			argument=1
 			shift 2;;
 		'-p')
 			if [ "$2" = "a" ] 
 			then
-				echo "patchen"
+				patch
 			else
 				help
 			fi
+			argument=1
 			shift 2;;
 		'-c')
 			if [ "$2" = "p" -o "$2" = "o" ] 
 			then
 				if [ "$2" = "o" ] 
 				then
-					echo "compilieren"
+					compile
 				else
-					echo "kopieren der gitsource"
+					git_source
 				fi
 			else
 				help
 			fi
+			argument=1
 			shift 2;;
 		'-q')
 			if [ "$2" = "e" ] 
 			then
-				echo "qemu starten"
+				start_qemu
 			else
 				help
 			fi
+			argument=1
 			shift 2;;
 		'-h')
 			help
+			argument=1
 			break;;
 		*)
 			break;;
 	esac
 done
+
+if [ $argument -eq 0 ]
+then
+	echo "argument required"
+	help
+fi
+
