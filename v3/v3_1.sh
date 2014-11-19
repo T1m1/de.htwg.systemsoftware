@@ -1,6 +1,21 @@
 #!/bin/sh
 
 
+HOME_PATH=$PWD
+
+# patch file
+PATCH_NAME=linux-smsc95xx_allow_mac_setting.patch
+PATCH_FILE=$HOME_PATH/patch/$PATCH_NAME
+
+# versions
+LINUX_VERSION=linux-3.17.2
+BUSYBOX_VERSION=busybox-1.22.1
+
+# --------
+LINUX_PACKAGE=$LINUX_VERSION.tar.xz
+LINUX_SOURCE=https://www.kernel.org/pub/linux/kernel/v3.x/$LINUX_PACKAGE
+BUSYBOX_PACKAGE=$BUSYBOX_VERSION.tar.bz2
+BUSYBOX_SOURCE=http://busybox.net/downloads/$BUSYBOX_PACKAGE
 
 
 help ()
@@ -21,7 +36,16 @@ help ()
 
 download_source()
 {
-	echo "download source"
+	cd ..
+	# linux source
+	wget $LINUX_SOURCE
+	tar xpvf $LINUX_PACKAGE 
+	rm -f $LINUX_PACKAGE
+	
+	# busybox source
+	wget $BUSYBOX_SOURCE
+	tar xpvf $BUSYBOX_PACKAGE 
+	rm -f $BUSYBOX_PACKAGE
 }
 
 patch()
