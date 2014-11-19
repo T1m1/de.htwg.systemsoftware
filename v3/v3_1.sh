@@ -7,6 +7,10 @@ HOME_PATH=$PWD
 PATCH_NAME=linux-smsc95xx_allow_mac_setting.patch
 PATCH_FILE=$HOME_PATH/patch/$PATCH_NAME
 
+# paths
+KERNEL_PATH=../$LINUX_VERSION
+BUSYBOX_PATH=../$BUSYBOX_VERSION
+
 # versions
 LINUX_VERSION=linux-3.17.2
 BUSYBOX_VERSION=busybox-1.22.1
@@ -36,6 +40,7 @@ help ()
 
 download_source()
 {
+	echo "download source..."
 	cd ..
 	# linux source
 	wget $LINUX_SOURCE
@@ -50,7 +55,9 @@ download_source()
 
 patch()
 {
-	echo "patchen"
+	echo "patch kernel..."
+	cd $KERNEL_PATH && make clean
+	cd $KERNEL_PATH && patch -p1 < $PATCH_FILE
 }
 
 compile()
