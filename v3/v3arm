@@ -16,7 +16,7 @@ DTB_VEXPRESS=vexpress-v2p-ca9.dtb
 DTB_VEXPRESS_PATH=arch/arm/boot/dts/$DTB_VEXPRESS
 
 # versions
-LINUX_VERSION=linux-3.16.6
+LINUX_VERSION=linux-3.17.2
 BUSYBOX_VERSION=busybox-1.22.1
 
 # cross compiler
@@ -27,9 +27,11 @@ ARCH=arm
 	
 # paths
 BUILDROOT_PATH=../buildroot
+BUILDROOT_BUILD_PATH=$BUILDROOT_PATH/output/build
 INITRAMFS_PATH=initramfs
 IMAGE_PATH="arch/arm/boot/zImage"
 HOME_PATH=$PWD
+BR2_CONFIG=../v3/myconfig.buildroot
 
 # patch file
 PATCH_NAME=linux-smsc95xx_allow_mac_setting.patch
@@ -185,22 +187,38 @@ qemu_serial()
 	# then... system_reset
 }
 
+br_save_configs()
+{
+	cp $BUILDROOT_BUILD_PATH/$LINUX_VERSION/.config $HOME_PATH/.config_kernel
+	cp $BUILDROOT_BUILD_PATH/$BUSYBOX_VERSION/.config $HOME_PATH/.my_busybox_config
+}
 
 source_buildroot()
 {
-	git clone git://git.buildroot.net/buildroot ../buildroot
-	cd ../buildroot
+	git clone git://git.buildroot.net/buildroot $BUILDROOT_PATH
+	cd $BUILDROOT_PATH
 	git reset --hard 80e406090893ab5a7b5d78e4d243d12fca2b22fb
 	rm -rf .git
+	cd $BUILDROOT_PATH && make defconfig BR2_DEFCONFIG=$BR2_CONFIG
 }
 
-
-################# show info ###############
-info() 
+source()
 {
-		echo 'QEMU'
-		echo 'Machine Types:'
-		qemu-system-arm -machine ?
+	cd ..
+	wget $LINUX_SOURCE
+	tar xpvf $LINUX_PACKAGE 
+	rm -f $LINUX_PACKAGE
+	
+	# busybox source
+	wget $BUSYBOX_SOURCE
+	tar xpvf $BUSYBOX_PACKAGE 
+	rm -f $BUSYBOX_PACKAGE
+}
+
+make_br()
+{
+	cd $BUILDROOT_PATH && make source
+	cd $BUILDROOT_PATH && make
 }
 
 ################# clean  ##################
@@ -235,19 +253,19 @@ help()
 	echo "  KERNEL:"		
 	echo ".....config_kernel: 	creates a kernel config"
 	echo ".....compile_kernel:	compile kernel"
-	echo ".....patch_kernel:	patch kernel"
+	echo ".....patch_kernel: 	patch kernel"
 	echo ""
 	echo "  BUILDROOT:"
 	echo ".....compile_buildroot:	compile buildroot"	
 	echo ""
 	echo "  STUFF:"
-	echo ".....init:			initialize all needed files for kernel"
-	echo ".....qemu_net:		starts qemu with compiled kernel"
-	echo ".....all:				does all above, without starting qemu"
-	echo ".....run:				easy call for qemu_net"
-	echo ".....clean:			clean ALL generated files (busybox, kernel, ..)"
+	echo ".....init:		initialize all needed files for kernel"
+	echo ".....qemu_net:	starts qemu with compiled kernel"
+	echo ".....all:			does all above, without starting qemu"
+	echo ".....run:			easy call for qemu_net"
+	echo ".....clean:		clean ALL generated files (busybox, kernel, ..)"
 	echo "........................................................"
-	echo ".....menu_<X>			either <busybox> or <kernel> of <buildroot> for the menuconfig"
+	echo ".....menu_<X>		either <busybox> or <kernel> of <buildroot> for the menuconfig"
 	echo "--------------------------------------------------------"
 	
 	
