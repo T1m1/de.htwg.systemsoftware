@@ -1,0 +1,9 @@
+setenv rpi 3
+setenv tftppath "/rpi/${rpi}"
+
+setenv bootargs ${bootargs} smsc95xx.macaddr=${usbethaddr}
+mmc dev 0
+tftpboot ${kernel_addr_r} ${tftppath}/zImage
+tftpboot ${ramdisk_addr_r} ${tftppath}/${ramdisk_file}
+tftpboot ${fdt_addr_r} ${tftppath}/${fdtfile}
+bootz ${kernel_addr_r} ${ramdisk_addr_r} ${fdt_addr_r}
