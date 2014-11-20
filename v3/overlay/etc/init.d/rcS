@@ -35,9 +35,10 @@ echo '---> start binary'
 #rm -f www/web.tar
 #echo '---> done'
 
+sleep 2
 # start server
 echo '----> Starting Server'
-ifconfig l0 up
+ifconfig lo up
 ifconfig eth0 up
 
 udhcpc -s /etc/udhcpc/simple.script

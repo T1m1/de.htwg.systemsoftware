@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Busybox version: 1.22.1
-# Thu Nov 20 10:54:16 2014
+# Thu Nov 20 12:27:12 2014
 #
 CONFIG_HAVE_DOT_CONFIG=y
 
@@ -267,9 +267,9 @@ CONFIG_RM=y
 # CONFIG_SHA256SUM is not set
 # CONFIG_SHA512SUM is not set
 # CONFIG_SHA3SUM is not set
-# CONFIG_SLEEP is not set
-# CONFIG_FEATURE_FANCY_SLEEP is not set
-# CONFIG_FEATURE_FLOAT_SLEEP is not set
+CONFIG_SLEEP=y
+CONFIG_FEATURE_FANCY_SLEEP=y
+CONFIG_FEATURE_FLOAT_SLEEP=y
 # CONFIG_SORT is not set
 # CONFIG_FEATURE_SORT_BIG is not set
 # CONFIG_SPLIT is not set
