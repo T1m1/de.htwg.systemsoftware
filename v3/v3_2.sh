@@ -55,7 +55,7 @@ argument=0
 while true;
 do
 	case "$1" in
-		'-run')
+		'-r')
 			if [ "$2" = "un" ] 
 			then
 				buildroot
