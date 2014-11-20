@@ -29,9 +29,9 @@ buildroot()
 
 compile()
 {
-	$V3ARM_APP -e make_br
+	$V3ARM_APP -e make_br	
 	$V3ARM_APP -e make_uboot
-	# make dtb?
+	$V3ARM_APP -e make_buildroot_bcm_dtb
 }
 
 git_source()
