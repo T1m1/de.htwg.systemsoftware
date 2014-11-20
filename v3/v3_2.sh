@@ -36,7 +36,7 @@ compile()
 
 git_source()
 {
-	echo "kopieren der gitsource"
+	$V3ARM_APP -e copy_to_server
 }
 
 start_qemu()
