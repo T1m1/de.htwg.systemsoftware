@@ -32,6 +32,7 @@ INITRAMFS_PATH=initramfs
 IMAGE_PATH="arch/arm/boot/zImage"
 HOME_PATH=$PWD
 BR2_CONFIG=../v3/myconfig.buildroot
+SERVER_PATH=/srv/tftp/rpi/3/
 
 # patch file
 PATCH_FILE_GPIO=$HOME_PATH/patch/linux-fix-gpio-enumeration.patch
@@ -135,6 +136,11 @@ v3_2_qemu()
 	-net vde,sock="/tmp/vde2-tap0.ctl",vlan=0
 }
 
+make_buildroot_bcm_dtb() 
+{
+	cd $BUILDROOT_PATH/output/build/$LINUX_VERSION && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER $DTB_BCM
+}
+
 
 ################# KERNEL ##################
 menu_kernel()
@@ -162,6 +168,8 @@ make_bcm_dtb()
 {
 	cd $KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER $DTB_BCM
 }
+
+
 
 
 make_vexpress_dtb() 
@@ -224,8 +232,9 @@ br_save_configs()
 
 copy_to_server()
 {
-	cp $BUILDROOT_PATH/output/images/rootfs.cpio.uboot /srv/tftp/rpi/3/rootfs.cpio.uboot
-	cp $BUILDROOT_PATH/output/images/zImage /srv/tftp/rpi/3/zImage 
+	cp $BUILDROOT_PATH/output/images/rootfs.cpio.uboot $SERVER_PATH/rootfs.cpio.uboot
+	cp $BUILDROOT_PATH/output/images/zImage $SERVER_PATH/zImage
+	cd $HOME_PATH/uboot/tftpboot.scr $SERVER_PATH/tftpboot.scr
 }
 
 source_buildroot()
@@ -254,6 +263,11 @@ make_br()
 {
 	cd $BUILDROOT_PATH && make source
 	cd $BUILDROOT_PATH && make
+}
+
+make_uboot()
+{
+	cd $HOME_PATH/uboot && ./gen_uboot
 }
 
 ################# clean  ##################
