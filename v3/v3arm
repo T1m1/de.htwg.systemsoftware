@@ -34,8 +34,8 @@ HOME_PATH=$PWD
 BR2_CONFIG=../v3/myconfig.buildroot
 
 # patch file
-PATCH_NAME=linux-smsc95xx_allow_mac_setting.patch
-PATCH_FILE=$HOME_PATH/patch/$PATCH_NAME
+PATCH_FILE_GPIO=$HOME_PATH/patch/linux-fix-gpio-enumeration.patch
+PATCH_FILE_SMSC95=$HOME_PATH/patch/linux-smsc95xx_allow_mac_setting.patch
 
 # --------
 LINUX_PACKAGE=$LINUX_VERSION.tar.xz
@@ -172,7 +172,8 @@ make_vexpress_dtb()
 patch_kernel()
 {
 	cd $KERNEL_PATH && make clean
-	cd $KERNEL_PATH && patch -p1 < $PATCH_FILE
+	cd $KERNEL_PATH && patch -p1 < $PATCH_FILE_SMSC95
+	cd $KERNEL_PATH && patch -p1 < $PATCH_FILE_GPIO
 }
 
 ################# BUSYBOX ##################
@@ -219,6 +220,12 @@ br_save_configs()
 {
 	cp $BUILDROOT_BUILD_PATH/$LINUX_VERSION/.config $HOME_PATH/.config_kernel
 	cp $BUILDROOT_BUILD_PATH/$BUSYBOX_VERSION/.config $HOME_PATH/.my_busybox_config
+}
+
+copy_to_server()
+{
+	cp $BUILDROOT_PATH/output/images/rootfs.cpio.uboot /srv/tftp/rpi/3/rootfs.cpio.uboot
+	cp $BUILDROOT_PATH/output/images/zImage /srv/tftp/rpi/3/zImage 
 }
 
 source_buildroot()
