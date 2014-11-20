@@ -37,6 +37,8 @@ echo '---> start binary'
 
 # start server
 echo '----> Starting Server'
+ifconfig l0 up
+ifconfig eth0 up
 
 udhcpc -s /etc/udhcpc/simple.script
 ifconfig lo 127.0.0.1
