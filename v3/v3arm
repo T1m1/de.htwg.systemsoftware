@@ -10,11 +10,7 @@
 
 
 
-# dtb files and paths
-DTB_BCM=bcm2835-rpi-b.dtb
-DTB_BCM_PATH=arch/arm/boot/dts/$DTB_BCM
-DTB_VEXPRESS=vexpress-v2p-ca9.dtb
-DTB_VEXPRESS_PATH=arch/arm/boot/dts/$DTB_VEXPRESS
+
 
 # versions
 LINUX_VERSION=linux-3.17.2
@@ -34,7 +30,13 @@ IMAGE_PATH="arch/arm/boot/zImage"
 HOME_PATH=$PWD
 BR2_CONFIG=../v3/myconfig.buildroot
 SERVER_PATH=/srv/tftp/rpi/3/
-KERNEL_PATH=$BUILDROOT_BUILD_PATH/$LINUX_VERSION/
+KERNEL_PATH=$BUILDROOT_BUILD_PATH/$LINUX_VERSION
+
+# dtb files and paths
+DTB_BCM=bcm2835-rpi-b.dtb
+DTB_BCM_PATH=arch/arm/boot/dts/$DTB_BCM
+DTB_VEXPRESS=vexpress-v2p-ca9.dtb
+DTB_VEXPRESS_PATH=$KERNEL_PATH/arch/arm/boot/dts/$DTB_VEXPRESS
 
 # patch file
 PATCH_FILE_GPIO=$HOME_PATH/patch/linux-fix-gpio-enumeration.patch
@@ -51,9 +53,10 @@ test()
 {
 	cd $BUILDROOT_PATH/output/images && QEMU_AUDIO_DRV=none qemu-system-arm -kernel zImage -m 128M -M vexpress-a9 \
 	-nographic -append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" \
-	-initrd rootfs.cpio\
-	-net nic,macaddr=00:00:00:00:00:1D,vlan=0\
-	-net vde,sock="/tmp/vde2-tap0.ctl",vlan=0
+	-initrd rootfs.cpio \
+	-net nic,macaddr=00:00:00:00:00:1D,vlan=0 \
+	-net vde,sock="/tmp/vde2-tap0.ctl",vlan=0 \
+	-dtb $DTB_VEXPRESS_PATH
 }
 
 
@@ -137,9 +140,10 @@ v3_2_qemu()
 	-net vde,sock="/tmp/vde2-tap0.ctl",vlan=0
 }
 
-make_buildroot_bcm_dtb() 
+make_bcm_dtb() 
 {
-	cd $BUILDROOT_PATH/output/build/$LINUX_VERSION && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER $DTB_BCM
+	# make the dtb for rpi
+	cd $KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER $DTB_BCM
 }
 
 ################### RPi #####################
@@ -176,18 +180,16 @@ defconfig_kernel()
 	cd $HOME_PATH && cp bcmrpi_defconfig $KERNEL_PATH/.config
 }
 
-
-make_bcm_dtb() 
+make_buildroot_bcm_dtb() 
 {
-	# make the dtb for rpi
+	# make the dtb for the rpi
 	cd $KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER $DTB_BCM
 }
-
 
 make_vexpress_dtb() 
 {
 	# make the dtb for the vexpress board
-	cd $KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER $DTB_VEXPRESS_PATH
+	cd $KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER $DTB_VEXPRESS
 }
 
 patch_kernel()
@@ -225,7 +227,7 @@ qemu_net()
 	-net nic,macaddr=00:00:00:00:00:1D,vlan=0\
 	-net vde,sock="/tmp/vde2-tap0.ctl",vlan=0\
 	-dtb $DTB_VEXPRESS_PATH
-}
+}	
 
 qemu_serial()
 {
@@ -260,7 +262,7 @@ source_buildroot()
 
 source()
 {
-	# load the kernel (not needed for v3)
+	# load the kernel (not needed for v3 ?)
 	cd ..
 	wget $LINUX_SOURCE
 	tar xpvf $LINUX_PACKAGE 

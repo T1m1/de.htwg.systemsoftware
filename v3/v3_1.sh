@@ -44,7 +44,7 @@ compile()
 	$V3ARM_APP -e init_v3_1
 	# compile
 	$V3ARM_APP -e compile_kernel
-	$V3ARM_APP -e make_bcm_dtb
+	$V3ARM_APP -e make_vexpress_dtb
 	
 }
 
