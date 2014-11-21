@@ -34,7 +34,7 @@ KERNEL_PATH=$BUILDROOT_BUILD_PATH/$LINUX_VERSION
 
 # dtb files and paths
 DTB_BCM=bcm2835-rpi-b.dtb
-DTB_BCM_PATH=arch/arm/boot/dts/$DTB_BCM
+DTB_BCM_PATH=$KERNEL_PATH/arch/arm/boot/dts/$DTB_BCM
 DTB_VEXPRESS=vexpress-v2p-ca9.dtb
 DTB_VEXPRESS_PATH=$KERNEL_PATH/arch/arm/boot/dts/$DTB_VEXPRESS
 
