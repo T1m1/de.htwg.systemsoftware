@@ -1,0 +1,6 @@
+config BR2_PACHAGE_MYPROG
+	bool "Meine Programme"
+	select BR2_PACKAGE_FIRSTPROG
+	depends on BR2_PACKAGE_NEU_ANGEZEIGT
+	help
+	  Das ist unser Hilfetext
