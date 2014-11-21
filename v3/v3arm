@@ -10,8 +10,9 @@
 
 
 
-# dtb files
+# dtb files and paths
 DTB_BCM=bcm2835-rpi-b.dtb
+DTB_BCM_PATH=arch/arm/boot/dts/$DTB_BCM
 DTB_VEXPRESS=vexpress-v2p-ca9.dtb
 DTB_VEXPRESS_PATH=arch/arm/boot/dts/$DTB_VEXPRESS
 
@@ -38,7 +39,7 @@ SERVER_PATH=/srv/tftp/rpi/3/
 PATCH_FILE_GPIO=$HOME_PATH/patch/linux-fix-gpio-enumeration.patch
 PATCH_FILE_SMSC95=$HOME_PATH/patch/linux-smsc95xx_allow_mac_setting.patch
 
-# --------
+# Kernel & Busybox source and package name
 LINUX_PACKAGE=$LINUX_VERSION.tar.xz
 LINUX_SOURCE=https://www.kernel.org/pub/linux/kernel/v3.x/$LINUX_PACKAGE
 BUSYBOX_PACKAGE=$BUSYBOX_VERSION.tar.bz2
@@ -62,7 +63,6 @@ all()
 {
 		# load
 		source_buildroot
-
 		
 		config_kernel
 		config_busybox
@@ -165,30 +165,33 @@ compile_kernel()
 
 config_kernel()
 {	
+	# copy the preconfigured kernel file 
 	cd $HOME_PATH && cp .config_kernel $KERNEL_PATH/.config
 }
 
 defconfig_kernel()
 {	
+	# TODO: what?
 	cd $HOME_PATH && cp bcmrpi_defconfig $KERNEL_PATH/.config
 }
 
 
 make_bcm_dtb() 
 {
+	# make the dtb for rpi
 	cd $KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER $DTB_BCM
 }
 
 
-
-
 make_vexpress_dtb() 
 {
+	# make the dtb for the vexpress board
 	cd $KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER $DTB_VEXPRESS_PATH
 }
 
 patch_kernel()
 {
+	# patch the kernel with the needed patches
 	cd $KERNEL_PATH && make clean
 	cd $KERNEL_PATH && patch -p1 < $PATCH_FILE_SMSC95
 	cd $KERNEL_PATH && patch -p1 < $PATCH_FILE_GPIO
@@ -198,6 +201,7 @@ patch_kernel()
 
 config_busybox()
 {	
+	# copy the preconfigured config file 
 	cd $HOME_PATH && cp .my_busybox_config $BUSYBOX_PATH/.config
 }
 
@@ -234,16 +238,18 @@ qemu_serial()
 	# then... system_reset
 }
 
+#################### Buildroot ##################
+
 br_save_configs()
 {
+	# saves the config of kernel and busybox to a separate location
 	cp $BUILDROOT_BUILD_PATH/$LINUX_VERSION/.config $HOME_PATH/.config_kernel
 	cp $BUILDROOT_BUILD_PATH/$BUSYBOX_VERSION/.config $HOME_PATH/.my_busybox_config
 }
 
-
-
 source_buildroot()
 {
+	# loads buildroot from git
 	git clone git://git.buildroot.net/buildroot $BUILDROOT_PATH
 	cd $BUILDROOT_PATH
 	git reset --hard 80e406090893ab5a7b5d78e4d243d12fca2b22fb
@@ -253,6 +259,7 @@ source_buildroot()
 
 source()
 {
+	# load the kernel (not needed for v3)
 	cd ..
 	wget $LINUX_SOURCE
 	tar xpvf $LINUX_PACKAGE 
@@ -266,12 +273,14 @@ source()
 
 make_br()
 {
+	# "compiles" buildroot
 	cd $BUILDROOT_PATH && make source
 	cd $BUILDROOT_PATH && make
 }
 
 make_uboot()
 {
+	# runs the u-boot script
 	cd $HOME_PATH/uboot && ./gen_uboot
 }
 
