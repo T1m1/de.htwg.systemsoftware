@@ -33,6 +33,7 @@ patch()
 {
 	echo "patch kernel..."
 	$V3ARM_APP -e patch_kernel
+	#TODO really necessary?
 }
 
 compile()
@@ -44,8 +45,8 @@ compile()
 	# init
 	$V3ARM_APP -e init_v3_1
 	# compile
-	$V3ARM_APP -e compile_kernel
 	$V3ARM_APP -e make_vexpress_dtb
+	$V3ARM_APP -e compile_kernel
 	
 }
 
