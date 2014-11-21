@@ -154,7 +154,7 @@ source_kernel()
 config_kernel()
 {	
 	# copy the preconfigured kernel file for vexpress
-	cd $HOME_PATH && cp .vexpress_kernel_config $KERNEL_PATH/.config
+	cd $HOME_PATH && cp .config_kernel $KERNEL_PATH/.config
 }
 
 compile_kernel()
