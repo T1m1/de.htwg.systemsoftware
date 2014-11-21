@@ -34,6 +34,7 @@ IMAGE_PATH="arch/arm/boot/zImage"
 HOME_PATH=$PWD
 BR2_CONFIG=../v3/myconfig.buildroot
 SERVER_PATH=/srv/tftp/rpi/3/
+KERNEL_PATH=$BUILDROOT_BUILD_PATH/$LINUX_VERSION/
 
 # patch file
 PATCH_FILE_GPIO=$HOME_PATH/patch/linux-fix-gpio-enumeration.patch
@@ -306,29 +307,29 @@ help()
 	echo ""
 	echo "functions:"
 	echo ""
-	echo "  SOURCE:"
-	echo ".....source:			download linux source"
-	echo ".....source_buildroot: get buildroot source"
+	echo "SOURCE:"
+	echo "-> source:		download linux source"
+	echo "-> source_buildroot:	get buildroot source"
 	echo ""
 	echo "  BUSYBOX:"
-	echo ".....config_busybox: 	creates a busybox config"
+	echo "-> config_busybox: 	creates a busybox config"
 	echo ""
 	echo "  KERNEL:"		
-	echo ".....config_kernel: 	creates a kernel config"
-	echo ".....compile_kernel:	compile kernel"
-	echo ".....patch_kernel: 	patch kernel"
+	echo "-> config_kernel: 	creates a kernel config"
+	echo "-> compile_kernel:	compile kernel"
+	echo "-> patch_kernel: 	patch kernel"
 	echo ""
 	echo "  BUILDROOT:"
-	echo ".....compile_buildroot:	compile buildroot"	
+	echo "-> compile_buildroot:	compile buildroot"	
 	echo ""
 	echo "  STUFF:"
-	echo ".....init:		initialize all needed files for kernel"
-	echo ".....qemu_net:	starts qemu with compiled kernel"
-	echo ".....all:			does all above, without starting qemu"
-	echo ".....run:			easy call for qemu_net"
-	echo ".....clean:		clean ALL generated files (busybox, kernel, ..)"
+	echo "-> init:		initialize all needed files for kernel"
+	echo "-> qemu_net:		starts qemu with compiled kernel"
+	echo "-> all:			does all above, without starting qemu"
+	echo "-> run:			easy call for qemu_net"
+	echo "-> clean:		clean ALL generated files (busybox, kernel, ..)"
 	echo "........................................................"
-	echo ".....menu_<X>		either <busybox> or <kernel> of <buildroot> for the menuconfig"
+	echo "-> menu_<X>		either <busybox> or <kernel> of <buildroot> for the menuconfig"
 	echo "--------------------------------------------------------"
 	
 	
