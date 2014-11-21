@@ -51,7 +51,7 @@ BUSYBOX_SOURCE=http://busybox.net/downloads/$BUSYBOX_PACKAGE
 
 test()
 {
-	cd $BUILDROOT_PATH/output/images && QEMU_AUDIO_DRV=none qemu-system-arm -kernel zImage -m 128M -M vexpress-a9 \
+	cd $KERNEL_PATH && QEMU_AUDIO_DRV=none qemu-system-arm -kernel zImage -m 128M -M vexpress-a9 \
 	-nographic -append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" \
 	-initrd rootfs.cpio \
 	-net nic,macaddr=00:00:00:00:00:1D,vlan=0 \
@@ -153,7 +153,7 @@ copy_to_server()
 	cp $BUILDROOT_PATH/output/images/rootfs.cpio.uboot $SERVER_PATH/rootfs.cpio.uboot
 	cp $BUILDROOT_PATH/output/images/zImage $SERVER_PATH/zImage
 	cp $HOME_PATH/uboot/tftpboot.scr $SERVER_PATH/tftpboot.scr
-	cp $BUILDROOT_PATH/output/build/$LINUX_VERSION/arch/arm/boot/dts/$DTB_BCM $SERVER_PATH/$DTB_BCM
+	cp $DTB_BCM_PATH $SERVER_PATH/$DTB_BCM
 }
 
 
