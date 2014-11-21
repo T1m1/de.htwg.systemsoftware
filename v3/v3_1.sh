@@ -53,6 +53,7 @@ compile()
 git_source()
 {
 	echo "kopieren der gitsource"
+	#TODO really necessary?
 }
 
 start_qemu()
