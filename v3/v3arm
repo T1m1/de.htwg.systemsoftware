@@ -141,6 +141,16 @@ make_buildroot_bcm_dtb()
 	cd $BUILDROOT_PATH/output/build/$LINUX_VERSION && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER $DTB_BCM
 }
 
+################### RPi #####################
+
+copy_to_server()
+{
+	cp $BUILDROOT_PATH/output/images/rootfs.cpio.uboot $SERVER_PATH/rootfs.cpio.uboot
+	cp $BUILDROOT_PATH/output/images/zImage $SERVER_PATH/zImage
+	cp $HOME_PATH/uboot/tftpboot.scr $SERVER_PATH/tftpboot.scr
+	cp $BUILDROOT_PATH/output/build/$LINUX_VERSION/arch/arm/boot/dts/$DTB_BCM $SERVER_PATH/$DTB_BCM
+}
+
 
 ################# KERNEL ##################
 menu_kernel()
@@ -230,12 +240,7 @@ br_save_configs()
 	cp $BUILDROOT_BUILD_PATH/$BUSYBOX_VERSION/.config $HOME_PATH/.my_busybox_config
 }
 
-copy_to_server()
-{
-	cp $BUILDROOT_PATH/output/images/rootfs.cpio.uboot $SERVER_PATH/rootfs.cpio.uboot
-	cp $BUILDROOT_PATH/output/images/zImage $SERVER_PATH/zImage
-	cd $HOME_PATH/uboot/tftpboot.scr $SERVER_PATH/tftpboot.scr
-}
+
 
 source_buildroot()
 {

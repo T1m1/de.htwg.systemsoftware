@@ -30,12 +30,13 @@ buildroot()
 compile()
 {
 	$V3ARM_APP -e make_br	
+	$V3ARM_APP -e make_uboot
 	$V3ARM_APP -e make_buildroot_bcm_dtb
 }
 
 git_source()
 {
-	echo "kopieren der gitsource"
+	$V3ARM_APP -e copy_to_server
 }
 
 start_qemu()
