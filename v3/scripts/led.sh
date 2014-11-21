@@ -23,4 +23,3 @@ do
 	echo "$OFF" > $LED
 	sleep 1
 done
-
