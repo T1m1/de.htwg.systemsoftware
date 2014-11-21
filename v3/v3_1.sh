@@ -25,7 +25,8 @@ help ()
 download_source()
 {
 	echo "download source..."
-	$V3ARM_APP -e source
+	$V3ARM_APP -e source_kernel
+	$V3ARM_APP -e source_busybox
 }
 
 patch()

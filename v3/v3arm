@@ -8,10 +8,6 @@
 # /[folderXY]/initramfs/
 #
 
-
-
-
-
 # versions
 LINUX_VERSION=linux-3.17.2
 BUSYBOX_VERSION=busybox-1.22.1
@@ -30,11 +26,13 @@ IMAGE_PATH="arch/arm/boot/zImage"
 HOME_PATH=$PWD
 BR2_CONFIG=../v3/myconfig.buildroot
 SERVER_PATH=/srv/tftp/rpi/3/
-KERNEL_PATH=$BUILDROOT_BUILD_PATH/$LINUX_VERSION
+KERNEL_PATH=../$LINUX_VERSION
+BR_KERNEL_PATH=$BUILDROOT_BUILD_PATH/$LINUX_VERSION
 
 # dtb files and paths
 DTB_BCM=bcm2835-rpi-b.dtb
-DTB_BCM_PATH=$KERNEL_PATH/arch/arm/boot/dts/$DTB_BCM
+DTB_BCM_PATH=$BR_KERNEL_PATH/arch/arm/boot/dts/$DTB_BCM
+
 DTB_VEXPRESS=vexpress-v2p-ca9.dtb
 DTB_VEXPRESS_PATH=$KERNEL_PATH/arch/arm/boot/dts/$DTB_VEXPRESS
 
@@ -51,9 +49,8 @@ BUSYBOX_SOURCE=http://busybox.net/downloads/$BUSYBOX_PACKAGE
 
 test()
 {
-	cd $KERNEL_PATH && QEMU_AUDIO_DRV=none qemu-system-arm -kernel zImage -m 128M -M vexpress-a9 \
+	cd $KERNEL_PATH && QEMU_AUDIO_DRV=none qemu-system-arm -kernel $IMAGE_PATH -m 128M -M vexpress-a9 \
 	-nographic -append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" \
-	-initrd rootfs.cpio \
 	-net nic,macaddr=00:00:00:00:00:1D,vlan=0 \
 	-net vde,sock="/tmp/vde2-tap0.ctl",vlan=0 \
 	-dtb $DTB_VEXPRESS_PATH
@@ -72,7 +69,7 @@ all()
 		config_busybox
 		
 		# init
-		init
+		init_v3_1
 		
 		# compile
 		compile_kernel
@@ -105,20 +102,6 @@ init_v3_1()
 
 }
 
-init()
-{
-	# compile c app
-	/group/labworks/toolchain/buildroot.git/output/host/usr/bin/arm-buildroot-linux-uclibcgnueabihf-gcc \
-	-static -o scripts/start scripts/systeminfo.c 
-	mv scripts/start $INITRAMFS_PATH/bin/start
-	
-
-	# pack www folder and copy it into initramfs
-	cd $HOME_PATH &&  tar cfv web.tar www/
-	cd $HOME_PATH &&  tar cfv udhcpc.tar scripts/udhcpc/
-
-}
-
 ################ buildroot ################
 menu_buildroot() 
 {
@@ -142,8 +125,8 @@ v3_2_qemu()
 
 make_bcm_dtb() 
 {
-	# make the dtb for rpi
-	cd $KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER $DTB_BCM
+	# make the dtb for rpi (TODO: delete, because duplicate ?)
+	cd $BR_KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER $DTB_BCM
 }
 
 ################### RPi #####################
@@ -158,20 +141,25 @@ copy_to_server()
 
 
 ################# KERNEL ##################
-menu_kernel()
+source_kernel()
 {
-	cd $KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER  menuconfig
-}
-
-compile_kernel()
-{
-	cd $KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER -j5
+	# load the kernel
+	cd ..
+	wget $LINUX_SOURCE
+	tar xpvf $LINUX_PACKAGE 
+	rm -f $LINUX_PACKAGE
 }
 
 config_kernel()
 {	
 	# copy the preconfigured kernel file 
 	cd $HOME_PATH && cp .config_kernel $KERNEL_PATH/.config
+}
+
+compile_kernel()
+{
+	# manually compile the kernel
+	cd $KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER -j5
 }
 
 defconfig_kernel()
@@ -182,25 +170,38 @@ defconfig_kernel()
 
 make_buildroot_bcm_dtb() 
 {
-	# make the dtb for the rpi
-	cd $KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER $DTB_BCM
+	# make the dtb for the rpi inside buildroot
+	cd $BR_KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER $DTB_BCM
 }
 
 make_vexpress_dtb() 
 {
-	# make the dtb for the vexpress board
+	# make the dtb for the vexpress board for qemu
 	cd $KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER $DTB_VEXPRESS
 }
 
 patch_kernel()
 {
-	# patch the kernel with the needed patches
-	cd $KERNEL_PATH && make clean
-	cd $KERNEL_PATH && patch -p1 < $PATCH_FILE_SMSC95
-	cd $KERNEL_PATH && patch -p1 < $PATCH_FILE_GPIO
+	# patch the kernel with the needed patches TODO: (for rasppi?, if not fix kernel path)
+	cd $BR_KERNEL_PATH && make clean
+	cd $BR_KERNEL_PATH && patch -p1 < $PATCH_FILE_SMSC95
+	cd $BR_KERNEL_PATH && patch -p1 < $PATCH_FILE_GPIO
+}
+
+menu_kernel()
+{
+	cd $KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER  menuconfig
 }
 
 ################# BUSYBOX ##################
+
+source_busybox()
+{
+	# load busybox
+	wget $BUSYBOX_SOURCE
+	tar xpvf $BUSYBOX_PACKAGE 
+	rm -f $BUSYBOX_PACKAGE
+}
 
 config_busybox()
 {	
@@ -235,9 +236,9 @@ qemu_serial()
 	-nographic -serial pty -append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" \
 	-net nic,macaddr=00:00:00:00:00:1D,vlan=0\
 	-net vde,sock="/tmp/vde2-tap0.ctl",vlan=0\
-	-dtb $DTB_VEXPRESS_PATH
+	#-dtb $DTB_VEXPRESS_PATH
 	
-	# conect with ... screen /dev/pts/33
+	# conect with ... screen /dev/pts/33 (Number can vary)
 	# then... system_reset
 }
 
@@ -258,20 +259,6 @@ source_buildroot()
 	git reset --hard 80e406090893ab5a7b5d78e4d243d12fca2b22fb
 	rm -rf .git
 	cd $BUILDROOT_PATH && make defconfig BR2_DEFCONFIG=$BR2_CONFIG
-}
-
-source()
-{
-	# load the kernel (not needed for v3 ?)
-	cd ..
-	wget $LINUX_SOURCE
-	tar xpvf $LINUX_PACKAGE 
-	rm -f $LINUX_PACKAGE
-	
-	# busybox source
-	wget $BUSYBOX_SOURCE
-	tar xpvf $BUSYBOX_PACKAGE 
-	rm -f $BUSYBOX_PACKAGE
 }
 
 make_br()
