@@ -11,6 +11,8 @@ echo '######################'
 
 #mount
 echo '---> Mounting...'
+mount -t proc proc /proc
+mount -t sysfs none /sys
 mount -t tmpfs none /tmp
 echo '---> done'
 
