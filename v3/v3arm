@@ -28,6 +28,7 @@ BR2_CONFIG=../v3/myconfig.buildroot
 SERVER_PATH=/srv/tftp/rpi/3/
 KERNEL_PATH=../$LINUX_VERSION
 BR_KERNEL_PATH=$BUILDROOT_BUILD_PATH/$LINUX_VERSION
+BUSYBOX_PATH=../$BUSYBOX_VERSION
 
 # dtb files and paths
 DTB_BCM=bcm2835-rpi-b.dtb
@@ -152,8 +153,8 @@ source_kernel()
 
 config_kernel()
 {	
-	# copy the preconfigured kernel file 
-	cd $HOME_PATH && cp .config_kernel $KERNEL_PATH/.config
+	# copy the preconfigured kernel file for vexpress
+	cd $HOME_PATH && cp .vexpress_kernel_config $KERNEL_PATH/.config
 }
 
 compile_kernel()
@@ -182,10 +183,10 @@ make_vexpress_dtb()
 
 patch_kernel()
 {
-	# patch the kernel with the needed patches TODO: (for rasppi?, if not fix kernel path)
-	cd $BR_KERNEL_PATH && make clean
-	cd $BR_KERNEL_PATH && patch -p1 < $PATCH_FILE_SMSC95
-	cd $BR_KERNEL_PATH && patch -p1 < $PATCH_FILE_GPIO
+	# patch the kernel with the needed patches TODO: (for rasppi?, if not, then adapt kernel path)
+	cd $KERNEL_PATH && make clean
+	cd $KERNEL_PATH && patch -p1 < $PATCH_FILE_SMSC95
+	cd $KERNEL_PATH && patch -p1 < $PATCH_FILE_GPIO
 }
 
 menu_kernel()
@@ -198,6 +199,7 @@ menu_kernel()
 source_busybox()
 {
 	# load busybox
+	cd ..
 	wget $BUSYBOX_SOURCE
 	tar xpvf $BUSYBOX_PACKAGE 
 	rm -f $BUSYBOX_PACKAGE
@@ -217,6 +219,7 @@ menu_busybox()
 #################### QEMU ##################
 qemu_start()
 {
+	#TODO: kann man rausschmeissen??
 	cd $KERNEL_PATH && QEMU_AUDIO_DRV=none qemu-system-arm -kernel  $IMAGE_PATH -m 128M -M vexpress-a9 \
 	-nographic -append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" -initrd ../rootfs.cpio.gz
 }
@@ -236,7 +239,7 @@ qemu_serial()
 	-nographic -serial pty -append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" \
 	-net nic,macaddr=00:00:00:00:00:1D,vlan=0\
 	-net vde,sock="/tmp/vde2-tap0.ctl",vlan=0\
-	#-dtb $DTB_VEXPRESS_PATH
+	-dtb $DTB_VEXPRESS_PATH
 	
 	# conect with ... screen /dev/pts/33 (Number can vary)
 	# then... system_reset
