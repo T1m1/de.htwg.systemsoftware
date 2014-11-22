@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <time.h>
 // file handle in linux
 #include <fcnt1.h>
 #include <sys/stat.h>
@@ -36,3 +37,21 @@ void main(void)
 	//TODO: how to end the programm
 	
 }
+
+void *
+blink (void *thread_info)
+{
+	int s;
+	struct timespec *remain;
+	struct timespec *request = thread_info->timespec;
+	
+	for (;;)
+	{
+		// led on
+		
+		s = clock_nanosleep(CLOCK_REALTIME, TIMER_ABSTIME, &request, &remain);
+		
+		// led off
+	}
+} 
+
