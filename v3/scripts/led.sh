@@ -6,7 +6,7 @@ OFF=1
 SLEEP=1
 LED=/sys/class/gpio/gpio$GPIO/value
 EXPORT=/sys/class/gpio/export
-DIRECTION=/sys/class/gpio/gpio$GPIO
+DIRECTION=/sys/class/gpio/gpio$GPIO/direction
 # pin reservieren
 echo "$GPIO" > $EXPORT
 

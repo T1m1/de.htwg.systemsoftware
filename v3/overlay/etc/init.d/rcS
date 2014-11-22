@@ -49,3 +49,9 @@ httpd -h /www/ &
 #end
 echo '--> Starting shell'
 setsid cttyhack sh
+
+echo "17" > /sys/class/gpio/export
+echo "18" > /sys/class/gpio/export
+
+echo "in" > /sys/class/gpio/gpio17/direction
+echo "out" > /sys/class/gpio/gpio18/direction
