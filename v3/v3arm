@@ -178,7 +178,7 @@ make_buildroot_bcm_dtb()
 make_vexpress_dtb() 
 {
 	# make the dtb for the vexpress board for qemu
-	cd $KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER $DTB_VEXPRESS
+	cd $KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER $DTB_VEXPRESS 
 }
 
 patch_kernel()
@@ -230,7 +230,8 @@ qemu_net()
 	-nographic -append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" \
 	-net nic,macaddr=00:00:00:00:00:1D,vlan=0\
 	-net vde,sock="/tmp/vde2-tap0.ctl",vlan=0\
-	-dtb $DTB_VEXPRESS_PATH
+	-dtb $DTB_VEXPRESS_PATH \
+	-initrd ../buildroot_rootfs.cpio
 }	
 
 qemu_serial()
