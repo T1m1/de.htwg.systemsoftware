@@ -8,31 +8,41 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+struct thread_info
+{
+	int *button_pressed;
+	struct timespec *sleep_time;
+}
+
 void *blink(void *thread_info);
 void sigHandler(int);
 
 void main(void)
 {
-	int threadStarted;
-		
-	threadStarted = 0;
+	pthread_t blink_thread;
 	signal(SIGINT, sigHandler);
+	struct thread_info *thread_struct;
+	
+	// init thread_struct
+	
+	// start thread
+	if (pthread_create(&blink_thread, NULL, blink, &thread_struct) != 0) 
+	{
+		fprintf(stderr, "Failed to create thread. Terminating.\n");
+		return(-1);
+	}
+	
 	for (;;)
 	{
 		// read value from switch
 		
 		if (value == '1')
-		{
-			if (threadStarted != 1)
-			{
-				threadStarted = 1;
-				// start thread
-			}
+		{				
+			thread_struct->b = 1;
 		}
 		else
 		{
-			// stop thread
-			threadStarted = 0;
+			thread_struct->b = 0;
 		}
 		
 	}
@@ -42,17 +52,22 @@ void main(void)
 void *
 blink (void *thread_info)
 {
-	int s;
+	int s, b;
 	struct timespec *remain;
 	struct timespec *request = thread_info->timespec;
 	
+	b = thread_info->button_pressed;
 	for (;;)
 	{
-		// led on
+		// blink only when button was pressed
+		if (b == 1)
+		{
+			// led on
 		
-		s = clock_nanosleep(CLOCK_REALTIME, TIMER_ABSTIME, &request, &remain);
+			s = clock_nanosleep(CLOCK_REALTIME, TIMER_ABSTIME, &request, &remain);
 		
-		// led off
+			// led off
+		}
 	}
 } 
 
@@ -61,6 +76,8 @@ sigHandler(int sig)
 {
 	printf("End led blinking");
 	// led off
+	
+	exit(0);
 		
 }
 
