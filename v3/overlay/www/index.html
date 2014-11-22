@@ -35,7 +35,8 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
-          </button>
+	    <span class="icon-bar"></span> 
+         </button>
           <a class="navbar-brand" href="index.html">QEMU VirtualARM</a>
         </div>
 
@@ -44,14 +45,15 @@
           <ul class="nav navbar-nav">
             <li><a href="#cpu" class="cpu">CPU info</a></li>
             <li><a href="#network" class="network">Network info</a></li>
-            <li><a href="#deleteTmp" class="deleteTmp">Delete tmp</a></li>
+	    <li><a href="#mem" class"mem">Mem Info</a></li>
+            <li><a href="#devices" class="devices">Devices</a></li>
 	    <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
 		Other Options<span class="caret"></span>
 		</a>
 		<ul class="dropdown-menu">
-            		<li><a href="#mem" class="mem">Mem Info</a></li>
-            		<li><a href="#devices" class="devices">Devices</a></li>
+            		<li><a href="#deleteTmp" class="deleteTmp">Delete tmo</a></li>
+            		<li><a href="#reboot" class="reboot">Reboot</a></li>
 		</ul>
 		</li>
           </ul>
@@ -67,7 +69,28 @@
           <h3 class="text-center lead">of <b>Steffen Gorenflo</b> and <b>Timotheus Ruprecht</b></h3>
         </div>
       </div>
-	<textarea id="output" rows="12" readonly=false style=" border:1px solid; width:800px;"></textarea> 
+
+
+    <div class="row toggle-light">
+        <div class=" col-md-offset-4 col-md-2">
+	    <div class="led">
+	         <div class="toggle-inner">
+		    <div class="toggle-on">ON</div>
+		    <div class="toggle-blob"></div>
+           	    <div class="toggle-off active"
+			style="height: 35px; width: 92.5px; margin-left: -17.5px; text-indent: 17.5px; line-height: 35px;">
+			OFF</div>
+		    </div>
+	    </div>
+	</div>
+    </div>
+    
+
+
+
+
+
+	<textarea id="output" rows="17" readonly=false style="margin-top: 20px; border:1px solid; width:800px;"></textarea> 
 </br>
 </br>
 <div class="alert alert-success text-center" id="info" style="background-color: rgb(220, 220, 220); ">...</div>
