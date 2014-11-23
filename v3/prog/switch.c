@@ -16,66 +16,37 @@ int main(void)
 {
 	int fd_gpio;
 	int gpio = GPIO_PIN;
-	char value;	
-
-
-
-	int repeat = 10;
+	int oldValue, newValue;
+	int count = 0;
 
 	// Enable GPIO pin
-
 	if (-1 == GPIOExport(gpio))
 	{
 		return(1);
 	}
-	printf("gpio export\n");
 
-	
-
+	// set direction	
 	if(-1 == GPIODirection(gpio))
 	{
 		return(2);
 	}
-	printf("gpio direction\n");
 
+	oldValue = GPIORead(gpio);
 
-
-	do {
-
-	printf("Test: %d\n", GPIORead(gpio));
-	
-	usleep(500 * 1000);
-
-	} while (repeat--);
-	// TODO loop x times
-	
-/*	sprintf(path, VALUE_MAX, "/sys/class/gpio/gpio%d/value", gpio);
-	fd_gpio=open(path, O_RDONLY);
-	
-	if(-1 == fd_gpio)
+	do 
 	{
-			fprintf(stderr, "Failed to open gpio value for reading!\n");
-			return(-1);
-	}
-	
-	if( -1 == read(fd_gpio, value))
-	{
-			fprintf(stderr, "Failed to read value!\n");
-			return(-1);
-	}
+		newValue = GPIORead(gpio);
 
-	if(value == '0')
-	{
-		// aus
-	}
-	else
-	{
-		// an
-	}
-
-	close(fd);
+		// check if switch is pressed
+		if(newValue > oldValue)
+		{
+			count++;
+		} 
+		printf("value: %d, count: %d\n", newValue, count);
+		oldValue = newValue;
+		usleep(500 * 1000);
+	} while (1);
 	
-*/	
 	return 0;
 }
 
@@ -86,8 +57,8 @@ int GPIOExport(int gpio)
 	char buffer[BUFFER_MAX];
 	ssize_t bytes_written;
 	
-	//fd = open("/sys/class/gpio/export", O_WRONLY);
-	fd = open("/home/tiruprec/gpio/export", O_WRONLY);	
+	fd = open("/sys/class/gpio/export", O_WRONLY);
+	// test fd = open("/home/tiruprec/gpio/export", O_WRONLY);	
 	if (-1 == fd)
 	{
 		fprintf(stderr, "Failes to open exort for writing!\n");
@@ -151,8 +122,8 @@ int GPIORead(int gpio)
 	char path[VALUE_MAX];
 	int fd;
 
-	//snprintf(path, VALUE_MAX, "/sys/class/gpio/gpio%d/value", gpio);
-	snprintf(path, VALUE_MAX, "/home/tiruprec/gpio%d/value", gpio);
+	snprintf(path, VALUE_MAX, "/sys/class/gpio/gpio%d/value", gpio);
+	// test snprintf(path, VALUE_MAX, "/home/tiruprec/gpio%d/value2", gpio);
 	fd = open(path, O_RDONLY);
 	if (-1 == fd) 
 	{
@@ -160,7 +131,7 @@ int GPIORead(int gpio)
 		return(-1);
 	}
 
-	if (1 != read(fd, s_value, 3))
+	if (-1 == read(fd, s_value, 3))
 	{
 		fprintf(stderr, "Failed to read value!\n");
 		return(-1);
