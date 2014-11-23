@@ -1,12 +1,9 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
-// file handle in linux
-#include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-
+#include <unistd.h>
 #include "gpio.h"
 
 #define GPIO_PIN 17
