@@ -19,30 +19,30 @@ int main(void)
 
 	signal(SIGINT, sigHandler);
 
-	// Enable GPIO pin
+	/* Enable GPIO pin */
 	if (gpio_export(gpio) < 0)
 	{
-		// exit code 1 for error in gpio export
+		/* exit code 1 for error in gpio export */
 		return(1);
 	}
 
-	// set direction	
+	/* set direction */
 	if(gpio_set_dir(gpio, 1) < 0)
 	{
-		// exit code 2 for error in directory set
+		/* exit code 2 for error in directory set */
 		return(2);
 	}
 
-	// get the value and write it in oldValue
+	/* get the value and write it in oldValue */
 	gpio_get_value(gpio, &oldValue);
 	
 	done = 0;
 	do 
 	{
-		// retrieve value and write it in newValue
+		/* retrieve value and write it in newValue */
 		gpio_get_value(gpio, &newValue);
 
-		// check if switch is pressed
+		/* check if switch is pressed */
 		if(newValue > oldValue)
 		{
 			count++;

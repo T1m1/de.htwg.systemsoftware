@@ -5,7 +5,7 @@
 #include <pthread.h>
 #include <poll.h>
 #include <unistd.h>
-// file handle in linux
+/* file handle in linux */
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -34,10 +34,10 @@ main(void)
 	struct thread_info *thread_struct = NULL;
 	struct timespec sleep_time;
 	struct pollfd button_poll;
-	
+	char value[20];	
 	signal(SIGINT, sigHandler);
 	
-	// init time struct
+	/* init time struct */
 	sleep_time.tv_sec = 1;
 	sleep_time.tv_nsec = 200000000;
 	status = 0;
@@ -53,16 +53,16 @@ main(void)
 	thread_struct->button_pressed = &status;	
 	
 	
-	// start thread
+	/* start thread*/
 	if (pthread_create(&blink_thread, NULL, blink, thread_struct) != 0) 
 	{
 		fprintf(stderr, "Failed to create thread. Terminating.\n");
 		return(-1);
 	}
 	
-	// register GPIO
+	/* register GPIO */
 	gpio_export(BUTTON);
-	gpio_set_dir(BUTTON, 0); // set direction to "in"
+	gpio_set_dir(BUTTON, 0); /* set direction to "in" */
 	gpio_set_edge(BUTTON, "falling");
 	gpio_fd = gpio_fd_open_read(BUTTON);	
 	
@@ -70,11 +70,11 @@ main(void)
 	button_poll.fd = gpio_fd;
 	button_poll.events = POLLPRI;
 
-	done = 0; 
+	done = 0;
 	while (!done)
 	{		
 		
-		result = poll(&button_poll, 1, 1000); // poll on one descriptor with 1 second timeout
+		result = poll(&button_poll, 1, 1000); /* poll on one descriptor with 1 second timeout */
 		
 		if (result < 0)
 		{
@@ -90,7 +90,6 @@ main(void)
 		if (button_poll.revents & POLLPRI)
 		{
 			printf("Button pressed\n");
-			char value[20];
 			read(gpio_fd, value, 2);
 			
 			printf("%s\n",value);
@@ -125,7 +124,7 @@ blink (void *thread_info)
 	
 	while(!done)
 	{
-		// blink only when button was pressed
+		/* blink only when button was pressed */
 		if (*b == 1)
 		{
 			write(led_fd, "0", 2);
@@ -133,13 +132,13 @@ blink (void *thread_info)
 		
 			clock_nanosleep(CLOCK_REALTIME, 0, &request, NULL);
 		
-			// led off
+			/* led off */
 			write(led_fd, "1", 2);
 			printf("AUS\n");
 		}
 		else 
 		{
-			// turn led off
+			/* turn led off */
 			write(led_fd, "1", 2);
 		}
 	}
@@ -154,6 +153,6 @@ void
 sigHandler(int sig)
 {
 	printf("\nEnd led blinking\n");
-	// led off
+	/* led off */
 	done = 1;	
 }
