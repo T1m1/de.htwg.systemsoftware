@@ -9,8 +9,8 @@
  /****************************************************************
  * Constants
  ****************************************************************/
- 
-#define SYSFS_GPIO_DIR "/sys/class/gpio"
+#define SYSFS_GPIO_DIR "/home/stgorenf/gpio"
+#define SYSFS_GPIO_DIR_BACKUP "/sys/class/gpio"
 #define MAX_BUF 64
 
 /****************************************************************
