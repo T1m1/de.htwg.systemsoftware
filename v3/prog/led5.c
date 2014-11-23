@@ -3,7 +3,6 @@
 #include <time.h>
 #include <signal.h>
 #include <pthread.h>
-#include <string.h>
 #include <poll.h>
 
 // file handle in linux
@@ -11,9 +10,11 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#include "gpio.h"
+
 #define BUTTON 17
 #define LED 18
-#define BUFFER_MAX 3
+#define BUFFER_MAX 64
 #define DIRECTION_MAX 35
 #define VALUE_MAX 30
 
@@ -25,10 +26,6 @@ struct thread_info
 
 void *blink(void *thread_info);
 void sigHandler(int);
-int GPIOExport(int);
-int GPIODirection(int, char *);
-int GPIOUnexport(int);
-char GPIORread(int);
 
 int
 main(void)
@@ -36,10 +33,11 @@ main(void)
 	
 	int value;
 	int status;
+	int gpio_fd, result;
 	pthread_t blink_thread;
 	struct thread_info *thread_struct = NULL;
 	struct timespec sleep_time;
-	struct pollfd poll;
+	struct pollfd button_poll;
 	
 	signal(SIGINT, sigHandler);
 	
@@ -66,36 +64,42 @@ main(void)
 	}
 	
 	// register GPIO
-	GPIOExport(BUTTON);
-	GPIODirection(BUTTON, "in");
+	gpio_export(BUTTON);
+	gpio_set_dir(BUTTON, 0); // set direction to "in"
+	gpio_set_edge(BUTTON, "falling");
+	gpio_fd = gpio_fd_open(BUTTON);	
 	
-	poll.fd = open("/sys/class/gpio/gpio17/value", O_RDONLY);
-	poll.events = POLLIN;
+	
+	button_poll.fd = gpio_fd;
+	button_poll.events = POLLIN;
 	
 	for (;;)
-	{
+	{		
 		
-		if (rv = poll(poll, 1, 20)) == -1)
+		result = poll(&button_poll, 1, 1000); // poll on one descriptor with 1 second timeout
+		
+		if (result < 0)
 		{
-			// error
+			perror("poll failed\n");
+			return result;
 		}
-		else if (rv.revents && POLLIN)
+		
+		if (result == 0)
 		{
-			
+			printf("still polling\n");
 		}
-				
-		if (value ==1)
-		{				
-			status = 1;
-			sleep(4);
-			printf("Setting status on 0\n");
-			status = 0;
-			sleep(4);
-			
-		}
-		else
+
+		if (button_poll.revents && POLLIN)
 		{
-			status = 0;
+			printf("Button pressed\n");
+			if (status)
+			{
+				status = 0;
+			}
+			else
+			{
+				status = 1;
+			}
 		}
 		
 		thread_struct->button_pressed = &status;	
@@ -139,87 +143,4 @@ sigHandler(int sig)
 		
 }
 
-int 
-GPIOExport(int gpio)
-{
-	
-	int fd;
-	char buffer[BUFFER_MAX];
-	ssize_t bytes_to_write, bytes_written;
-	
-	
-	fd = open("/sys/class/gpio/export", O_WRONLY);
-	
-	if (fd == -1)
-	{
-		fprintf(stderr, "Failes to open export for writing!\n");
-		exit(-1);
-	}
-	
-	bytes_to_write = snprintf(buffer, BUFFER_MAX, "%d", gpio);
-	bytes_written = write(fd, buffer, bytes_to_write);
-	
-	if (bytes_written < 0)
-	{
-		fprintf(stderr, "Failed to write in export!\n");
-		exit(-1);
-	}
-	close(fd);
-	
-	return 0;
-}
-
-int 
-GPIODirection(int gpio, char * dir) 
-{
-	int fd;
-	char *path;
-	ssize_t bytes_to_write, bytes_written;
-
-	snprintf(path, DIRECTION_MAX, "/sys/class/gpio/gpio%d/direction", gpio);
-	fd = open(path, O_WRONLY);
-	if (-1 == fd)
-	{
-		fprintf(stderr, "Failed to open gpio dirction for writing!\n");
-		return(-1);
-	}
-	
-	bytes_to_write = strlen(dir);
-	bytes_written = write(fd, dir, bytes_to_write);
-	
-	if(bytes_written < 0)
-	{
-		fprintf(stderr, "Failed to set direction!\n");
-		return(-1);
-	}
-	
-	close(fd);
-	return 0;
-}
-
-int 
-GPIOUnexport(int gpio)
-{
-	char buffer[BUFFER_MAX];
-	int fd;
-	ssize_t bytes_to_write, bytes_written;
-	
-	fd = open("/sys/class/gpio/unexport", O_WRONLY);
-	if(-1 == fd)
-	{
-		fprintf(stderr, "Failed to open unexport for writing!\n");
-		return(-1);
-	}
-	
-	bytes_to_write = snprintf(buffer, BUFFER_MAX, "%d", gpio);
-	bytes_written = write(fd, buffer, bytes_to_write);
-	if(bytes_written < 0)
-	{
-		fprintf(stderr, "Failed to unexport!\n");
-		return(-1);
-	}
-	close(fd);
-	
-	return 0;
-}
 
