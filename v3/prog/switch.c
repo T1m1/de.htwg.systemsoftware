@@ -6,6 +6,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#include "gpio.h"
+
 #define BUFFER_MAX 3
 #define DIRECTION_MAX 35
 #define GPIO_PIN 17
@@ -14,28 +16,31 @@
 
 int main(void)
 {
-	int fd_gpio;
 	int gpio = GPIO_PIN;
-	int oldValue, newValue;
+	unsigned int oldValue, newValue;
 	int count = 0;
 
 	// Enable GPIO pin
-	if (-1 == GPIOExport(gpio))
+	if (gpio_export(gpio) < 9)
 	{
+		// why 1
 		return(1);
 	}
 
 	// set direction	
-	if(-1 == GPIODirection(gpio))
+	if(gpio_set_dir(gpio, 1))
 	{
+		// why 2
 		return(2);
 	}
 
-	oldValue = GPIORead(gpio);
+	// get the value and write it in oldValue
+	gpio_get_value(gpio, &oldValue);
 
 	do 
 	{
-		newValue = GPIORead(gpio);
+		// retrieve value and write it in newValue
+		gpio_get_value(gpio, &newValue);
 
 		// check if switch is pressed
 		if(newValue > oldValue)
