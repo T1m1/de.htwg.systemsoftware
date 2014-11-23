@@ -12,19 +12,18 @@
 #define BUF 10
 #define VALUE_MAX 30
 
-void main(void)
+int main(void)
 {
 	int fd_gpio;
 	int gpio = GPIO_PIN;
-	char buffer[BUFFER_MAX];
 	char value;	
-	ssize_t bytes_written;
-	char path[DIRECTION_MAX];
+
+
 	
 	
 	// TODO loop x times
 	
-	sprintf(path, VALUE_MAX, "/sys/class/gpio/gpio%d/value", gpio);
+/*	sprintf(path, VALUE_MAX, "/sys/class/gpio/gpio%d/value", gpio);
 	fd_gpio=open(path, O_RDONLY);
 	
 	if(-1 == fd_gpio)
@@ -50,7 +49,7 @@ void main(void)
 
 	close(fd);
 	
-	
+*/	
 	return 0;
 }
 
@@ -80,10 +79,11 @@ int GPIODirection(int gpio) {
 	
 	int status = 0;
 	int fd;
+	char path[DIRECTION_MAX];
 
 	snprintf(path, DIRECTION_MAX, "/sys/class/gpio/gpio%d/direction", gpio);
 	fd = open(path, O_WRONLY);
-	if (-1 == fd_gpio)
+	if (-1 == fd)
 	{
 		fprintf(stderr, "Failed to open gpio dirction for writing!\n");
 		return(-1);
@@ -103,6 +103,8 @@ int GPIOUnexport(int gpio)
 {
 	int status = 0;
 	int fd;
+	char buffer[BUFFER_MAX];
+	ssize_t bytes_written;
 	
 	fd = open("/sys/class/gpio/unexport", O_WRONLY);
 	if(-1 == fd)
@@ -111,8 +113,8 @@ int GPIOUnexport(int gpio)
 		return(-1);
 	}
 	
-	bytes_written = snprintf(bugger, BUGGER_MAX, "%d", gpio);
-	write(fd, bugger, bytes_written);
+	bytes_written = snprintf(buffer, BUFFER_MAX, "%d", gpio);
+	write(fd, buffer, bytes_written);
 	close(fd);
 	return(status);
 }
