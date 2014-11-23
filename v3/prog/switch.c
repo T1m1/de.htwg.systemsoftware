@@ -27,7 +27,7 @@ int main(void)
 	}
 
 
-	
+		
 	// TODO loop x times
 	
 /*	sprintf(path, VALUE_MAX, "/sys/class/gpio/gpio%d/value", gpio);
@@ -108,7 +108,6 @@ int GPIODirection(int gpio) {
 
 int GPIOUnexport(int gpio)
 {
-	int status = 0;
 	int fd;
 	char buffer[BUFFER_MAX];
 	ssize_t bytes_written;
@@ -123,5 +122,31 @@ int GPIOUnexport(int gpio)
 	bytes_written = snprintf(buffer, BUFFER_MAX, "%d", gpio);
 	write(fd, buffer, bytes_written);
 	close(fd);
-	return(status);
+	return(0);
 }
+
+int GPIOWrite(int gpio, int value)
+{
+	static const char s_value[] = "01";
+
+	char path[VALUE_MAX];
+	int fd;
+
+	snprintf(path, VALUE_MAX, "/sys/class/gpio/gpio%d/value", gpio);
+	fd = open(path, O_WRONLY);
+	if (-1 == fd) 
+	{
+		fprintf(stderr, "Failed to open gpio value for writing!\n");
+		return(-1);
+	}
+
+	if (1 != write(fd, &s_value[value], 1))
+	{
+		fprintf(stderr, "Failed to write value!\n");
+		return(-1);
+	}
+
+	close(fd);
+	return 0;
+}
+
