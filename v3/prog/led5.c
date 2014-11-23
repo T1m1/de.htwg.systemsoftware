@@ -14,9 +14,6 @@
 
 #define BUTTON 17
 #define LED 18
-#define BUFFER_MAX 64
-#define DIRECTION_MAX 35
-#define VALUE_MAX 30
 
 struct thread_info
 {
@@ -71,7 +68,7 @@ main(void)
 	
 	
 	button_poll.fd = gpio_fd;
-	button_poll.events = POLLIN;
+	button_poll.events = POLLPRI;
 
 	done = 0; 
 	while (!done)
@@ -90,17 +87,14 @@ main(void)
 			printf("still polling\n");
 		}
 
-		if (button_poll.revents && POLLIN)
+		if (button_poll.revents & POLLPRI)
 		{
 			printf("Button pressed\n");
-			if (status)
-			{
-				status = 0;
-			}
-			else
-			{
-				status = 1;
-			}
+			char value[20];
+			read(gpio_fd, value, 2);
+			
+			printf("%s\n",value);
+			printf("Button value is: %d\n", status);
 		}
 		
 		thread_struct->button_pressed = &status;	
