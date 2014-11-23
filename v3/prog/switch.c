@@ -22,14 +22,14 @@ int main(void)
 	// Enable GPIO pin
 	if (gpio_export(gpio) < 0)
 	{
-		// why 1
+		// exit code 1 for error in gpio export
 		return(1);
 	}
 
 	// set direction	
-	if(gpio_set_dir(gpio, 1) <0 )
+	if(gpio_set_dir(gpio, 1) < 0)
 	{
-		// why 2
+		// exit code 2 for error in directory set
 		return(2);
 	}
 
@@ -56,8 +56,7 @@ int main(void)
 	return 0;
 }
 
-void
-sigHandler(int not_used)
+void sigHandler(int not_used)
 {
 	printf("\nEnding Programm\n");
 	done = 1;
