@@ -23,14 +23,14 @@ int main(void)
 	signal(SIGINT, sigHandler);
 
 	// Enable GPIO pin
-	if (gpio_export(gpio) < 9)
+	if (gpio_export(gpio) < 0)
 	{
 		// why 1
 		return(1);
 	}
 
 	// set direction	
-	if(gpio_set_dir(gpio, 1))
+	if(gpio_set_dir(gpio, 1) <0 )
 	{
 		// why 2
 		return(2);
@@ -62,7 +62,7 @@ int main(void)
 void
 sigHandler(int not_used)
 {
-	printf("Ending Programm\n");
+	printf("\nEnding Programm\n");
 	done = 1;
 }
 
