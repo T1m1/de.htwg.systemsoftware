@@ -6,3 +6,7 @@ linux-3.17.2/
 buildroot
 start
 tftpboot.scr
+depend
+gpio.o
+led5
+switch
