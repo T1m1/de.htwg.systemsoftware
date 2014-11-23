@@ -4,7 +4,7 @@
 #include <signal.h>
 #include <pthread.h>
 #include <poll.h>
-
+#include <unistd.h>
 // file handle in linux
 #include <fcntl.h>
 #include <sys/stat.h>
@@ -26,12 +26,11 @@ struct thread_info
 
 void *blink(void *thread_info);
 void sigHandler(int);
+int done;
 
 int
 main(void)
 {
-	
-	int value;
 	int status;
 	int gpio_fd, result;
 	pthread_t blink_thread;
@@ -47,7 +46,8 @@ main(void)
 	status = 0;
 	
 	thread_struct = malloc(sizeof (struct thread_info));
-	if (thread_struct == NULL) {
+	if (thread_struct == NULL)
+	{
 		fprintf(stderr, "Failed to allocate memory!\n");
 		return(-1);
 	}
@@ -67,13 +67,14 @@ main(void)
 	gpio_export(BUTTON);
 	gpio_set_dir(BUTTON, 0); // set direction to "in"
 	gpio_set_edge(BUTTON, "falling");
-	gpio_fd = gpio_fd_open(BUTTON);	
+	gpio_fd = gpio_fd_open_read(BUTTON);	
 	
 	
 	button_poll.fd = gpio_fd;
 	button_poll.events = POLLIN;
-	
-	for (;;)
+
+	done = 0; 
+	while (!done)
 	{		
 		
 		result = poll(&button_poll, 1, 1000); // poll on one descriptor with 1 second timeout
@@ -105,31 +106,54 @@ main(void)
 		thread_struct->button_pressed = &status;	
 	}
 	
+
+	pthread_join(blink_thread, NULL);
+	free(thread_struct);
+	gpio_fd_close(gpio_fd);
+	gpio_unexport(BUTTON);
+	return 0;	
 	
 }
 
 void *
 blink (void *thread_info)
 {
+	int led_fd;
 	struct thread_info *t = (struct thread_info *) thread_info;
 	
 	struct timespec request = t->sleep_time;
 	int *b = t->button_pressed;
 	
-	for (;;)
+	gpio_export(LED);
+	gpio_set_dir(LED, 1);
+
+	led_fd = gpio_fd_open_write(LED);
+	
+	while(!done)
 	{
 		// blink only when button was pressed
 		if (*b == 1)
 		{
-			// led on
+			write(led_fd, "0", 2);
 			printf("AN\n");
 		
 			clock_nanosleep(CLOCK_REALTIME, 0, &request, NULL);
 		
 			// led off
+			write(led_fd, "1", 2);
 			printf("AUS\n");
 		}
+		else 
+		{
+			// turn led off
+			write(led_fd, "1", 2);
+		}
 	}
+	
+	gpio_fd_close(led_fd);
+	gpio_unexport(LED);
+
+	return (void*) 0;
 } 
 
 void 
@@ -137,10 +161,5 @@ sigHandler(int sig)
 {
 	printf("\nEnd led blinking\n");
 	// led off
-	
-	//TODO free stuff
-	exit(0);
-		
+	done = 1;	
 }
-
-
