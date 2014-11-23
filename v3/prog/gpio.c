@@ -160,7 +160,7 @@ int gpio_set_edge(unsigned int gpio, char *edge)
  * gpio_fd_open
  ****************************************************************/
 
-int gpio_fd_open(unsigned int gpio)
+int gpio_fd_open_read(unsigned int gpio)
 {
 	int fd, len;
 	char buf[MAX_BUF];
@@ -168,6 +168,24 @@ int gpio_fd_open(unsigned int gpio)
 	len = snprintf(buf, sizeof(buf), SYSFS_GPIO_DIR "/gpio%d/value", gpio);
  
 	fd = open(buf, O_RDONLY | O_NONBLOCK );
+	if (fd < 0) {
+		perror("gpio/fd_open");
+	}
+	return fd;
+}
+
+/****************************************************************
+ * gpio_fd_open_write
+ ****************************************************************/
+
+int gpio_fd_open_write(unsigned int gpio)
+{
+	int fd, len;
+	char buf[MAX_BUF];
+
+	len = snprintf(buf, sizeof(buf), SYSFS_GPIO_DIR "/gpio%d/value", gpio);
+
+	fd = open(buf, O_WRONLY);
 	if (fd < 0) {
 		perror("gpio/fd_open");
 	}
