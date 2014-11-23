@@ -14,11 +14,16 @@
 #define BUF 10
 #define VALUE_MAX 30
 
+void sigHandler(int);
+int done;
+
 int main(void)
 {
 	int gpio = GPIO_PIN;
 	unsigned int oldValue, newValue;
 	int count = 0;
+
+	signal(SIGINT, sigHandler);
 
 	// Enable GPIO pin
 	if (gpio_export(gpio) < 9)
@@ -36,7 +41,8 @@ int main(void)
 
 	// get the value and write it in oldValue
 	gpio_get_value(gpio, &oldValue);
-
+	
+	done = 0;
 	do 
 	{
 		// retrieve value and write it in newValue
@@ -50,9 +56,17 @@ int main(void)
 		printf("value: %d, count: %d\n", newValue, count);
 		oldValue = newValue;
 		usleep(500 * 1000);
-	} while (1);
+	} while (!done);
 	
+	printf("Total count of pressed button: %d \n", count);
 	return 0;
+}
+
+void
+sigHandler(int not_used)
+{
+	printf("Ending Programm\n");
+	done = 1;
 }
 
 int GPIOExport(int gpio)
