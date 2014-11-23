@@ -12,11 +12,11 @@ help ()
 	echo ""
 	echo "excample call: ./v3_1.sh -dn -pa"
 	echo ""
-	echo " -run		download sources & patch"
-	echo " -cp		copy gitlab sources"	
-	echo " -co		compile"
-	echo " -qe		start qemu"
-	echo " -h		help"
+	echo " -run	download sources & patch"
+	echo " -cp	copy gitlab sources"	
+	echo " -co	compile"
+	echo " -qe	start qemu"
+	echo " -h	help"
 	
 }
 
@@ -29,6 +29,7 @@ buildroot()
 
 compile()
 {
+	echo "compile..."
 	$V3ARM_APP -e make_br	
 	$V3ARM_APP -e make_uboot
 	$V3ARM_APP -e make_buildroot_bcm_dtb
@@ -36,11 +37,14 @@ compile()
 
 git_source()
 {
+	echo "copy source to server..."
 	$V3ARM_APP -e copy_to_server
+	echo "..done!"
 }
 
 start_qemu()
 {
+	echo "start qemu"
 	$V3ARM_APP -e v3_2_qemu
 }
 
