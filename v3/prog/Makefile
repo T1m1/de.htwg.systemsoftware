@@ -15,7 +15,7 @@
 CC=clang
 
 #Flag for Compiler-Optionen
-CFLAGS=
+CFLAGS=-g -Wall -pedantic -Werror
 THREADFLAG=-lpthread
 REALTIMEFLAG=-lrt
 
@@ -51,5 +51,5 @@ depend: $(SOURCES) $(HEADERS)
 -include depend
 
 led5 : led5.c gpio.o
-switch : switch.c cpio.o
+switch : switch.c gpio.o
 
