@@ -11,8 +11,14 @@
 #*********************************************************
 
 #Flag for the Compiler
-#TODO insert cross compiler
-CC=clang
+
+
+
+CROSS_COMPILE=/group/labworks/toolchain/buildroot.git/output/host/usr/bin/arm-buildroot-linux-uclibcgnueabihf-
+
+CC=$(CROSS_COMPILE)gcc
+
+ARCH=arm
 
 #Flag for Compiler-Optionen
 CFLAGS=-g -Wall -pedantic -Werror
@@ -20,7 +26,7 @@ THREADFLAG=-lpthread
 REALTIMEFLAG=-lrt
 
 #Flag for the Linker (dynamic by default)
-LDFLAGS=-lm
+LDFLAGS=$(CROSS_COMPILE)ld
 
 #Variablen
 SOURCES=$(wildcard *.c) 
