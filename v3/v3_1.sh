@@ -12,12 +12,11 @@ help ()
 	echo ""
 	echo "excample call: ./v3_1.sh -dn -pa"
 	echo ""
-	echo " -dn		download sources"
-	echo " -pa		patch"
-	echo " -cp		copy gitlab sources"	
-	echo " -co		compile"
-	echo " -qe		start qemu"
-	echo " -h		help"
+	echo " -dn	download sources"
+	echo " -pa	patch"
+	echo " -co	compile"
+	echo " -qe	start qemu"
+	echo " -h	help"
 	
 }
 
@@ -33,7 +32,6 @@ patch()
 {
 	echo "patch kernel..."
 	$V3ARM_APP -e patch_kernel
-	#TODO really necessary?
 }
 
 compile()
@@ -50,11 +48,6 @@ compile()
 	
 }
 
-git_source()
-{
-	echo "kopieren der gitsource"
-	#TODO really necessary?
-}
 
 start_qemu()
 {
@@ -93,13 +86,11 @@ do
 			argument=1
 			shift 2;;
 		'-c')
-			if [ "$2" = "p" -o "$2" = "o" ] 
+			if [ "$2" = "o" ] 
 			then
 				if [ "$2" = "o" ] 
 				then
 					compile
-				else
-					git_source
 				fi
 			else
 				help
