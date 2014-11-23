@@ -8,7 +8,7 @@
 
 #define BUFFER_MAX 3
 #define DIRECTION_MAX 35
-#define GPIO_PIN 18
+#define GPIO_PIN 17
 #define BUF 10
 #define VALUE_MAX 30
 
@@ -19,7 +19,14 @@ int main(void)
 	char value;	
 
 
-	
+	// Enable GPIO pin
+
+	if (-1 == GPIOExport(gpio))
+	{
+		return(1);
+	}
+
+
 	
 	// TODO loop x times
 	
