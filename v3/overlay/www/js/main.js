@@ -95,6 +95,14 @@ $(document).ready(function () {
 			changeStatus('#ledOff');
 		}
 	});
+	
+	$('.switch').on('toggle', function (e, active) {
+		if (active) {
+			changeStatus('#ledOn');
+		} else {
+			changeStatus('#ledOff');
+		}
+	});
 
 	$('.led').toggles();
 	$('.switch').toggles();
