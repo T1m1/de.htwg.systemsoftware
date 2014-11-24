@@ -98,9 +98,9 @@ $(document).ready(function () {
 	
 	$('.switch').on('toggle', function (e, active) {
 		if (active) {
-			changeStatus('#ledOn');
+			changeStatus('#switchOn');
 		} else {
-			changeStatus('#ledOff');
+			changeStatus('#switchOff');
 		}
 	});
 
