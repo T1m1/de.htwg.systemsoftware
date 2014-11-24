@@ -16,7 +16,7 @@
 
 #define BUTTON 17
 #define LED 18
-#define WEB_BUTTON "/home/stgorenf/testbutton/button"
+#define WEB_BUTTON "/www/switchButton"
 
 struct thread_info
 {

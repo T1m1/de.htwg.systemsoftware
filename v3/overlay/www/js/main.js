@@ -113,8 +113,10 @@ $(document).ready(function () {
 		request('#uptime');
 		request('#osinfo');
 		
-		setInterval(request('#uptime'), 10000);
-		setInterval(request('#osinfo'), 10000);
+		setInterval(function()  {
+			request('#uptime');
+			request('#osinfo');
+			}, 10000);
 	})();
 
 
@@ -123,8 +125,10 @@ $(document).ready(function () {
 		gpioStatus('#ledStatus');
 		gpioStatus('#switchStatus');
 
-		setInterval(gpioStatus('#ledStatus'), 500);
-		setInterval(gpioStatus('#switchStatus'),500);
+		setInterval(function() {
+			gpioStatus('#ledStatus');
+			gpioStatus('#switchStatus');
+		}, 500);
 	})();
 	
 });
