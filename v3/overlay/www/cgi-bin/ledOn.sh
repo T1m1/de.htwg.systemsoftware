@@ -1,3 +1,5 @@
 #!/bin/sh
 
-echo "0" > /sys/class/gpio/gpio18/value
+echo "Content-type: text/html";
+echo ""
+echo "`echo "0" > /sys/class/gpio/gpio18/value`"

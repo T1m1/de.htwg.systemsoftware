@@ -1,2 +1,5 @@
 #!/bin/sh
-reboot
+
+echo "Content-type: text/html";
+echo ""
+echo "`reboot`"
