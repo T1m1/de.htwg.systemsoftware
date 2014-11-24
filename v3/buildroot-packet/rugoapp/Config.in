@@ -1,0 +1,4 @@
+config BR2_PACHAGE_MYPROG
+	bool "rugoapp"
+	help
+	  Some help text...

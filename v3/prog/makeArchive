@@ -1,0 +1,8 @@
+#!/bin/sh
+
+RUGOAPP=rugoapp
+VERSION="1.0"
+ARCHIVE_PATH=$RUGOAPP-$VERSION
+
+mkdir $ARCHIVE_PATH
+
