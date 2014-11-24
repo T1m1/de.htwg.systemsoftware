@@ -33,6 +33,7 @@ compile()
 	$V3ARM_APP -e make_br	
 	$V3ARM_APP -e make_uboot
 	$V3ARM_APP -e make_buildroot_bcm_dtb
+	$V3ARM_APP -e make_program
 }
 
 git_source()
