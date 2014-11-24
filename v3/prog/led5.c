@@ -16,6 +16,7 @@
 
 #define BUTTON 17
 #define LED 18
+#define MAX_BUF 20
 #define WEB_BUTTON "/www/switchButton"
 
 struct thread_info
@@ -40,7 +41,7 @@ main(void)
 	struct thread_info *thread_struct = NULL;
 	struct timespec sleep_time;
 	struct pollfd button_poll[2];
-	char value[20];	
+	char value[MAX_BUF];	
 	
 	signal(SIGINT, sigHandler);
 	
@@ -106,13 +107,17 @@ main(void)
 			printf("still polling\n");
 		}
 
-		if (button_poll[0].revents > 0)
+		if (button_poll[0].revents & POLLPRI)
 		{
 			printf("Hardware Button:\n");
-			read(gpio_fd, value, 20);
+			read(button_poll[0].fd, value, MAX_BUF);
 			
 			/*TODO maybe set seek */
-			lseek(gpio.fd, 0, SEEK_SET);
+			if (lseek(gpio_fd, 0, SEEK_SET) == -1)
+			{
+				perror("lseek");
+				return -1;
+			}
 					
 			status = set_button(status, value); /*maybe not necessary because of "falling"*/
 			
@@ -121,7 +126,7 @@ main(void)
 		{
 			printf("Web Button:\n");
 			
-			read(web_button, value, 20);		
+			read(button_poll[1].fd, value, MAX_BUF);		
 			status = set_button(status, value);
 		}
 		thread_struct->button_pressed = &status;	
