@@ -47,7 +47,7 @@ main(void)
 	
 	/* init time struct */
 	sleep_time.tv_sec = 0;
-	sleep_time.tv_nsec = 200000000;
+	sleep_time.tv_nsec = 200000000; /* 5 Hz = 2 x 10⁸ nanoseconds*/
 	status = 0;
 	
 	thread_struct = malloc(sizeof (struct thread_info));
@@ -90,11 +90,12 @@ main(void)
 	button_poll[1].fd = web_button;
 	button_poll[1].events = POLLIN;
 
+	status = 0;
 	done = 0;
 	while (!done)
 	{		
 		
-		result = poll(button_poll, 2, 1000); /* poll on one descriptor with 1 second timeout */
+		result = poll(button_poll, 2, 1000000); /* poll on one descriptors with 1 second timeout */
 		
 		if (result < 0)
 		{
@@ -104,7 +105,7 @@ main(void)
 		
 		if (result == 0)
 		{
-			printf("still polling\n");
+			printf("poll...\n");
 		}
 
 		if (button_poll[0].revents & POLLPRI)
@@ -112,14 +113,21 @@ main(void)
 			printf("Hardware Button:\n");
 			read(button_poll[0].fd, value, MAX_BUF);
 			
-			/*TODO maybe set seek */
 			if (lseek(gpio_fd, 0, SEEK_SET) == -1)
 			{
 				perror("lseek");
 				return -1;
 			}
-					
-			status = set_button(status, value); /*maybe not necessary because of "falling"*/
+			
+			/* invert blink status */
+			if (status == 0)
+			{
+				status = 1;
+			} 
+			else 
+			{
+				status = 0;
+			}
 			
 		} 
 		else if (button_poll[1].revents & POLLIN)
@@ -166,14 +174,13 @@ blink (void *thread_info)
 			/* led on */
 			on = 1;
 			write(led_fd, "0", 2);
-			printf("AN\n");
 			
-		
 			clock_nanosleep(CLOCK_REALTIME, 0, &request, NULL);
 		
 			/* led off */
 			write(led_fd, "1", 2);
-			printf("AUS\n");
+
+			clock_nanosleep(CLOCK_REALTIME, 0, &request, NULL);
 			
 		}
 		else if (on)
@@ -196,7 +203,6 @@ void
 sigHandler(int sig)
 {
 	printf("\nEnd led blinking\n");
-	/* led off */
 	done = 1;	
 }
 

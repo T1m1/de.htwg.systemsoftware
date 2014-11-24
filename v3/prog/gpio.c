@@ -69,7 +69,7 @@ int gpio_set_dir(unsigned int gpio, unsigned int out_flag)
 		return fd;
 	}
  
-	if (out_flag)
+	if (out_flag == 1)
 		write(fd, "out", 4);
 	else
 		write(fd, "in", 3);
