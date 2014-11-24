@@ -112,6 +112,7 @@ main(void)
 			read(gpio_fd, value, 20);
 			
 			/*TODO maybe set seek */
+			lseek(gpio.fd, 0, SEEK_SET);
 					
 			status = set_button(status, value); /*maybe not necessary because of "falling"*/
 			
@@ -130,10 +131,9 @@ main(void)
 	pthread_join(blink_thread, NULL);
 	free(thread_struct);
 	
-	/* close and unexport fd's */
+	/* close fd's */
 	close(web_button);
 	gpio_fd_close(gpio_fd);
-	gpio_unexport(BUTTON);
 	
 	return 0;	
 	
@@ -183,7 +183,6 @@ blink (void *thread_info)
 	write(led_fd, "1", 2);
 	printf("AUS\n");
 	gpio_fd_close(led_fd);
-	gpio_unexport(LED);
 
 	return (void*) 0;
 } 
