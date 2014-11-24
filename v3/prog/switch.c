@@ -16,13 +16,13 @@
 #define WEB_BUTTON "/www/switchButton"
 
 void sigHandler(int);
-int count_value(int, char*);
+int count_value(char*);
 int done;
 
 int main(void)
 {
 	int gpio_fd, web_button;
-	int result, status;
+	int result;
 	int gpio = GPIO_PIN;
 	int count = 0;
 	char value[MAX_BUF];
@@ -33,7 +33,7 @@ int main(void)
 	
 	/* register GPIO */
 	gpio_export(gpio);
-	gpio_set_dir(gpio, 1); /* set direction to "in" */
+	gpio_set_dir(gpio, 0); /* set direction to "in" */
 	gpio_set_edge(gpio, "falling");
 	gpio_fd = gpio_fd_open_read(gpio);	
 	
@@ -52,13 +52,12 @@ int main(void)
 
 	button_poll[1].fd = web_button;
 	button_poll[1].events = POLLIN;
-	
-	status = 1;
+
 	done = 0;
 	while (!done)
 	{		
 		
-		result = poll(button_poll, 2, 1000); /* poll on one descriptor with 1 second timeout */
+		result = poll(button_poll, 2, 100000); /* poll on two descriptors with 1 second timeout */
 		
 		if (result < 0)
 		{
@@ -68,7 +67,7 @@ int main(void)
 		
 		if (result == 0)
 		{
-			printf("still polling\n");
+			printf("poll..\n");
 		}
 
 		if (button_poll[0].revents & POLLPRI)
@@ -87,9 +86,9 @@ int main(void)
 		else if (button_poll[1].revents & POLLIN)
 		{
 			/* retrieve value and write it in newValue */
-			read(button_poll[0].fd, value, MAX_BUF);
+			read(button_poll[1].fd, value, MAX_BUF);
 
-			count = count + count_value(status, value);
+			count = count + count_value(value);
 			printf("count: %d\n", count);
 		}
 
@@ -108,28 +107,23 @@ void sigHandler(int not_used)
 }
 
 int 
-count_value(int status, char* value)
+count_value(char* value)
 {
 	if (value[0] == '0')
 	{
 		printf("Button pressed\n");
 		printf("Button value is: %s\n", value);
+		return 0;
 	
 	}
 	else if (value[0] == '1')
 	{
 		printf("Button released\n");
 		printf("Button value is: %s\n", value);
-		if (status == 1)
-		{
-			status = 0;
-		}
-		else 
-		{
-			status = 1;
-		}
+		
+		return 1;
 	}
 	
-	return status;	
+	return 0;	
 
 }
