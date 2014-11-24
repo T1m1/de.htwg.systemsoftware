@@ -16,41 +16,78 @@ int main(void)
 	int gpio = GPIO_PIN;
 	unsigned int oldValue, newValue;
 	int count = 0;
+	
+	struct pollfd button_poll[2];
 
 	signal(SIGINT, sigHandler);
-
-	/* Enable GPIO pin */
-	if (gpio_export(gpio) < 0)
+	
+	/* register GPIO */
+	gpio_export(GPIO_PIN);
+	gpio_set_dir(GPIO_PIN, 1); /* set direction to "in" */
+	gpio_set_edge(GPIO_PIN, "falling");
+	gpio_fd = gpio_fd_open_read(GPIO_PIN);	
+	
+	/* open button for web application */
+	web_button = open(WEB_BUTTON, O_RDONLY | O_NONBLOCK);
+	
+	if (web_button < 0) 
 	{
-		/* exit code 1 for error in gpio export */
-		return(1);
+		perror("web_button");
+		return web_button;
 	}
+	
+	button_poll[0].fd = gpio_fd;
+	button_poll[0].events = POLLPRI;
+	
 
-	/* set direction */
-	if(gpio_set_dir(gpio, 1) < 0)
-	{
-		/* exit code 2 for error in directory set */
-		return(2);
-	}
-
-	/* get the value and write it in oldValue */
-	gpio_get_value(gpio, &oldValue);
+	button_poll[1].fd = web_button;
+	button_poll[1].events = POLLIN;
 	
 	done = 0;
-	do 
-	{
-		/* retrieve value and write it in newValue */
-		gpio_get_value(gpio, &newValue);
-
-		/* check if switch is pressed */
-		if(newValue > oldValue)
+	while (!done)
+	{		
+		
+		result = poll(button_poll, 2, 1000); /* poll on one descriptor with 1 second timeout */
+		
+		if (result < 0)
 		{
+			perror("poll failed\n");
+			return result;
+		}
+		
+		if (result == 0)
+		{
+			printf("still polling\n");
+		}
+
+		if (button_poll[0].revents & POLLPRI)
+		{
+			printf("Hardware Button:\n");
+			read(button_poll[0].fd, value, MAX_BUF);
+			
+			if (lseek(gpio_fd, 0, SEEK_SET) == -1)
+			{
+				perror("lseek");
+				return -1;
+			}
 			count++;
 		} 
-		printf("value: %d, count: %d\n", newValue, count);
-		oldValue = newValue;
-		usleep(500 * 1000);
-	} while (!done);
+		else if (button_poll[1].revents & POLLIN)
+		{
+			/* retrieve value and write it in newValue */
+			gpio_get_value(gpio, &newValue);
+
+			/* check if switch is pressed */
+			if(newValue > oldValue)
+			{
+			count++;
+			} 
+			printf("value: %d, count: %d\n", newValue, count);
+			oldValue = newValue;
+
+		}
+
+	}
 	
 	printf("Total count of pressed button: %d \n", count);
 	return 0;
