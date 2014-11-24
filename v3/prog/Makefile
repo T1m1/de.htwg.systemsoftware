@@ -21,7 +21,11 @@ CC=$(CROSS_COMPILE)gcc
 ARCH=arm
 
 #Flag for Compiler-Optionen
-CFLAGS=-static
+
+
+
+CFLAGS=-g -Wall -pedantic -Werror -static
+
 THREADFLAG=-lpthread
 
 #Flag for the Linker (dynamic by default)
@@ -48,7 +52,9 @@ nice:
 
 
 %:%.c
-	$(CC) $(CFLAGS)  $^ -o $@ $(LDFLAGS) $(THREADFLAG)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(THREADFLAG)
+
+
 
 depend: $(SOURCES) $(HEADERS) 
 	$(CC) $(CFLAGS) -MM $(SOURCES) > $@ 

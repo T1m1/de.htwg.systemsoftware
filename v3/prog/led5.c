@@ -111,9 +111,9 @@ main(void)
 			printf("Hardware Button:\n");
 			read(gpio_fd, value, 20);
 			
-			//TODO maybe set seek
+			/*TODO maybe set seek */
 					
-			status = set_button(status, value); // maybe not necessary because of "falling"
+			status = set_button(status, value); /*maybe not necessary because of "falling"*/
 			
 		} 
 		else if (button_poll[1].revents & POLLIN)
@@ -169,7 +169,6 @@ blink (void *thread_info)
 			/* led off */
 			write(led_fd, "1", 2);
 			printf("AUS\n");
-			on = 0;
 			
 		}
 		else if (on)
