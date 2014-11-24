@@ -16,14 +16,14 @@
 #define WEB_BUTTON "/www/switchButton"
 
 void sigHandler(int);
+int count_value(int, char*);
 int done;
 
 int main(void)
 {
 	int gpio_fd, web_button;
-	int result;
+	int result, status;
 	int gpio = GPIO_PIN;
-	unsigned int oldValue, newValue;
 	int count = 0;
 	char value[MAX_BUF];
 	
@@ -32,10 +32,10 @@ int main(void)
 	signal(SIGINT, sigHandler);
 	
 	/* register GPIO */
-	gpio_export(GPIO_PIN);
-	gpio_set_dir(GPIO_PIN, 1); /* set direction to "in" */
-	gpio_set_edge(GPIO_PIN, "falling");
-	gpio_fd = gpio_fd_open_read(GPIO_PIN);	
+	gpio_export(gpio);
+	gpio_set_dir(gpio, 1); /* set direction to "in" */
+	gpio_set_edge(gpio, "falling");
+	gpio_fd = gpio_fd_open_read(gpio);	
 	
 	/* open button for web application */
 	web_button = open(WEB_BUTTON, O_RDONLY | O_NONBLOCK);
@@ -53,6 +53,7 @@ int main(void)
 	button_poll[1].fd = web_button;
 	button_poll[1].events = POLLIN;
 	
+	status = 1;
 	done = 0;
 	while (!done)
 	{		
@@ -81,25 +82,22 @@ int main(void)
 				return -1;
 			}
 			count++;
+			printf("count: %d\n", count);
 		} 
 		else if (button_poll[1].revents & POLLIN)
 		{
 			/* retrieve value and write it in newValue */
-			gpio_get_value(gpio, &newValue);
+			read(button_poll[0].fd, value, MAX_BUF);
 
-			/* check if switch is pressed */
-			if(newValue > oldValue)
-			{
-			count++;
-			} 
-			printf("value: %d, count: %d\n", newValue, count);
-			oldValue = newValue;
-
+			count = count + count_value(status, value);
+			printf("count: %d\n", count);
 		}
 
 	}
 	
 	printf("Total count of pressed button: %d \n", count);
+	close(web_button);
+	close(gpio_fd);
 	return 0;
 }
 
@@ -109,3 +107,29 @@ void sigHandler(int not_used)
 	done = 1;
 }
 
+int 
+count_value(int status, char* value)
+{
+	if (value[0] == '0')
+	{
+		printf("Button pressed\n");
+		printf("Button value is: %s\n", value);
+	
+	}
+	else if (value[0] == '1')
+	{
+		printf("Button released\n");
+		printf("Button value is: %s\n", value);
+		if (status == 1)
+		{
+			status = 0;
+		}
+		else 
+		{
+			status = 1;
+		}
+	}
+	
+	return status;	
+
+}
