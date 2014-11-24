@@ -26,7 +26,7 @@ THREADFLAG=-lpthread
 REALTIMEFLAG=-lrt
 
 #Flag for the Linker (dynamic by default)
-LDFLAGS=$(CROSS_COMPILE)ld
+LDFLAGS=-lrt
 
 #Variablen
 SOURCES=$(wildcard *.c) 
