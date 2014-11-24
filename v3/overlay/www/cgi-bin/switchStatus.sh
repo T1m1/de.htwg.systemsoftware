@@ -2,4 +2,4 @@
 
 echo "Content-type: text/html";
 echo ""
-echo "`cat /sys/class/gpio/gpio17/value`"
+echo "`cat /www/switchValue`"
