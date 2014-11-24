@@ -1,21 +1,31 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
+#include <poll.h>
+#include <fcntl.h>
+
+
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <unistd.h>
+
 #include "gpio.h"
 
 #define GPIO_PIN 17
+#define MAX_BUF 20
+#define WEB_BUTTON "/www/switchButton"
 
 void sigHandler(int);
 int done;
 
 int main(void)
 {
+	int gpio_fd, web_button;
+	int result;
 	int gpio = GPIO_PIN;
 	unsigned int oldValue, newValue;
 	int count = 0;
+	char value[MAX_BUF];
 	
 	struct pollfd button_poll[2];
 
