@@ -10,3 +10,4 @@ depend
 gpio.o
 led5
 switch
+systeminfo

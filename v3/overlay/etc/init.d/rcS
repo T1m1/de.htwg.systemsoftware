@@ -21,7 +21,7 @@ echo 0 > /proc/sys/kernel/printk
 
 #start init program and display system infos
 echo '---> start binary'
-./bin/start
+./usr/bin/systeminfo
 
 # unpack scripts for server
 #echo '---> unpack needed files'

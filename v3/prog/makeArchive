@@ -1,0 +1,11 @@
+#!/bin/bash
+
+ARCHIVE_PATH=rugoapp-1.0
+
+mkdir $ARCHIVE_PATH 
+cp led5.c $ARCHIVE_PATH/led5.c
+cp switch.c $ARCHIVE_PATH/switch.c
+cp gpio.c $ARCHIVE_PATH/gpio.c
+cp Makefile $ARCHIVE_PATH/Makefile
+tar -cvzf $ARCHIVE_PATH.tar.gz $ARCHIVE_PATH
+rm -r $ARCHIVE_PATH
