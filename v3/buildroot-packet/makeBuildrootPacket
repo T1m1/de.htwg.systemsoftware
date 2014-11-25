@@ -21,15 +21,14 @@ cd $HOME/$PROG_PATH && cp led5.c $ARCHIVE_NAME/led5.c
 cd $HOME/$PROG_PATH && cp switch.c $ARCHIVE_NAME/switch.c
 cd $HOME/$PROG_PATH && cp gpio.c $ARCHIVE_NAME/gpio.c
 cd $HOME/$PROG_PATH && cp Makefile $ARCHIVE_NAME/Makefile
-cd $HOME/$PROG_PATH && tar -cvzf $ARCHIVE_PATH.tar.gz $ARCHIVE_NAME
-cd $HOME/$PROG_PATH && rm -fr $ARCHIVE_PATH
+cd $HOME/$PROG_PATH && tar -cvzf $ARCHIVE_NAME.tar.gz $ARCHIVE_NAME
+cd $HOME/$PROG_PATH && rm -fr $ARCHIVE_NAME
 
 # copy package to d1
-cd $HOME/$PROG_PATH && cp $ARCHIVE_NAME $DL_PATCH/$ARCHIVE_NAME
+cd $HOME/$PROG_PATH && cp $ARCHIVE_NAME.tar.gz $DL_PATCH/$ARCHIVE_NAME.tar.gz
 
 # insert package to config
-#cd $PACKAGE_PATH 
-# sed '951i	 source "package/rugoapp/Config.in"' Config.in
+cd $PACKAGE_PATH  && sed '951i	 source "package/rugoapp/Config.in"' Config.in
 
 cd $HOME
 
