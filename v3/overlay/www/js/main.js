@@ -55,26 +55,18 @@ $(document).ready(function () {
 
 
 	function updateGpio(key, data) {
-		if (parseInt(data, 10) === 0) {
-			$(key).toggles({on: true});
-		} else {
-			$(key).toggles({off: true});
-		}
+		$(key).toggles(parseInt(data, 10) === 0);
 	}
 
 	function updateGpioStatus(data, key) {
 		if (key == '#ledStatus') {
 			updateGpio('.led', data);
-			setTimeout(function()  {
-				gpioStatus('#ledStatus');
-			}, 250);
+			
 			
 		}
 		if (key == '#switchStatus') {
 			updateGpio('.switch', data);
-			setTimeout(function()  {
-				gpioStatus('#switchStatus')
-			}, 250);
+			
 			
 		}
 	}
@@ -96,7 +88,7 @@ $(document).ready(function () {
 		});
 	}
 
-	$('.led').on('click', function (e, active) {
+	$('.led').on('toggle', function (e, active) {
 		if (active) {
 			changeStatus('#ledOn');
 		} else {
@@ -104,7 +96,7 @@ $(document).ready(function () {
 		}
 	});
 
-	$('.switch').on('click', function (e, active) {
+	$('.switch').on('toggle', function (e, active) {
 		if (active) {
 			changeStatus('#switchOn');
 		} else {
@@ -130,8 +122,12 @@ $(document).ready(function () {
 
 
 	(function initGpio() {
+		setInterval(function()  {
 			gpioStatus('#ledStatus');
 			gpioStatus('#switchStatus');
+			}, 250);
+			
+			
 	})();
 	
 });
