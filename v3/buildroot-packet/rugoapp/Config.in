@@ -1,4 +1,4 @@
-config BR2_PACHAGE_MYPROG
+config BR2_PACHAGE_RUGOAPP
 	bool "rugoapp"
 	help
 	  Some help text...

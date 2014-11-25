@@ -11,7 +11,7 @@ endef
 define RUGOAPP_INSTALL_TARGET_CMDS
 	$(INSTALL) -D -m 0755 $(@D)/app_static $(Target_DIR)/etc
 	$(INSTALL) -D -m 0755 $(@D)/app_dynamica $(Target_DIR)/etc
-enddef
+endef
 
 define RUGOAPP_UNINSTALL_TARGET_CMS
 	rm $(TARGET_DIR)/etc/app_static
