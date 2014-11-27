@@ -55,7 +55,7 @@ $(document).ready(function () {
 
 
 	function updateGpio(key, data) {
-		if (data == 0) {
+		if (parseInt(data, 10) === 0) {
 			$(key).toggles({on: true});
 		} else {
 			$(key).toggles({off: true});
@@ -65,9 +65,17 @@ $(document).ready(function () {
 	function updateGpioStatus(data, key) {
 		if (key == '#ledStatus') {
 			updateGpio('.led', data);
+			setTimeout(function()  {
+				gpioStatus('#ledStatus');
+			}, 250);
+			
 		}
 		if (key == '#switchStatus') {
 			updateGpio('.switch', data);
+			setTimeout(function()  {
+				gpioStatus('#switchStatus')
+			}, 250);
+			
 		}
 	}
 
@@ -88,15 +96,15 @@ $(document).ready(function () {
 		});
 	}
 
-	$('.led').on('toggle', function (e, active) {
+	$('.led').on('click', function (e, active) {
 		if (active) {
 			changeStatus('#ledOn');
 		} else {
 			changeStatus('#ledOff');
 		}
 	});
-	
-	$('.switch').on('toggle', function (e, active) {
+
+	$('.switch').on('click', function (e, active) {
 		if (active) {
 			changeStatus('#switchOn');
 		} else {
@@ -113,18 +121,17 @@ $(document).ready(function () {
 		request('#uptime');
 		request('#osinfo');
 		
-		setInterval(request('#uptime'), 10000);
-		setInterval(request('#osinfo'), 10000);
+		setInterval(function()  {
+			request('#uptime');
+			request('#osinfo');
+			}, 10000);
 	})();
 
 
 
 	(function initGpio() {
-		gpioStatus('#ledStatus');
-		gpioStatus('#switchStatus');
-
-		setInterval(gpioStatus('#ledStatus'), 500);
-		setInterval(gpioStatus('#switchStatus'),500);
+			gpioStatus('#ledStatus');
+			gpioStatus('#switchStatus');
 	})();
 	
 });

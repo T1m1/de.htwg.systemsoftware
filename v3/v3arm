@@ -140,6 +140,16 @@ copy_to_server()
 	cp $DTB_BCM_PATH $SERVER_PATH/$DTB_BCM
 }
 
+make_program()
+{
+	cd $HOME_PATH/prog && make clean
+	cd $HOME_PATH/prog && make
+
+	cp $HOME_PATH/prog/led5 $HOME_PATH/overlay/usr/bin/led5
+	cp $HOME_PATH/prog/switch $HOME_PATH/overlay/usr/bin/switch
+	cp $HOME_PATH/prog/systeminfo $HOME_PATH/overlay/usr/bin/systeminfo
+}
+
 
 ################# KERNEL ##################
 source_kernel()
@@ -218,8 +228,7 @@ qemu_net()
 	-nographic -append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" \
 	-net nic,macaddr=00:00:00:00:00:1D,vlan=0\
 	-net vde,sock="/tmp/vde2-tap0.ctl",vlan=0\
-	-dtb $DTB_VEXPRESS_PATH \
-	-initrd $INITRD_PATH
+	-dtb $DTB_VEXPRESS_PATH
 }	
 
 qemu_serial()
@@ -338,4 +347,3 @@ while getopts ":e:h" opt; do
 done
 
 $cmd
-

@@ -9,8 +9,7 @@
  /****************************************************************
  * Constants
  ****************************************************************/
-#define SYSFS_GPIO_DIR "/home/stgorenf/gpio"
-#define SYSFS_GPIO_DIR_BACKUP "/sys/class/gpio"
+#define SYSFS_GPIO_DIR "/sys/class/gpio"
 #define MAX_BUF 64
 
 /****************************************************************
@@ -70,7 +69,7 @@ int gpio_set_dir(unsigned int gpio, unsigned int out_flag)
 		return fd;
 	}
  
-	if (out_flag)
+	if (out_flag == 1)
 		write(fd, "out", 4);
 	else
 		write(fd, "in", 3);
