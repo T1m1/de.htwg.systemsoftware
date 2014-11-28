@@ -17,7 +17,7 @@ static int __init ModInit(void)
 	if((major=register_chrdev(0, "TestDriver", &fobs)) == 0) 
 	{
 		printk("register_chrdev assigned major %d\n", major);
-		return major;
+		return -EIO;
 	}
 	printk("failed to register_chrdev with %d\n", major);	
 	return 0;
