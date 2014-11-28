@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # architecture
 ARCH=arm
 
@@ -5,8 +7,14 @@ ARCH=arm
 CROSS_COMPILER=/group/labworks/toolchain/buildroot.git/output/host/usr/bin/arm-buildroot-linux-uclibcgnueabihf-
 
 # paths
+HOME_PATH=$PWD
 BUILDROOT_PATH=../buildroot
 BR2_CONFIG=../v4/myconfig.buildroot
+BUILDROOT_BUILD_PATH=$BUILDROOT_PATH/output/build
+
+# Names
+LINUX_VERSION=linux-3.17.2
+BUSYBOX_VERSION=busybox-1.22.1
 
 
 ################ buildroot ################
