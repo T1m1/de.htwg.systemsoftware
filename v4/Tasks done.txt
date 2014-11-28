@@ -1,2 +1,3 @@
 Steffen:
-	- Toolchain konfigurieren (Aufgabenstellung System)
+	- Toolchain konfigurieren (Aufgabenstellung System) check
+	- mit debugger rumspielen
