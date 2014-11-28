@@ -74,11 +74,12 @@ qemu_debug()
 	-kernel zImage -m 128M -M vexpress-a9 \
 	-nographic -append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" \
 	-initrd rootfs.cpio \
-	-gdb tcp::1234 -S 
+	-S -gdb tcp::1234  
 	
-	# open new terminal with: gdb
-	# then: (gdb) target remote localhost:1234 (connects to gdb server)
-	# then: (gdb) continue (or another debug cmd like next) 
+	# open new terminal and cd to ../output/build/linux-3.17.2/ then enter gdb
+	# (gdb) file vmlinux
+	# (gdb) target remote localhost:1234 (connects to gdb server)
+	# (gdb) continue (or another debug cmd like next) 
 }
 
 ################# ROOTFS #####################
