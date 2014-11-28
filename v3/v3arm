@@ -250,6 +250,7 @@ br_save_configs()
 	# saves the config of kernel and busybox to a separate location
 	cp $BUILDROOT_BUILD_PATH/$LINUX_VERSION/.config $HOME_PATH/.config_kernel
 	cp $BUILDROOT_BUILD_PATH/$BUSYBOX_VERSION/.config $HOME_PATH/.my_busybox_config
+	cd $BUILDROOT_PATH && make savedefconfig BR2_DEFCONFIG=$BR2_CONFIG
 }
 
 source_buildroot()
