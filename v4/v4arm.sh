@@ -44,13 +44,14 @@ save_configs()
 
 startup()
 {
-	cd $BUILDROOT_PATH/output/images && QEMU_AUDIO_DRV=none qemu-system-arm -kernel zImage -m 128M -M vexpress-a9 \
+	cd $BUILDROOT_PATH/output/images && QEMU_AUDIO_DRV=none qemu-system-arm \
+	-kernel zImage -m 128M -M vexpress-a9 \
 	-nographic -append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" \
 	-initrd rootfs.cpio\
 	-net nic,macaddr=00:00:00:00:00:1D,vlan=0\
 	-net vde,sock="/tmp/vde2-tap0.ctl",vlan=0
 }
-
+################# ROOTFS #####################
 
 ################## HELP ######################
 help()
