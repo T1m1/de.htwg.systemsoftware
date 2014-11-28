@@ -53,6 +53,15 @@ startup()
 }
 ################# ROOTFS #####################
 
+
+make_program()
+{
+	cd $HOME_PATH/prog && make clean
+	cd $HOME_PATH/prog && make
+
+	cp $HOME_PATH/prog/* $HOME_PATH/overlay/usr/bin/
+}
+
 ################## HELP ######################
 help()
 {
@@ -66,6 +75,7 @@ help()
 	echo "-> compile_buildroot:	compile buildroot"	
 	echo "-> save_config:		save config of bb, kernel and buildroot to a seperate location"	
 	echo "-> startup:			starts qemu"
+	echo "-> make_program		compiles user programs and copy it in overlay folder"
 	echo ""
 	echo "  STUFF: (not supported yet)"
 	echo "-> init:	    initialize all needed files for kernel"
