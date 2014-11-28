@@ -1,0 +1,43 @@
+#!/bin/sh 
+
+/bin/busybox --install -s /bin/
+
+clear
+
+# Say Hello
+echo '######################'
+echo 'Starting system'
+echo '######################'
+
+#mount
+echo '---> Mounting...'
+mount -t tmpfs none /tmp
+echo '---> done'
+
+# populate dev
+mdev -s
+
+echo 0 > /proc/sys/kernel/printk
+
+#start init program and display system infos
+echo '---> start binary'
+./usr/bin/systeminfo
+echo "not supported yet"
+
+sleep 2
+
+# start server
+echo '----> Starting Server'
+ifconfig lo up
+ifconfig eth0 up
+
+udhcpc -s /etc/udhcpc/simple.script
+ifconfig lo 127.0.0.1
+route add -host 127.0.0.1 lo
+httpd -h /www/ &
+
+#end
+echo '--> Starting shell'
+setsid cttyhack sh
+
+

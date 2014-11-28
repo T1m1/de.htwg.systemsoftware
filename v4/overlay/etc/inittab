@@ -1,0 +1,10 @@
+::sysinit:/bin/mount -t proc proc /proc
+::sysinit:/bin/mount -t sysfs none /sys
+::sysinit:/bin/mount -t tmpfs none /tmp
+::sysinit:/bin/sh /etc/init.d/rcS
+
+::respawn:-/bin/sh
+::restart:/sbin/init
+::ctrlaltdel:/sbin/reboot
+::shutdown:/bin/unmount -a -r
+
