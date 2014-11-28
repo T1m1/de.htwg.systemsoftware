@@ -13,18 +13,20 @@ static struct file_operations fobs;
 
 static int __init ModInit(void)
 {
-	printk(KERN_ALERT "HELLO, world\n");
 	/* on success register chdev returns 0 */
 	if((major=register_chrdev(0, "TestDriver", &fobs)) == 0) 
 	{
+		printk("register_chrdev assigned major %d\n", major);
 		return major;
-	}	
+	}
+	printk("failed to register_chrdev with %d\n", major);	
 	return 0;
 }
 
 static void __exit ModExit(void) 
 {
-	printk(KERN_ALERT "Goodbye, cruel world\n");
+	printk("unregister_chred ...");
+	unregister_chrdev(major, "TestDriver");
 }
 
 module_init(ModInit);
