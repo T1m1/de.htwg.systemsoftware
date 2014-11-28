@@ -3,6 +3,7 @@ BR2_ARM_EABIHF=y
 BR2_DEFCONFIG="$(CONFIG_DIR)/defconfig"
 BR2_JLEVEL=4
 BR2_CCACHE=y
+BR2_ENABLE_DEBUG=y
 BR2_TOOLCHAIN_EXTERNAL=y
 BR2_TOOLCHAIN_EXTERNAL_PATH="/group/labworks/toolchain/buildroot.git/output/host/usr"
 BR2_TOOLCHAIN_EXTERNAL_CUSTOM_PREFIX="$(ARCH)-buildroot-linux-uclibcgnueabihf"
