@@ -22,7 +22,6 @@ echo 0 > /proc/sys/kernel/printk
 #start init program and display system infos
 echo '---> start binary'
 ./usr/bin/systeminfo
-echo "not supported yet"
 
 sleep 2
 

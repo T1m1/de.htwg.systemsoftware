@@ -42,7 +42,9 @@ save_configs()
 	cd $BUILDROOT_PATH && make savedefconfig BR2_DEFCONFIG=$BR2_CONFIG
 }
 
-startup()
+################## QEMU ######################
+
+qemu()
 {
 	cd $BUILDROOT_PATH/output/images && QEMU_AUDIO_DRV=none qemu-system-arm \
 	-kernel zImage -m 128M -M vexpress-a9 \
@@ -51,6 +53,21 @@ startup()
 	-net nic,macaddr=00:00:00:00:00:1D,vlan=0\
 	-net vde,sock="/tmp/vde2-tap0.ctl",vlan=0
 }
+
+qemu_serial()
+{
+	cd $BUILDROOT_PATH/output/images && QEMU_AUDIO_DRV=none qemu-system-arm \
+	-kernel zImage -m 128M -M vexpress-a9 \
+	-initrd rootfs.cpio\
+	-nographic -serial pty \
+	-append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" \
+	-net nic,macaddr=00:00:00:00:00:1D,vlan=0\
+	-net vde,sock="/tmp/vde2-tap0.ctl",vlan=0\
+	
+	# conect with ... screen /dev/pts/33 (Number can vary)
+	# then... system_reset
+}
+
 ################# ROOTFS #####################
 
 
@@ -59,7 +76,7 @@ make_program()
 	cd $HOME_PATH/prog && make clean
 	cd $HOME_PATH/prog && make
 
-	cp $HOME_PATH/prog/* $HOME_PATH/overlay/usr/bin/
+	cp $HOME_PATH/prog/systeminfo $HOME_PATH/overlay/usr/bin/systeminfo
 }
 
 ################## HELP ######################
@@ -74,7 +91,8 @@ help()
 	echo "-> source_buildroot:  get buildroot source"
 	echo "-> compile_buildroot:	compile buildroot"	
 	echo "-> save_config:		save config of bb, kernel and buildroot to a seperate location"	
-	echo "-> startup:			starts qemu"
+	echo "-> qemu:				starts qemu"
+	echo "-> qemu_serial:		starts qemu with serial"
 	echo "-> make_program		compiles user programs and copy it in overlay folder"
 	echo ""
 	echo "  STUFF: (not supported yet)"
