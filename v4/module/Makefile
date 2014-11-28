@@ -1,5 +1,5 @@
 LINUX_VERSION=linux-3.17.2
-LINUX_PATH=../../buildroot/output/build/$LINUX_VERSION
+LINUX_PATH=../../buildroot/output/build/$(LINUX_VERSION)
 ARCH=arm
 CROSS_COMPILE=/group/labworks/toolchain/buildroot.git/output/host/usr/bin/arm-buildroot-linux-uclibcgnueabihf-
 
