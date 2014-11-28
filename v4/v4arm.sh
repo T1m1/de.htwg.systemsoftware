@@ -44,13 +44,23 @@ save_configs()
 
 startup()
 {
-	cd $BUILDROOT_PATH/output/images && QEMU_AUDIO_DRV=none qemu-system-arm -kernel zImage -m 128M -M vexpress-a9 \
+	cd $BUILDROOT_PATH/output/images && QEMU_AUDIO_DRV=none qemu-system-arm \
+	-kernel zImage -m 128M -M vexpress-a9 \
 	-nographic -append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" \
 	-initrd rootfs.cpio\
 	-net nic,macaddr=00:00:00:00:00:1D,vlan=0\
 	-net vde,sock="/tmp/vde2-tap0.ctl",vlan=0
 }
+################# ROOTFS #####################
 
+
+make_program()
+{
+	cd $HOME_PATH/prog && make clean
+	cd $HOME_PATH/prog && make
+
+	cp $HOME_PATH/prog/* $HOME_PATH/overlay/usr/bin/
+}
 
 ################## HELP ######################
 help()
@@ -65,6 +75,7 @@ help()
 	echo "-> compile_buildroot:	compile buildroot"	
 	echo "-> save_config:		save config of bb, kernel and buildroot to a seperate location"	
 	echo "-> startup:			starts qemu"
+	echo "-> make_program		compiles user programs and copy it in overlay folder"
 	echo ""
 	echo "  STUFF: (not supported yet)"
 	echo "-> init:	    initialize all needed files for kernel"
