@@ -6,5 +6,5 @@
 ::respawn:-/bin/sh
 ::restart:/sbin/init
 ::ctrlaltdel:/sbin/reboot
-::shutdown:/bin/unmount -a -r
+::shutdown:/bin/umount -a -r
 
