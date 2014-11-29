@@ -1,0 +1,29 @@
+/ # strace usr/bin/systeminfo 
+execve("usr/bin/systeminfo", ["usr/bin/systeminfo"], [/* 7 vars */]) = 0
+brk(0)                                  = 0x28000
+brk(0x284b0)                            = 0x284b0
+set_tls(0x28490, 0x2430c, 0x26690, 0x2430c, 0x4) = 0
+open("/dev/urandom", O_RDONLY)          = 3
+read(3, "\241^\226\"", 4)               = 4
+close(3)                                = 0
+ioctl(0, SNDCTL_TMR_TIMEBASE or SNDRV_TIMER_IOCTL_NEXT_DEVICE or TCGETS, {B38400 opost isig icanon echo ...}) = 0
+ioctl(1, SNDCTL_TMR_TIMEBASE or SNDRV_TIMER_IOCTL_NEXT_DEVICE or TCGETS, {B38400 opost isig icanon echo ...}) = 0
+sysinfo({uptime=45, loads=[0, 0, 0] totalram=129765376, freeram=120733696, sharedram=0, bufferram=0} totalswap=0, freeswap=0, procs=25}) = 0
+write(1, "\nHello User world", 17
+Hello User world)      = 17
+write(1, "\nUptime: ", 9
+Uptime: )               = 9
+write(1, "0:0:45\nTotal RAM: ", 180:0:45
+Total RAM: )     = 18
+write(1, "123MB\nFree Ram: ", 16123MB
+Free Ram: )       = 16
+write(1, "115MB\nProcess count: ", 21115MB
+Process count: )  = 21
+write(1, "25\nPage size: ", 1425
+Page size: )         = 14
+write(1, "4096 Bytes\n", 114096 Bytes
+)            = 11
+write(1, "\n", 1
+)                       = 1
+exit_group(0)                           = ?
++++ exited with 0 +++

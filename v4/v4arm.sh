@@ -42,15 +42,56 @@ save_configs()
 	cd $BUILDROOT_PATH && make savedefconfig BR2_DEFCONFIG=$BR2_CONFIG
 }
 
-startup()
+################## QEMU ######################
+
+qemu()
 {
-	cd $BUILDROOT_PATH/output/images && QEMU_AUDIO_DRV=none qemu-system-arm -kernel zImage -m 128M -M vexpress-a9 \
+	cd $BUILDROOT_PATH/output/images && QEMU_AUDIO_DRV=none qemu-system-arm \
+	-kernel zImage -m 128M -M vexpress-a9 \
 	-nographic -append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" \
 	-initrd rootfs.cpio\
 	-net nic,macaddr=00:00:00:00:00:1D,vlan=0\
 	-net vde,sock="/tmp/vde2-tap0.ctl",vlan=0
 }
 
+qemu_serial()
+{
+	cd $BUILDROOT_PATH/output/images && QEMU_AUDIO_DRV=none qemu-system-arm \
+	-kernel zImage -m 128M -M vexpress-a9 \
+	-initrd rootfs.cpio\
+	-nographic -serial pty \
+	-append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" \
+	-net nic,macaddr=00:00:00:00:00:1D,vlan=0\
+	-net vde,sock="/tmp/vde2-tap0.ctl",vlan=0
+	
+	# conect with ... screen /dev/pts/33 (Number can vary)
+	# then... system_reset
+}
+
+qemu_debug()
+{
+	cd $BUILDROOT_PATH/output/images && QEMU_AUDIO_DRV=none qemu-system-arm \
+	-kernel zImage -m 128M -M vexpress-a9 \
+	-nographic -append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" \
+	-initrd rootfs.cpio \
+	-S -gdb tcp::1234  
+	
+	# open new terminal and cd to ../output/build/linux-3.17.2/ then enter gdb
+	# (gdb) file vmlinux
+	# (gdb) target remote localhost:1234 (connects to gdb server)
+	# (gdb) continue (or another debug cmd like next) 
+}
+
+################# ROOTFS #####################
+
+
+make_program()
+{
+	cd $HOME_PATH/prog && make clean
+	cd $HOME_PATH/prog && make
+
+	cp $HOME_PATH/prog/systeminfo $HOME_PATH/overlay/usr/bin/systeminfo
+}
 
 ################## HELP ######################
 help()
@@ -64,7 +105,9 @@ help()
 	echo "-> source_buildroot:  get buildroot source"
 	echo "-> make_buildroot:	compile buildroot"	
 	echo "-> save_config:		save config of bb, kernel and buildroot to a seperate location"	
-	echo "-> startup:			starts qemu"
+	echo "-> qemu:				starts qemu"
+	echo "-> qemu_serial:		starts qemu with serial"
+	echo "-> make_program		compiles user programs and copy it in overlay folder"
 	echo ""
 	echo "  STUFF: (not supported yet)"
 	echo "-> init:	    initialize all needed files for kernel"
