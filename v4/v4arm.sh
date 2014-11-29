@@ -18,7 +18,7 @@ BUSYBOX_VERSION=busybox-1.22.1
 
 
 ################ buildroot ################
-compile_buildroot()
+make_buildroot()
 {
 	cd $BUILDROOT_PATH && make source
 	cd $BUILDROOT_PATH && make 
@@ -62,7 +62,7 @@ help()
 	echo "functions:"
 	echo ""
 	echo "-> source_buildroot:  get buildroot source"
-	echo "-> compile_buildroot:	compile buildroot"	
+	echo "-> make_buildroot:	compile buildroot"	
 	echo "-> save_config:		save config of bb, kernel and buildroot to a seperate location"	
 	echo "-> startup:			starts qemu"
 	echo ""
