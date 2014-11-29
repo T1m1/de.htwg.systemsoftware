@@ -1,0 +1,13 @@
+config BR2_PACKAGE_SYSO
+        bool "syso"
+        help
+          All Syso Packages
+
+          http://best.server.org/syso/
+
+
+if BR2_PACKAGE_SYSO
+        menu "Modules"
+                source package/syso/template/Config.in
+        endmenu
+endif
