@@ -62,21 +62,25 @@ static int driver_release(struct inode *geraetedatei, struct file *instanz)
 
 static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_t *offset)
 {
+	printk(KERN_INFO "NORMAL read called...\n");
 	return 0;
 }
 
 static ssize_t driver_write(struct file *instanz, const char *user, size_t count, loff_t *offset)
 {
+	printk(KERN_INFO "NORMAL write called...\n");
 	return 0;
 }
 
 static ssize_t driver_read_single(struct file *instanz, char *user, size_t count, loff_t *offset)
 {
+	printk(KERN_INFO "SINGLE read called...\n");
 	return 0;
 }
 
 static ssize_t driver_write_single(struct file *instanz, const char *user, size_t count, loff_t *offset)
 {
+	printk(KERN_INFO "SINGLE write called...\n");
 	return 0;
 }
 
