@@ -22,7 +22,11 @@ static int driver_open(struct inode *geraetedatei, struct file  *instanz)
 	return EXIT_SUCCESS;
 }
 
-
+static int driver_release(struct inode *geraetedatei, struct file *instanz)
+{
+	printk("Release...");
+	return EXIT_SUCCESS;
+}
 
 
 
