@@ -2,6 +2,8 @@
 #include <linux/module.h>
 /* prototypes */
 #include <linux/fs.h>
+#include <linux/cdev.h>
+#include <linux/device.h>
 
 #define DRIVER_NAME "template"
 
