@@ -37,6 +37,9 @@ static struct file_operations fobs =
 	.write = driver_write
 };
 
+/* stomic variable */
+/* information: makelinux.net/ldd3/chp-5-sect-7 */
+static atomic_t lock;
 
 
 static int driver_open(struct inode *geraetedatei, struct file *instanz)
