@@ -3,7 +3,7 @@ LINUX_PATH=../../buildroot/output/build/$(LINUX_VERSION)
 ARCH=arm
 CROSS_COMPILE=/group/labworks/toolchain/buildroot.git/output/host/usr/bin/arm-buildroot-linux-uclibcgnueabihf-
 
-SOURCES=mod1.c template.c
+SOURCES=mod1.c template.c openclose.c
 OBJECT=$(SOURCES:.c=.o)
 
 .PHONY: clean
