@@ -57,8 +57,11 @@ free_device_number:
 
 static void __exit ModExit(void) 
 {
-	printk("unregister_chred ...");
-	unregister_chrdev(major, "TestDriver");
+	device_destroy(template_class, dev_number);
+	class_destroy(template_class);
+	cdev_del(driver_object);
+	unregister_chrdev_region(dev_number, 1);
+	return;
 }
 
 module_init(ModInit);
