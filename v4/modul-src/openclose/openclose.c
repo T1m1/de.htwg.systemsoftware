@@ -5,31 +5,39 @@
 #include <linux/cdev.h>
 #include <linux/device.h>
 
-#define DRIVER_NAME "template"
+
+#define DRIVER_NAME "openclose"
 
 /* normaly in stdlib.h */
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
 
 static int major;
-static struct file_operations fobs;
 static dev_t dev_number;
 static struct cdev *driver_object;
-struct class *template_class;
+struct class *openclose_class;
+
+static struct file_operations fobs;
 
 
-static int driver_open(struct inode *geraetedatei, struct file  *instanz)
+static int driver_open(struct inode *geraetedatei, struct file *instanz)
 {
-	printk("Open...");
+	printk(KERN_INFO "Open driver\n");
 	return EXIT_SUCCESS;
 }
 
 static int driver_release(struct inode *geraetedatei, struct file *instanz)
 {
-	printk("Release...");
+	printk(KERN_INFO "Release driver!\n");
 	return EXIT_SUCCESS;
 }
 
+static struct file_operations fobs =
+{
+	.owner = THIS_MODULE,
+	.open = driver_open,
+	.release = driver_release,
+};
 
 
 
@@ -56,8 +64,8 @@ static int __init ModInit(void)
 		goto free_cdev;
 	}
 	
-	template_class = class_create(THIS_MODULE, DRIVER_NAME);
-	device_create(template_class, NULL, dev_number, NULL, "%s", DRIVER_NAME);
+	openclose_class = class_create(THIS_MODULE, DRIVER_NAME);
+	device_create(openclose_class, NULL, dev_number, NULL, "%s", DRIVER_NAME);
 	
 	major = MAJOR(dev_number);
 	
@@ -75,8 +83,8 @@ free_device_number:
 
 static void __exit ModExit(void) 
 {
-	device_destroy(template_class, dev_number);
-	class_destroy(template_class);
+	device_destroy(openclose_class, dev_number);
+	class_destroy(openclose_class);
 	cdev_del(driver_object);
 	unregister_chrdev_region(dev_number, 1);
 	return;
@@ -87,7 +95,7 @@ module_exit(ModExit);
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Timotheus Ruprecht and  Steffen Gorenflo");
-MODULE_DESCRIPTION("Modul Template");
+MODULE_DESCRIPTION("Modul openclose");
 MODULE_SUPPORTED_DEVICE("none");
 
 
