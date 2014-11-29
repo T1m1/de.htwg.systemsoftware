@@ -15,6 +15,18 @@ static dev_t dev_number;
 static struct cdev *driver_object;
 struct class *template_class;
 
+
+static int driver_open(struct inode *geraetedatei, struct file  *instanz)
+{
+	printk("Open...");
+	return EXIT_SUCCESS;
+}
+
+
+
+
+
+
 static int __init ModInit(void)
 {
 	/* reserve device driver number */
