@@ -18,3 +18,6 @@ PWD		:= $(shell pwd)
 default:
 	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE)
 endif
+
+clean:
+	rm -rf *.o *.ko *.mod.c *.symvers *.order
