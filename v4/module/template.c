@@ -45,6 +45,14 @@ static int __init ModInit(void)
 	
 	printk("Major number: %d\n", major);
 	return EXIT_SUCCESS;
+	
+free_cdev:
+	kobject_put(&driver_object->kobj);
+	
+free_device_number:
+	unregister_chrdev_region(dev_number, 1);
+	return -EIO;
+	
 }
 
 static void __exit ModExit(void) 
