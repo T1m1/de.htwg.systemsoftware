@@ -1,0 +1,10 @@
+Steffen:
+	- Toolchain konfigurieren (Aufgabenstellung System) check
+	- mit debugger rumspielen
+
+Timi:
+	- Kernel Modul Basic -> done
+	- template.c -> fehlt noch "/sbin/mdev" als hotplug
+	- test-template.sh -> done
+	- Modul:
+		- OpenClose -> access.c fehlt noch
