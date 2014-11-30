@@ -4,13 +4,14 @@
 #include <linux/fs.h>
 #include <linux/cdev.h>
 #include <linux/device.h>
-
+#include <asm/errno.h>
 
 #define DRIVER_NAME "openclose"
 
 /* normaly in stdlib.h */
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
+
 
 static int major;
 static dev_t dev_number;
@@ -39,18 +40,19 @@ static struct file_operations fobs =
 
 /* stomic variable */
 /* information: makelinux.net/ldd3/chp-5-sect-7 */
-static atomic_t lock;
+static atomic_t lock = ATOMIC_INIT(MAX_NUMBER_OF_PROCESS);
 
 
 static int driver_open(struct inode *geraetedatei, struct file *instanz)
 {
-	printk(KERN_INFO "Open driver\n");
+	printk(KERN_INFO "Try to open driver\n");
 	/* check if minor number 1 */
 	if (MINOR(geraetedatei->i_rdev) == 1) {
 		printk(KERN_INFO "...with minor number 1!\n");
 		fobs.read = driver_read_single;
 		fobs.write = driver_write_single;
 	}
+	printk(KERN_INFO "Driver open!\n");
 	return EXIT_SUCCESS;
 }
 
@@ -111,7 +113,7 @@ static int __init ModInit(void)
 	major = MAJOR(dev_number);
 	
 	printk("Major number: %d\n", major);
-	return EXIT_SUCCESS;
+	return EXIT_SUCCESS;	
 	
 free_cdev:
 	kobject_put(&driver_object->kobj);
