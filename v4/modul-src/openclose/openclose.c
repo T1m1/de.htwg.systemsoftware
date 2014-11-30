@@ -8,6 +8,7 @@
 
 #define DRIVER_NAME "openclose"
 #define MAX_NUMBER_OF_PROCESS 1
+#define NUMBER_OF_MINOR 2
 
 /* normaly in stdlib.h */
 #define EXIT_SUCCESS 0
@@ -97,7 +98,7 @@ static ssize_t driver_write_single(struct file *instanz, const char *user, size_
 static int __init ModInit(void)
 {
 	/* reserve device driver number */
-	if(alloc_chrdev_region(&dev_number, 0, 1, DRIVER_NAME) < 0){
+	if(alloc_chrdev_region(&dev_number, 0, NUMBER_OF_MINOR, DRIVER_NAME) < 0){
 		printk("failed to alloc_chrdev_region\n");	
 		return -EIO;
 	}
@@ -110,7 +111,7 @@ static int __init ModInit(void)
 	driver_object->owner = THIS_MODULE;
 	driver_object->ops = &fobs;
 	
-	if(cdev_add(driver_object, dev_number, 1)){
+	if(cdev_add(driver_object, dev_number, NUMBER_OF_MINOR)){
 		goto free_cdev;
 	}
 	
@@ -126,7 +127,7 @@ free_cdev:
 	kobject_put(&driver_object->kobj);
 	
 free_device_number:
-	unregister_chrdev_region(dev_number, 1);
+	unregister_chrdev_region(dev_number, NUMBER_OF_MINOR);
 	return -EIO;
 	
 }
@@ -136,7 +137,7 @@ static void __exit ModExit(void)
 	device_destroy(openclose_class, dev_number);
 	class_destroy(openclose_class);
 	cdev_del(driver_object);
-	unregister_chrdev_region(dev_number, 1);
+	unregister_chrdev_region(dev_number, NUMBER_OF_MINOR);
 	return;
 }
 
