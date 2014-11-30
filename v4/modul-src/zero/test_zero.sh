@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PROG_NAME=template
+PROG_NAME=zero
 
 # clear dmesg output
 dmesg -c > /dev/null

@@ -6,7 +6,7 @@
 #include <linux/device.h>
 
 
-#define DRIVER_NAME "template"
+#define DRIVER_NAME "zero"
 
 /* normaly in stdlib.h */
 #define EXIT_SUCCESS 0
@@ -72,7 +72,7 @@ module_exit(ModExit);
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Timotheus Ruprecht and  Steffen Gorenflo");
-MODULE_DESCRIPTION("Modul Template");
+MODULE_DESCRIPTION("Modul Zero");
 MODULE_SUPPORTED_DEVICE("none");
 
 
