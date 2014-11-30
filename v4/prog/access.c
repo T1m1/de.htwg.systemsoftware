@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
 
 void *open_driver(void *info)
 {
-
+	
 	pthread_exit(NULL);
 
 }
