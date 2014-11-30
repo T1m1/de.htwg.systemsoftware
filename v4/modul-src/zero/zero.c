@@ -4,6 +4,7 @@
 #include <linux/fs.h>
 #include <linux/cdev.h>
 #include <linux/device.h>
+#include <asm/uaccess.h>
 
 
 #define DRIVER_NAME "zero"
@@ -46,8 +47,15 @@ static int driver_release(struct inode *geraetedatei, struct file *instanz)
 
 static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_t *offset)
 {
-	printk(KERN_INFO "ZERO: read called...\n");
-	return 0;
+	size_t not_copied, to_copy;
+	char str[] = "Hello World\n";
+
+	printk(KERN_INFO "ZERO: read...\n");
+	
+	to_copy =  min(strlen(str) + 1, count);
+	not_copied = copy_to_user(user, str, to_copy);
+
+	return to_copy - not_copied;
 }
 
 static int __init ModInit(void)
