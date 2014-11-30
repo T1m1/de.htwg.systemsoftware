@@ -7,5 +7,16 @@ Timi:
 	- template.c -> fehlt noch "/sbin/mdev" als hotplug
 	- test-template.sh -> done
 	- Modul:
-		- OpenClose -> access.c - abklarungsbedarf meachtel
-		- Zero -> at work
+		- OpenClose -> fertig
+			-> access.c -> refactoring & testing steht noch aus
+		- Zero -> Ausgabe von "Hello World" läuft
+			-> testen mit access.c -> sobald fertig
+			-> Minor Funktionalitaet erweitern (return '0')
+			-> testscript anpassen
+
+Offene Punkte:
+
+	[ ] Source per Dropbear uebertragen
+	[ ] Kernel minimieren
+	[ ] Modul null
+	[ ] Buildroot Pakete erstellen
