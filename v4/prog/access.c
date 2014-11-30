@@ -7,6 +7,8 @@
 
 #define DEFAULT_NUMBER_OF_THREADS 5;
 
+void *open_driver(void *info);
+
 /*
 	TODO
 	- paraleller zugriff -> Threading?
@@ -19,13 +21,17 @@
 	- Treiber ist geladen
 */
 
-int numberOfThreads = DEFAULT_NUMBER_OF_THREADS;
 
 int main(int argc, char *argv[])
 {
 	/* parse options */
 	int opt;
-	int opentest, closetest, time = FALSE;	
+	int numberOfThreads = DEFAULT_NUMBER_OF_THREADS;
+	int opentest, closetest, duration;
+
+	/* threads */
+	pthread_t *threads;
+
 	while(-1 != (opt = getopt (argc, argv, "oct:"))) {
 		switch(opt){
 			case 'o':
@@ -45,9 +51,25 @@ int main(int argc, char *argv[])
 	}
 
 		
+	threads = malloc(numberOfThreads * sizeof(pthread_t));
+	if (threads == NULL) {
+		return EXIT_FAILURE;
+	}
 
+	/* open test */
+	int i;
+	for(i = 0; i < numberOfThreads; i++) {
+		pthread_create(&threads[i], NULL, open_driver, NULL);
+	}	
 
 
 
 	return 0;
+}
+
+void *open_driver(void *info)
+{
+
+	pthread_exit(NULL);
+
 }
