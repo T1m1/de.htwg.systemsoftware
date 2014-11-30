@@ -24,7 +24,7 @@ ARCH=arm
 
 
 
-CFLAGS=-g -Wall -pedantic -Werror -static
+CFLAGS=-g -Wall -Werror -static
 
 THREADFLAG=-lpthread
 
