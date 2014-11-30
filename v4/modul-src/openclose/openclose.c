@@ -7,6 +7,7 @@
 #include <asm/errno.h>
 
 #define DRIVER_NAME "openclose"
+#define MAX_NUMBER_OF_PROCESS 1
 
 /* normaly in stdlib.h */
 #define EXIT_SUCCESS 0
@@ -49,6 +50,11 @@ static int driver_open(struct inode *geraetedatei, struct file *instanz)
 	/* check if minor number 1 */
 	if (MINOR(geraetedatei->i_rdev) == 1) {
 		printk(KERN_INFO "...with minor number 1!\n");
+		if (!atomic_dec_and_test(&lock)) {
+			atomic_inc(&lock);
+			printk(KERN_INFO "Diver already in use!\n");
+			return -EBUSY;
+		}
 		fobs.read = driver_read_single;
 		fobs.write = driver_write_single;
 	}
@@ -58,6 +64,7 @@ static int driver_open(struct inode *geraetedatei, struct file *instanz)
 
 static int driver_release(struct inode *geraetedatei, struct file *instanz)
 {
+	atomic_inc(&lock);
 	printk(KERN_INFO "Release driver!\n");
 	return EXIT_SUCCESS;
 }
