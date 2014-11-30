@@ -7,4 +7,5 @@ Timi:
 	- template.c -> fehlt noch "/sbin/mdev" als hotplug
 	- test-template.sh -> done
 	- Modul:
-		- OpenClose -> access.c fehlt noch
+		- OpenClose -> access.c - abklarungsbedarf meachtel
+		- Zero -> at work
