@@ -58,6 +58,11 @@ static int driver_open(struct inode *geraetedatei, struct file *instanz)
 		}
 		fobs.read = driver_read_single;
 		fobs.write = driver_write_single;
+	} else {
+		printk(KERN_INFO "...with minor number0!\n");
+		/* if called with minor 0 after called with minor 1 */
+		fobs.read = driver_read;
+		fobs.write = driver_write;
 	}
 	printk(KERN_INFO "Driver open!\n");
 	return EXIT_SUCCESS;
