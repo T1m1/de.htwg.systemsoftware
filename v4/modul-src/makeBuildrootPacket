@@ -1,0 +1,28 @@
+#!/bin/sh
+
+HOME=$PWD
+BUILDROOT_PATH=../../buildroot
+DL_PATH=$BUILDROOT_PATH/dl
+PROG_PATH=modul-src
+
+
+################ make template archive -> START
+
+APP_NAME=template
+VERSION=1.0
+ARCHIVE_NAME=$APP_NAME-$VERSION
+
+mkdir $ARCHIVE_NAME 
+cd $HOME && cp -r template $ARCHIVE_NAME
+cd $HOME && tar -cvzf $ARCHIVE_NAME.tar.gz $ARCHIVE_NAME
+cd $HOME && rm -fr $ARCHIVE_NAME
+
+# copy package to d1
+cd $HOME && cp $ARCHIVE_NAME.tar.gz $DL_PATH/$ARCHIVE_NAME.tar.gz
+
+cd $HOME
+
+################ make template archive -> END
+
+
+
