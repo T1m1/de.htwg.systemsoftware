@@ -21,10 +21,12 @@ ARCHIVE_NAME=$APP_NAME-$VERSION
 mkdir $ARCHIVE_NAME 
 cd $HOME && cp -r template $ARCHIVE_NAME
 cd $HOME && tar -cvzf $ARCHIVE_NAME.tar.gz $ARCHIVE_NAME
-cd $HOME && rm -fr $ARCHIVE_NAME
 
 # copy package to d1
 cd $HOME && cp $ARCHIVE_NAME.tar.gz $DL_PATH/$ARCHIVE_NAME.tar.gz
+
+cd $HOME && rm -fr $ARCHIVE_NAME
+cd $HOME && rm -fr $ARCHIVE_NAME.tar.gz
 
 cd $HOME
 
@@ -39,14 +41,39 @@ ARCHIVE_NAME=$APP_NAME-$VERSION
 mkdir $ARCHIVE_NAME 
 cd $HOME && cp -r template $ARCHIVE_NAME
 cd $HOME && tar -cvzf $ARCHIVE_NAME.tar.gz $ARCHIVE_NAME
-cd $HOME && rm -fr $ARCHIVE_NAME
 
 # copy package to d1
 cd $HOME && cp $ARCHIVE_NAME.tar.gz $DL_PATH/$ARCHIVE_NAME.tar.gz
+
+cd $HOME && rm -fr $ARCHIVE_NAME
+cd $HOME && rm -fr $ARCHIVE_NAME.tar.gz
 
 cd $HOME
 
 ################ make openclose archive -> END
 
+
+################ make zero archive -> START
+
+APP_NAME=zero
+VERSION=1.0
+ARCHIVE_NAME=$APP_NAME-$VERSION
+
+mkdir $ARCHIVE_NAME 
+cd $HOME && cp -r template $ARCHIVE_NAME
+cd $HOME && tar -cvzf $ARCHIVE_NAME.tar.gz $ARCHIVE_NAME
+
+# copy package to d1
+cd $HOME && cp $ARCHIVE_NAME.tar.gz $DL_PATH/$ARCHIVE_NAME.tar.gz
+
+cd $HOME && rm -fr $ARCHIVE_NAME
+cd $HOME && rm -fr $ARCHIVE_NAME.tar.gz
+
+cd $HOME
+
+################ make zero archive -> END
+
+
+echo "...done!"
 
 
