@@ -1,0 +1,4 @@
+config BR2_PACKAGE_SYSO_TEMPLATE
+	bool "template"
+	help
+	  This is a template.
