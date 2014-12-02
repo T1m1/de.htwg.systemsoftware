@@ -7,8 +7,9 @@ PROG_PATH=modul-src
 
 ####
 #
-#	TODO: -> refactor (maybe a list and a loop)
-#
+#	TODO: 	->	refactor (maybe a list and a loop)
+#			->	add entry "package/sys/Config.in" for package to 
+#				"buildroot/package/Config.in" (e.g. sed '1i)
 ####
 
 
