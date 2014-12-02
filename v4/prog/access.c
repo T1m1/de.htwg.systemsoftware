@@ -13,6 +13,7 @@
 #define DEFAULT_NUMBER_OF_THREADS 5;
 #define DEFAULT_DURATION 1;
 #define DEFAULT_REPEAT 5;
+#define NANO_TO_MILI 1000
 
 void *open_driver(void *thread_info);
 
@@ -137,43 +138,36 @@ void *open_driver(void *thread_info)
 	struct timespec sleep_time;
 	int duration = t->duration;
 	int repeat = t->repeat;
-	
-	
-	printf("duration %d\n", duration);
-	printf("repeat %d\n", repeat);
-	printf("device %s\n", device);
+	int threadNumber = t->threadNumberM
+
 	/* init time struct */
-	sleep_time.tv_nsec = 0;
-	sleep_time.tv_sec = 1;
+	sleep_time.tv_sec = NANO_TO_MILI * duration;
 	
 	for(i = 0; i < repeat; i++ ){
-		printf("repeat %d", i);
+		printf("THREAD %d: repeat %d\n", threadNumber, i );
 
-		printf("Try to open Driver...\n");
+		printf("THREAD %d: Try to open Driver...\n", threadNumber);
 		fd = open(device, O_RDONLY);
-		if (fd < 0) 
-		{
-			printf("error - open");
+		if (fd < 0) {
+			printf("THREAD %d: Could not open", threadNumber);
 		} else {
-			printf("Open Driver!\n");
+			printf("THREAD %d: Open Driver!\n", threadNumber);
 		}
 		
-		printf("Sleep %d Millisecond\n", duration);
-		/* wait -> sleep thread safe? !!!! sind sekunden!!! andere funktion*/
+		printf("THREAD %d: Sleep %d Millisecond\n", threadNumber, duration);
 		clock_nanosleep(CLOCK_REALTIME, 0, &sleep_time, NULL);
-		/*sleep(duration);*/
 
 		/* close driver */
-		printf("Try to close driver...\n");
+		printf("THREAD %d: Try to close driver...\n", threadNumber);
 		if(fd >= 0) {
 			if(close(fd) >= 0) {
-				printf("Driver closed!\n");
+				printf("THREAD %d: Driver closed!\n", threadNumber);
 			} else {
-				printf("Driver not closed -.-.-.-.- !\n");
+				printf("THREAD %d: Driver not closed -.-.-.-.- !\n", threadNumber);
 			}
 		}
 	}
-	printf("END THREAD\n");
+	printf("THREAD %d: END THREAD\n", threadNumber);
 	pthread_exit(NULL);
 }
 
