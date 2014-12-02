@@ -14,7 +14,7 @@
 #define DEFAULT_DURATION 1;
 #define DEFAULT_REPEAT 5;
 
-void *open_driver(void *info);
+void *open_driver(void *thread_info);
 
 /*
 	TODO
@@ -29,8 +29,15 @@ void *open_driver(void *info);
 	- Treiber ist geladen
 */
 
+struct thread_info
+{
+	struct timespec sleep_time;
+	int repeat;
+	int duration;
+	int threadNumber;
+};
+
 static char *device;
-static int repeat, duration;
 
 int main(int argc, char *argv[])
 {
@@ -38,8 +45,18 @@ int main(int argc, char *argv[])
 	int opt;
 	int numberOfThreads = DEFAULT_NUMBER_OF_THREADS;
 	int opentest, closetest = FALSE;
-	duration = DEFAULT_DURATION;
-	repeat = DEFAULT_REPEAT;
+	struct thread_info *thread_struct = NULL;
+	
+	thread_struct = malloc(sizeof (struct thread_info));
+	if (thread_struct == NULL)
+	{
+		fprintf(stderr, "Failed to allocate memory!\n");
+		return(-1);
+	}
+	
+	thread_struct->duration = DEFAULT_DURATION;
+	thread_struct->repeat = DEFAULT_REPEAT;
+	
 
 	/* threads */
 	pthread_t *threads;
@@ -47,16 +64,14 @@ int main(int argc, char *argv[])
 	while(-1 != (opt = getopt (argc, argv, "d:oct:r:n:"))) {
 		switch(opt){
 			case 'o':
-				printf("open Test: %s\n", optarg);
 				opentest = TRUE;
 				break;
 			case 'c':
-				printf("close Test: %s\n", optarg);
 				closetest = TRUE;
 				break;
 			case 't':
 				printf("waiting time: %s\n", optarg);
-				duration = atoi(optarg);
+				thread_struct->duration = atoi(optarg);
 				break;
 			case 'n':
 				printf("number of threads: %s\n", optarg);
@@ -68,7 +83,7 @@ int main(int argc, char *argv[])
 				break;
 			case 'r':
 				printf("number of repeats: %s\n", optarg);
-				repeat = atoi(optarg);
+				thread_struct->repeat = atoi(optarg);
 				break;
 		}
 	}
@@ -77,8 +92,8 @@ int main(int argc, char *argv[])
 	if(device == NULL){
 		printf("Usage: ./access -d [DEVICE_PATH] [OPTIONS]\n");
 		return EXIT_FAILURE;
-	}
-		
+	}	
+	
 	threads = malloc(numberOfThreads * sizeof(pthread_t));
 	if (threads == NULL) {
 		return EXIT_FAILURE;
@@ -90,8 +105,9 @@ int main(int argc, char *argv[])
 		printf("OpenTest:\n");
 		
 		for(i = 0; i < numberOfThreads; i++) {
+			thread_struct->threadNumber= i;
 			printf("Start Thread %d\n", i);
-			pthread_create(&threads[i], NULL, open_driver, NULL);
+			pthread_create(&threads[i], NULL, open_driver, thread_struct);
 		}	
 
 
@@ -106,20 +122,29 @@ int main(int argc, char *argv[])
 		printf("Close Test:\n");
 	}
 	
+	printf("vor free...\n");	
 	free(threads);
 
+	printf("End program:\n");
 	return 0;
 }
 
-void *open_driver(void *info)
+void *open_driver(void *thread_info)
 {
 	int i, fd;
-	struct timespec sleep_time;
-
 	
+	struct thread_info *t = (struct thread_info *) thread_info;
+	struct timespec sleep_time;
+	int duration = t->duration;
+	int repeat = t->repeat;
+	
+	
+	printf("duration %d\n", duration);
+	printf("repeat %d\n", repeat);
+	printf("device %s\n", device);
 	/* init time struct */
-	sleep_time.tv_sec = 1;
 	sleep_time.tv_nsec = 0;
+	sleep_time.tv_sec = 1;
 	
 	for(i = 0; i < repeat; i++ ){
 		printf("repeat %d", i);
