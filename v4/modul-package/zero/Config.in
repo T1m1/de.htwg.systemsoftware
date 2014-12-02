@@ -1,0 +1,4 @@
+config BR2_PACKAGE_ZERO
+	bool "zero"
+	help
+	  This is a template.
