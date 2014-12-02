@@ -1,0 +1,4 @@
+config BR2_PACKAGE_OPENCLOSE
+	bool "openclose"
+	help
+	  This is a template.
