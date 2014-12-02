@@ -9,5 +9,7 @@ config BR2_PACKAGE_SYSO
 if BR2_PACKAGE_SYSO
         menu "Modules"
                 source package/syso/template/Config.in
+                source package/syso/openclose/Config.in
+                source package/syso/zero/Config.in
         endmenu
 endif
