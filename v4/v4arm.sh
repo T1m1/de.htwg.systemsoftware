@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 # architecture
 ARCH=arm
 
@@ -16,6 +17,13 @@ BUILDROOT_BUILD_PATH=$BUILDROOT_PATH/output/build
 LINUX_VERSION=linux-3.17.2
 BUSYBOX_VERSION=busybox-1.22.1
 
+
+################ br packages ##############
+prepare_br()
+{
+	cd $HOME_PATH/modul-package && ./makeLink.sh
+	cd $HOME_PATH/modul-src && ./makeBuildrootPackets
+}
 
 ################ buildroot ################
 make_buildroot()
@@ -103,6 +111,7 @@ help()
 	echo "functions:"
 	echo ""
 	echo "-> source_buildroot:  get buildroot source"
+	echo "-> prepare_br:		prepare buildroot to use own moduls"
 	echo "-> make_buildroot:	compile buildroot"	
 	echo "-> save_config:		save config of bb, kernel and buildroot to a seperate location"	
 	echo "-> qemu:				starts qemu"
