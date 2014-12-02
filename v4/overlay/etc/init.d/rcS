@@ -1,42 +1,27 @@
-#!/bin/sh 
-
-/bin/busybox --install -s /bin/
-
-clear
-
-# Say Hello
-echo '######################'
-echo 'Starting system'
-echo '######################'
-
-#mount
-echo '---> Mounting...'
-mount -t tmpfs none /tmp
-echo '---> done'
-
-# populate dev
-mdev -s
-
-echo 0 > /proc/sys/kernel/printk
-
-#start init program and display system infos
-echo '---> start binary'
-./usr/bin/systeminfo
-
-#sleep 2
-
-# start server
-echo '----> Starting Server'
-ifconfig lo up
-ifconfig eth0 up
-
-udhcpc -s /etc/udhcpc/simple.script
-ifconfig lo 127.0.0.1
-route add -host 127.0.0.1 lo
-httpd -h /www/ &
-
-#end
-echo '--> Starting shell'
-setsid cttyhack sh
+#!/bin/sh
 
 
+# Start all init scripts in /etc/init.d
+# executing them in numerical order.
+#
+for i in ls /etc/init.d/S??*  ;do
+
+     # Ignore dangling symlinks (if any).
+     [ ! -f "$i" ] && continue
+
+     case "$i" in
+	*.sh)
+	    # Source shell script for speed.
+	    (
+		trap - INT QUIT TSTP
+		set start
+		. $i
+	    )
+	    ;;
+	*)
+	    # No sh extension, so fork subprocess.
+	    $i start
+
+	    ;;
+    esac
+done
