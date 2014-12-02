@@ -18,20 +18,7 @@
 void *open_driver(void *thread_info);
 void help(void);
 
-/*
-	TODO
-	- HELP text
-	- paraleller zugriff  -> done
-	- option -o = (open Test) -> done
-	- option -c = (close Test) -> why? :D
-	- option -t = (waint time)
-	- option -n = anzahl threads (default 5)
-	- option -r = repeat of test
-	- option -d = path to device
-	- option -m = multitesting with different minor
-	Vorraussetzung:
-	- Treiber ist geladen
-*/
+
 
 struct thread_info
 {
@@ -181,15 +168,35 @@ void *open_driver(void *thread_info)
 	printf("THREAD %d: END THREAD\n", threadNumber);
 	pthread_exit(NULL);
 }
-
+/*
+	TODO
+	- HELP text
+	- verbose output
+	- paraleller zugriff  -> done
+	- option -o = (open Test) -> done
+	- option -c = (close Test) -> why? :D
+	- option -t = (waint time)
+	- option -n = anzahl threads (default 5)
+	- option -r = repeat of test
+	- option -d = path to device
+	- option -m = multitesting with different minor
+	Vorraussetzung:
+	- Treiber ist geladen
+*/
 void help(void)
 {
-	printf(	"\n\n"
+	printf(	"\nUsage: ./access -d [DEVICE_PATH] [OPTIONS]\n"
 			"\n"
 			"\n"
-			"\n"
-			"\n"
-			"\n"
-			"\n");
+			"\t OPTIONS:\n"
+			"\t-o		open test\n"
+			"\t-c		close test\n"
+			"\t-t [TIME]	time in millisecond to sleep between open and close\n"
+			"\t-n [NR]	number of threads\n"
+			"\t-r [NR]	number of repeats\n"
+			"\t-m [PATH]	start tests with different minor numbers\n"
+			"\t		[PATH] to device with different minor\n"
+			"\t-v 		verbose\n"
+			"\t\n");
 }
 
