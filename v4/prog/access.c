@@ -16,6 +16,7 @@
 #define NANO_TO_MILI 1000
 
 void *open_driver(void *thread_info);
+void help(void);
 
 /*
 	TODO
@@ -38,10 +39,9 @@ struct thread_info
 	int repeat;
 	int duration;
 	int threadNumber;
+	char *device;
 };
 
-static char *device;
-static char *minorOneDevice;
 
 int main(int argc, char *argv[])
 {
@@ -49,6 +49,9 @@ int main(int argc, char *argv[])
 	int opt;
 	int numberOfThreads = DEFAULT_NUMBER_OF_THREADS;
 	int opentest, closetest = FALSE;
+	char *minorOneDevice;
+	int minortest=FALSE;
+	
 	struct thread_info *thread_struct = NULL;
 	
 	thread_struct = malloc(sizeof (struct thread_info));
@@ -81,7 +84,7 @@ int main(int argc, char *argv[])
 				break;
 			case 'd':
 				printf("path to device: %s\n", optarg);
-				device = optarg;
+				thread_struct->device = optarg;
 				break;
 			case 'r':
 				printf("number of repeats: %s\n", optarg);
@@ -90,13 +93,14 @@ int main(int argc, char *argv[])
 			case 'm':
 				printf("multi-testing for minor number with device: %s\n", optarg);
 				minorOneDevice = optarg;
+				minortest = TRUE;
 				break;
 				
 		}
 	}
 
 	/* check if path ommitted */
-	if(device == NULL) {
+	if(thread_struct->device == NULL) {
 		printf("Usage: ./access -d [DEVICE_PATH] [OPTIONS]\n");
 		return EXIT_FAILURE;
 	}	
@@ -111,6 +115,11 @@ int main(int argc, char *argv[])
 	if(opentest) {
 		printf("OpenTest:\n");
 		for(i = 0; i < numberOfThreads; i++) {
+			/* if minortest is active
+			 * 	-> every 2nd time use another minor number */
+			if(minortest && (i%2)) {
+				thread_struct->device = minorOneDevice;
+			}
 			thread_struct->threadNumber= i;
 			printf("Start Thread %d\n", i);
 			pthread_create(&threads[i], NULL, open_driver, thread_struct);
@@ -149,7 +158,7 @@ void *open_driver(void *thread_info)
 		printf("THREAD %d: repeat %d\n", threadNumber, i );
 
 		printf("THREAD %d: Try to open Driver...\n", threadNumber);
-		fd = open(device, O_RDONLY);
+		fd = open(t->device, O_RDONLY);
 		if (fd < 0) {
 			printf("THREAD %d: Could not open", threadNumber);
 		} else {
@@ -171,5 +180,16 @@ void *open_driver(void *thread_info)
 	}
 	printf("THREAD %d: END THREAD\n", threadNumber);
 	pthread_exit(NULL);
+}
+
+void help(void)
+{
+	printf(	"\n\n"
+			"\n"
+			"\n"
+			"\n"
+			"\n"
+			"\n"
+			"\n");
 }
 
