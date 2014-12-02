@@ -5,21 +5,21 @@ ZERO_SITE_METHOD = file
 ZERO_SITE = zero-$(ZERO_VERSION).tar.gz
 
 
-TEMPLATE_DEPENDENCIES = linux
+ZERO_DEPENDENCIES = linux
 
-define TEMPLATE_BUILD_CMDS
+define ZERO_BUILD_CMDS
 	$(MAKE) $(LINUX_MAKE_FLAGS) -C $(LINUX_DIR) M=$(@D) modules 
 endef
 
-define TEMPLATE_INSTALL_TARGET_CMDS
+define ZERO_INSTALL_TARGET_CMDS
 	$(MAKE) $(LINUX_MAKE_FLAGS) -C $(LINUX_DIR) M=$(@D) modules_install
 endef
 
-define TEMPLATE_CLEAN_CMDS
+define ZERO_CLEAN_CMDS
 	$(MAKE) -C $(@D) clean
 endef
 
-define TEMPLATE_UNINSTALL_TARGET_CMS
+define ZERO_UNINSTALL_TARGET_CMS
 	rm $(TARGET_DIR)/usr/bin/zero
 endef
 
