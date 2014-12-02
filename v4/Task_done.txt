@@ -1,6 +1,7 @@
 Steffen:
 	- Toolchain konfigurieren (Aufgabenstellung System) check
 	- mit debugger rumspielen
+	- Kernel minimieren -> in Arbeit
 
 Timi:
 	- Kernel Modul Basic -> done
@@ -13,10 +14,11 @@ Timi:
 			-> testen mit access.c -> sobald fertig
 			-> Minor Funktionalitaet erweitern (return '0')
 			-> testscript anpassen
+	- Buildroot Pakete erstellen -> done
 
 Offene Punkte:
 
 	[ ] Source per Dropbear uebertragen
-	[ ] Kernel minimieren
 	[ ] Modul null
-	[ ] Buildroot Pakete erstellen
+	[ ] Homepage anpassen
+
