@@ -20,11 +20,12 @@ void *open_driver(void *thread_info);
 /*
 	TODO
 	- HELP text
-	- paraleller zugriff -> Threading? -> done
+	- paraleller zugriff  -> done
 	- option -o = (open Test) -> done
-	- option -c = (close Test)
+	- option -c = (close Test) -> why? :D
 	- option -t = (waint time)
 	- option -n = anzahl threads (default 5)
+	- option -r = repeat of test
 	- option -d = path to device
 	Vorraussetzung:
 	- Treiber ist geladen
@@ -49,8 +50,7 @@ int main(int argc, char *argv[])
 	struct thread_info *thread_struct = NULL;
 	
 	thread_struct = malloc(sizeof (struct thread_info));
-	if (thread_struct == NULL)
-	{
+	if (thread_struct == NULL){
 		fprintf(stderr, "Failed to allocate memory!\n");
 		return(-1);
 	}
@@ -58,7 +58,6 @@ int main(int argc, char *argv[])
 	thread_struct->duration = DEFAULT_DURATION;
 	thread_struct->repeat = DEFAULT_REPEAT;
 	
-
 	/* threads */
 	pthread_t *threads;
 
@@ -90,7 +89,7 @@ int main(int argc, char *argv[])
 	}
 
 	/* check if path ommitted */
-	if(device == NULL){
+	if(device == NULL) {
 		printf("Usage: ./access -d [DEVICE_PATH] [OPTIONS]\n");
 		return EXIT_FAILURE;
 	}	
@@ -104,36 +103,32 @@ int main(int argc, char *argv[])
 	int i;
 	if(opentest) {
 		printf("OpenTest:\n");
-		
 		for(i = 0; i < numberOfThreads; i++) {
 			thread_struct->threadNumber= i;
 			printf("Start Thread %d\n", i);
 			pthread_create(&threads[i], NULL, open_driver, thread_struct);
 		}	
 
-
 		for(i = 0; i < numberOfThreads; i++) {
 			printf("Join Thread %d\n", i);
 			pthread_join(threads[i], NULL);
 		}
-		
 	}
 	
+	/* close test */
 	if(closetest) {
 		printf("Close Test:\n");
 	}
 	
-	printf("vor free...\n");	
 	free(threads);
-
-	printf("End program:\n");
+	printf("End program\n");
+	
 	return 0;
 }
 
 void *open_driver(void *thread_info)
 {
 	int i, fd;
-	
 	struct thread_info *t = (struct thread_info *) thread_info;
 	struct timespec sleep_time;
 	int duration = t->duration;
@@ -143,7 +138,7 @@ void *open_driver(void *thread_info)
 	/* init time struct */
 	sleep_time.tv_sec = NANO_TO_MILI * duration;
 	
-	for(i = 0; i < repeat; i++ ){
+	for(i = 0; i < t->repeat; i++ ){
 		printf("THREAD %d: repeat %d\n", threadNumber, i );
 
 		printf("THREAD %d: Try to open Driver...\n", threadNumber);
