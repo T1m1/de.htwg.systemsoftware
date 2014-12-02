@@ -27,6 +27,7 @@ void *open_driver(void *thread_info);
 	- option -n = anzahl threads (default 5)
 	- option -r = repeat of test
 	- option -d = path to device
+	- option -m = multitesting with different minor
 	Vorraussetzung:
 	- Treiber ist geladen
 */
@@ -40,6 +41,7 @@ struct thread_info
 };
 
 static char *device;
+static char *minorOneDevice;
 
 int main(int argc, char *argv[])
 {
@@ -61,7 +63,7 @@ int main(int argc, char *argv[])
 	/* threads */
 	pthread_t *threads;
 
-	while(-1 != (opt = getopt (argc, argv, "d:oct:r:n:"))) {
+	while(-1 != (opt = getopt (argc, argv, "d:oct:r:n:m:"))) {
 		switch(opt){
 			case 'o':
 				opentest = TRUE;
@@ -85,6 +87,11 @@ int main(int argc, char *argv[])
 				printf("number of repeats: %s\n", optarg);
 				thread_struct->repeat = atoi(optarg);
 				break;
+			case 'm':
+				printf("multi-testing for minor number with device: %s\n", optarg);
+				minorOneDevice = optarg;
+				break;
+				
 		}
 	}
 
@@ -133,12 +140,12 @@ void *open_driver(void *thread_info)
 	struct timespec sleep_time;
 	int duration = t->duration;
 	int repeat = t->repeat;
-	int threadNumber = t->threadNumberM
+	int threadNumber = t->threadNumber;
 
 	/* init time struct */
 	sleep_time.tv_sec = NANO_TO_MILI * duration;
 	
-	for(i = 0; i < t->repeat; i++ ){
+	for(i = 0; i < repeat; i++ ){
 		printf("THREAD %d: repeat %d\n", threadNumber, i );
 
 		printf("THREAD %d: Try to open Driver...\n", threadNumber);
