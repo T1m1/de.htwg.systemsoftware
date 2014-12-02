@@ -18,7 +18,7 @@ Timi:
 
 Offene Punkte:
 
-	[ ] Source per Dropbear uebertragen
+	[X] Source per Dropbear uebertragen
 	[ ] Modul null
 	[ ] Homepage anpassen
 
