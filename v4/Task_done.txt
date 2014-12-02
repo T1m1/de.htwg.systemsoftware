@@ -1,6 +1,6 @@
 Steffen:
 	- Toolchain konfigurieren (Aufgabenstellung System) check
-	- mit debugger rumspielen
+	- mit debugger rumspielen -> mostly done
 	- Kernel minimieren -> in Arbeit
 
 Timi:
