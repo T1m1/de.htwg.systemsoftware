@@ -20,7 +20,7 @@ VERSION=1.0
 ARCHIVE_NAME=$APP_NAME-$VERSION
 
 mkdir $ARCHIVE_NAME 
-cd $HOME && cp -r template $ARCHIVE_NAME
+cd $HOME && cp -r $APP_NAME $ARCHIVE_NAME
 cd $HOME && tar -cvzf $ARCHIVE_NAME.tar.gz $ARCHIVE_NAME
 
 # copy package to d1
@@ -40,7 +40,7 @@ VERSION=1.0
 ARCHIVE_NAME=$APP_NAME-$VERSION
 
 mkdir $ARCHIVE_NAME 
-cd $HOME && cp -r template $ARCHIVE_NAME
+cd $HOME && cp -r $APP_NAME $ARCHIVE_NAME
 cd $HOME && tar -cvzf $ARCHIVE_NAME.tar.gz $ARCHIVE_NAME
 
 # copy package to d1
@@ -61,7 +61,7 @@ VERSION=1.0
 ARCHIVE_NAME=$APP_NAME-$VERSION
 
 mkdir $ARCHIVE_NAME 
-cd $HOME && cp -r template $ARCHIVE_NAME
+cd $HOME && cp -r $APP_NAME $ARCHIVE_NAME
 cd $HOME && tar -cvzf $ARCHIVE_NAME.tar.gz $ARCHIVE_NAME
 
 # copy package to d1
