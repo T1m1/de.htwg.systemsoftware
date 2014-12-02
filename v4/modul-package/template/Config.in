@@ -1,4 +1,4 @@
-config BR2_PACKAGE_SYSO_TEMPLATE
+config BR2_PACKAGE_TEMPLATE
 	bool "template"
 	help
 	  This is a template.
