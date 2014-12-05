@@ -1,0 +1,4 @@
+config BR2_PACKAGE_NULL
+	bool "null"
+	help
+	  This is a template.
