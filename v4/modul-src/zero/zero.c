@@ -24,6 +24,7 @@ static int driver_open(struct inode *geraetedatei, struct file *instanz);
 static int driver_release(struct inode *geraetedatei, struct file *instanz);
 
 static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_t *offset);
+static ssize_t driver_read_hello(struct file *instanz, char *user, size_t count, loff_t *offset);
 
 static struct file_operations fobs =
 {
@@ -36,6 +37,15 @@ static struct file_operations fobs =
 static int driver_open(struct inode *geraetedatei, struct file *instanz)
 {	
 	printk(KERN_INFO "ZERO: driver open!\n");
+	/* check if minor number 1 */
+	if (MINOR(geraetedatei->i_rdev) == 1) {
+		printk(KERN_INFO "...with minor number 1!\n");
+		fobs.read = driver_read_hello;
+	} else {
+		printk(KERN_INFO "ZERO: ...with minor number0!\n");
+		/* if called with minor 0 after called with minor 1 */
+		fobs.read = driver_read;
+	}
 	return EXIT_SUCCESS;
 }
 
@@ -45,7 +55,7 @@ static int driver_release(struct inode *geraetedatei, struct file *instanz)
 	return EXIT_SUCCESS;
 }
 
-static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_t *offset)
+static ssize_t driver_read_hello(struct file *instanz, char *user, size_t count, loff_t *offset)
 {
 	size_t not_copied, to_copy;
 	char str[] = "Hello World\n";
@@ -58,12 +68,25 @@ static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_
 	return to_copy - not_copied;
 }
 
+static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_t *offset)
+{
+	size_t not_copied, to_copy;
+	char str[] = "0\n";
+
+	printk(KERN_INFO "ZERO: read 0...\n");
+	
+	to_copy =  min(strlen(str) + 1, count);
+	not_copied = copy_to_user(user, str, to_copy);
+
+	return to_copy - not_copied;
+}
+
 static int __init ModInit(void)
 {
 	/* reserve device driver number */
 	if(alloc_chrdev_region(&dev_number, 0, 1, DRIVER_NAME) < 0)
 	{
-		printk("failed to alloc_chrdev_region\n");	
+		printk("ZERO: failed to alloc_chrdev_region\n");	
 		return -EIO;
 	}
 	/* reserve object */
