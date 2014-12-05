@@ -19,6 +19,7 @@ Timi:
 Offene Punkte:
 
 	[X] Source per Dropbear uebertragen
+	    [ ] in Makefile als option angeben
 	[ ] Modul null
 	[ ] Homepage anpassen
 
