@@ -18,6 +18,38 @@ static dev_t dev_number;
 static struct cdev *driver_object;
 struct class *null_class;
 
+static int driver_open(struct inode *geraetedatei, struct file *instanz);
+static int driver_release(struct inode *geraetedatei, struct file *instanz);
+
+static ssize_t driver_write(struct file *instanz, const char *user, size_t count, loff_t *offset);
+
+
+static struct file_operations fobs =
+{
+	.owner = THIS_MODULE,
+	.open = driver_open,
+	.release = driver_release,
+	.write = driver_write
+};
+
+static int driver_open(struct inode *geraetedatei, struct file *instanz)
+{
+	printk(KERN_INFO "NULL Driver open!\n");
+	return EXIT_SUCCESS;
+}
+
+static int driver_release(struct inode *geraetedatei, struct file *instanz)
+{
+	printk(KERN_INFO "Release driver!\n");
+	return EXIT_SUCCESS;
+}
+
+static ssize_t driver_write(struct file *instanz, const char *user, size_t count, loff_t *offset)
+{
+	printk(KERN_INFO "NULL write called...\n");
+	return 0;
+}
+
 static int __init ModInit(void)
 {
 	/* reserve device driver number */
