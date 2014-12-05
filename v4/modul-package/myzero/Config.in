@@ -1,0 +1,4 @@
+config BR2_PACKAGE_MYZERO
+	bool "myzero"
+	help
+	  This is a MYzero.
