@@ -1,0 +1,4 @@
+#!/bin/sh 
+echo ''
+echo '--> Starting shell'
+setsid cttyhack sh
