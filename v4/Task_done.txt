@@ -9,7 +9,7 @@ Timi:
 	- test-template.sh -> done
 	- Modul:
 		- OpenClose -> fertig
-			-> access.c -> refactoring & testing steht noch aus
+			-> access.c -> mit verschiednene minor number zugreifen
 		- Zero -> Ausgabe von "Hello World" läuft
 			-> testen mit access.c -> sobald fertig
 			-> Minor Funktionalitaet erweitern (return '0')
@@ -19,6 +19,7 @@ Timi:
 Offene Punkte:
 
 	[ ] Source per Dropbear uebertragen
+		[ ] -> makefile option
 	[ ] Modul null
 	[ ] Homepage anpassen
 
