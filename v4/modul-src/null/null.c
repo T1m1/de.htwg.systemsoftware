@@ -4,7 +4,7 @@
 #include <linux/fs.h>
 #include <linux/cdev.h>
 #include <linux/device.h>
-
+#include <linux/uaccess.h>
 
 #define DRIVER_NAME "null"
 
@@ -17,6 +17,8 @@ static struct file_operations fobs;
 static dev_t dev_number;
 static struct cdev *driver_object;
 struct class *null_class;
+
+static char driver_buffer[1024];
 
 static int driver_open(struct inode *geraetedatei, struct file *instanz);
 static int driver_release(struct inode *geraetedatei, struct file *instanz);
@@ -46,8 +48,19 @@ static int driver_release(struct inode *geraetedatei, struct file *instanz)
 
 static ssize_t driver_write(struct file *instanz, const char *user, size_t count, loff_t *offset)
 {
+	size_t to_copy = count;
+	
 	printk(KERN_INFO "NULL write called...\n");
-	return 0;
+	
+	if(to_copy > sizeof(driver_buffer)) {
+		to_copy = sizeof(driver_buffer);
+	}
+	
+	if(copy_from_user(driver_buffer, user, to_copy) != 0) {
+		return -EFAULT;
+	}
+	printk(KERN_INFO "Read %s from user... byebye!", driver_buffer);
+	return to_copy;
 }
 
 static int __init ModInit(void)
