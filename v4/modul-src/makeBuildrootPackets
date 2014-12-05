@@ -55,7 +55,7 @@ cd $HOME
 
 ################ make zero archive -> START
 
-APP_NAME=zero
+APP_NAME=myzero
 VERSION=1.0
 ARCHIVE_NAME=$APP_NAME-$VERSION
 
