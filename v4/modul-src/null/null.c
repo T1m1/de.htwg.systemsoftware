@@ -48,7 +48,7 @@ static int driver_release(struct inode *geraetedatei, struct file *instanz)
 
 static ssize_t driver_write(struct file *instanz, const char *user, size_t count, loff_t *offset)
 {
-	size_t to_copy = count;
+/*	size_t to_copy = count;
 	
 	printk(KERN_INFO "NULL write called...\n");
 	
@@ -61,6 +61,10 @@ static ssize_t driver_write(struct file *instanz, const char *user, size_t count
 	}
 	printk(KERN_INFO "Read %s from user... byebye!", driver_buffer);
 	return to_copy;
+ */
+	printk("NULL: Write\n");
+	printk("%d Bytes\n", count);
+	return count;
 }
 
 static int __init ModInit(void)
