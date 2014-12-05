@@ -12,6 +12,7 @@
 /* normaly in stdlib.h */
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
+#define NUMBER_OF_MINOR 2
 
 static int major;
 static struct file_operations fobs;
@@ -71,7 +72,7 @@ static ssize_t driver_read_hello(struct file *instanz, char *user, size_t count,
 static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_t *offset)
 {
 	size_t not_copied, to_copy;
-	char str[] = "0\n";
+	char str[] = "0";
 
 	printk(KERN_INFO "ZERO: read 0...\n");
 	
@@ -84,7 +85,7 @@ static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_
 static int __init ModInit(void)
 {
 	/* reserve device driver number */
-	if(alloc_chrdev_region(&dev_number, 0, 1, DRIVER_NAME) < 0)
+	if(alloc_chrdev_region(&dev_number, 0, NUMBER_OF_MINOR, DRIVER_NAME) < 0)
 	{
 		printk("ZERO: failed to alloc_chrdev_region\n");	
 		return -EIO;
@@ -99,7 +100,7 @@ static int __init ModInit(void)
 	driver_object->owner = THIS_MODULE;
 	driver_object->ops = &fobs;
 	
-	if(cdev_add(driver_object, dev_number, 1))
+	if(cdev_add(driver_object, dev_number, NUMBER_OF_MINOR))
 	{
 		goto free_cdev;
 	}
@@ -116,7 +117,7 @@ free_cdev:
 	kobject_put(&driver_object->kobj);
 	
 free_device_number:
-	unregister_chrdev_region(dev_number, 1);
+	unregister_chrdev_region(dev_number, NUMBER_OF_MINOR);
 	return -EIO;
 	
 }
@@ -126,7 +127,7 @@ static void __exit ModExit(void)
 	device_destroy(template_class, dev_number);
 	class_destroy(template_class);
 	cdev_del(driver_object);
-	unregister_chrdev_region(dev_number, 1);
+	unregister_chrdev_region(dev_number, NUMBER_OF_MINOR);
 	return;
 }
 
