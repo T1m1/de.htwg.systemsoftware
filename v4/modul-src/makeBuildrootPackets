@@ -74,7 +74,7 @@ cd $HOME
 
 ################ make null archive -> START
 
-APP_NAME=null
+APP_NAME=mynull
 VERSION=1.0
 ARCHIVE_NAME=$APP_NAME-$VERSION
 
