@@ -1,9 +1,9 @@
 #!/bin/sh
 
-PROG_NAME=zero
+PROG_NAME=myzero
 
 # clear dmesg output
-dmesg -c > /dev/null
+dmesg -c > /dev/myzero
 
 # show modul informations
 echo "********** modul info **********"

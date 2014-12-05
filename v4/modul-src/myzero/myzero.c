@@ -7,7 +7,7 @@
 #include <asm/uaccess.h>
 
 
-#define DRIVER_NAME "zero"
+#define DRIVER_NAME "myzero"
 
 /* normaly in stdlib.h */
 #define EXIT_SUCCESS 0
@@ -136,7 +136,7 @@ module_exit(ModExit);
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Timotheus Ruprecht and  Steffen Gorenflo");
-MODULE_DESCRIPTION("Modul Zero");
+MODULE_DESCRIPTION("Modul MyZero");
 MODULE_SUPPORTED_DEVICE("none");
 
 
