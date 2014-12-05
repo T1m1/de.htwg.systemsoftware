@@ -11,5 +11,6 @@ if BR2_PACKAGE_SYSO
                 source package/syso/template/Config.in
                 source package/syso/openclose/Config.in
                 source package/syso/zero/Config.in
+                source package/syso/null/Config.in
         endmenu
 endif
