@@ -19,12 +19,11 @@ CROSS_COMPILE=/group/labworks/toolchain/buildroot.git/output/host/usr/bin/arm-bu
 CC=$(CROSS_COMPILE)gcc
 
 ARCH=arm
-
 #Flag for Compiler-Optionen
 
 
 
-CFLAGS=-g -Wall -Werror -static
+CFLAGS=-g -static
 
 THREADFLAG=-lpthread
 
