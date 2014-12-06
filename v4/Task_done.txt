@@ -8,15 +8,14 @@ Timi:
 	- template.c -> fehlt noch "/sbin/mdev" als hotplug
 	- test-template.sh -> done
 	- Modul:
-		- OpenClose -> fertig
-			-> access.c -> mit verschiednene minor number zugreifen (offen)
+		- OpenClose -> done
+			-> access.c -> done
 		- Zero -> fertig
 			-> testen mit access.c (offen)
 	- Buildroot Pakete erstellen -> done
 	- modul null -> done
-	- Homepage Html angepasst
+	- Homepage Html angepasst -> done
 	- offen:
-			- access.c
 			- homepage -> scripts aufrufen
 
 Offene Punkte:
