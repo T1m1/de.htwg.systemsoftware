@@ -23,7 +23,7 @@ ARCH=arm
 
 
 
-CFLAGS=-g -static
+CFLAGS=-g -Wall -Werror -static
 
 THREADFLAG=-lpthread
 
