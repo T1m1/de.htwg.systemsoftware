@@ -23,12 +23,12 @@ struct globalOptions {
 	struct timespec sleep_time;
 	int repeat;
 	int duration;
-	char *device;
 };
 
 struct thread_info {
 	struct globalOptions *global;
 	int threadNumber;
+	char *device;
 };
 
 
@@ -40,6 +40,7 @@ int main(int argc, char *argv[])
 	int opentest, closetest = FALSE;
 	char *minorOneDevice;
 	int minortest=FALSE;
+	char *device = NULL;
 	
 	struct globalOptions *global;
     global = malloc (sizeof (struct globalOptions));
@@ -69,7 +70,7 @@ int main(int argc, char *argv[])
 				break;
 			case 'd':
 				printf("path to device: %s\n", optarg);
-				global->device = optarg;
+				device = optarg;
 				break;
 			case 'r':
 				printf("number of repeats: %s\n", optarg);
@@ -87,7 +88,7 @@ int main(int argc, char *argv[])
 	}
 
 	/* check if path ommitted */
-	if(global->device == NULL) {
+	if(device == NULL) {
 		help();
 		return EXIT_FAILURE;
 	}	
@@ -125,7 +126,10 @@ int main(int argc, char *argv[])
 			/* if minortest is active
 			 * 	-> every 2nd time use another minor number */
 			if(minortest && (i%2)) {
-				thread_struct[i].global->device = minorOneDevice;
+				printf("status of minortest: %d %d = %d\n", minortest, (i%2), (minortest && (i%2)));
+				thread_struct[i].device = minorOneDevice;
+			} else {
+				thread_struct[i].device = device;	
 			}
 			//thread_struct->threadNumber= i;
 			if (pthread_attr_init (&attr[i]) == -1)
@@ -175,15 +179,15 @@ void *open_driver(void *threadarg)
 	int repeat = t->global->repeat;
 	int threadNumber = t->threadNumber;
 	
-	printf("Device: %s", t->global->device);
+	printf("Device: %s", t->device);
 
-	sleep_time.tv_sec = NANO_TO_MILI * duration;
-
+	sleep_time.tv_sec = 0;
+	sleep_time.tv_nsec = NANO_TO_MILI * duration;
 	for(i = 0; i < repeat; i++ ){
 		printf("THREAD %d: repeat %d\n", threadNumber, i );
 
 		printf("THREAD %d: Try to open Driver...\n", threadNumber);
-		fd = open(t->global->device, O_RDONLY);
+		fd = open(t->device, O_RDONLY);
 		if (fd < 0) {
 			printf("THREAD %d: Could not open", threadNumber);
 		} else {
@@ -227,14 +231,14 @@ void help(void)
 			"\n"
 			"\n"
 			"\t OPTIONS:\n"
-			"\t-o		open test\n"
-			"\t-c		close test\n"
-			"\t-t [TIME]	time in millisecond to sleep between open and close\n"
-			"\t-n [NR]	number of threads\n"
-			"\t-r [NR]	number of repeats\n"
-			"\t-m [PATH]	start tests with different minor numbers\n"
-			"\t		[PATH] to device with different minor\n"
-			"\t-v 		verbose\n"
+			"\t-o		  open test\n"
+			"\t-c		  close test\n"
+			"\t-t [TIME]  time in millisecond to sleep between open and close\n"
+			"\t-n [NR]	  number of threads\n"
+			"\t-r [NR]	  number of repeats\n"
+			"\t-m [PATH]  start tests with different minor numbers\n"
+			"\t	  [PATH]  to device with different minor\n"
+			"\t-v 		  verbose\n"
 			"\t\n");
 }
 
