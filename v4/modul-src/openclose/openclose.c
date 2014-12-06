@@ -70,7 +70,9 @@ static int driver_open(struct inode *geraetedatei, struct file *instanz)
 
 static int driver_release(struct inode *geraetedatei, struct file *instanz)
 {
-	atomic_inc(&lock);
+	if (MINOR(geraetedatei->i_rdev) == 1) {
+		atomic_inc(&lock);
+	}
 	printk(KERN_INFO "Release driver!\n");
 	return EXIT_SUCCESS;
 }
