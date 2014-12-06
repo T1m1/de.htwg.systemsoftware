@@ -5,7 +5,7 @@ Steffen:
 
 Timi:
 	- Kernel Modul Basic -> done
-	- template.c -> fehlt noch "/sbin/mdev" als hotplug
+	- template.c -> done 
 	- test-template.sh -> done
 	- Modul:
 		- OpenClose -> done
@@ -17,9 +17,17 @@ Timi:
 	- Homepage Html angepasst -> done
 	- offen:
 			- homepage -> scripts aufrufen
+			- access.c 
+				-> sleep functionality
+				-> verbose output
+				-> refactoring
+			- testscripts
+			- make menuconfig (error) -> weil module umbenannt
+			
 
 Offene Punkte:
 
 	[ ] Source per Dropbear uebertragen
 		[ ] -> makefile option
+	[ ] "/sbin/mdev" als hotplug
 
