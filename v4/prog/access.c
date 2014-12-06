@@ -40,9 +40,6 @@ int main(int argc, char *argv[])
 	int opentest, closetest = FALSE;
 	char *minorOneDevice;
 	int minortest=FALSE;
-	int duration = DEFAULT_DURATION;
-	int repeat = DEFAULT_REPEAT;
-	char *device;
 	
 	struct globalOptions *global;
     global = malloc (sizeof (struct globalOptions));
@@ -50,6 +47,8 @@ int main(int argc, char *argv[])
                 perror ("malloc");
                 exit (EXIT_FAILURE);
     }
+    global->duration = DEFAULT_DURATION;
+    global->repeat = DEFAULT_REPEAT;
 
 
 	while(-1 != (opt = getopt (argc, argv, "d:oct:r:n:m:h"))) {
