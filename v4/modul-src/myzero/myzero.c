@@ -61,7 +61,7 @@ static ssize_t driver_read_hello(struct file *instanz, char *user, size_t count,
 	size_t not_copied, to_copy;
 	char str[] = "Hello World\n";
 
-	printk(KERN_INFO "ZERO: read...\n");
+	printk(KERN_INFO "ZERO: read Hello World\n");
 	
 	to_copy =  min(strlen(str) + 1, count);
 	not_copied = copy_to_user(user, str, to_copy);
@@ -74,7 +74,7 @@ static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_
 	size_t not_copied, to_copy;
 	char str[] = "0";
 
-	printk(KERN_INFO "ZERO: read 0...\n");
+	printk(KERN_INFO "ZERO: read 0\n");
 	
 	to_copy =  min(strlen(str) + 1, count);
 	not_copied = copy_to_user(user, str, to_copy);

@@ -1,6 +1,7 @@
 #!/bin/sh
 
 PROG_NAME=myzero
+PATH_TO_KO=/lib/modules/3.17.2/extra
 
 # clear dmesg output
 dmesg -c > /dev/myzero
