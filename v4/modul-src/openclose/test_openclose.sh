@@ -2,6 +2,7 @@
 
 PROG_NAME=openclose
 PATH_TO_KO=/lib/modules/3.17.2/extra
+
 ## init
 # unload modul (if loaded)
 rmmod $PROG_NAME > /dev/null
