@@ -13,6 +13,7 @@ endef
 
 define MYNULL_INSTALL_TARGET_CMDS
 	$(MAKE) $(LINUX_MAKE_FLAGS) -C $(LINUX_DIR) M=$(@D) modules_install
+	$(INSTALL) -m 0755 -D $(@D)/test_mynull.sh $(TARGET_DIR)/usr/bin/test_mynull.sh
 endef
 
 define MYNULL_CLEAN_CMDS
