@@ -19,8 +19,8 @@ Timi:
 			- homepage -> scripts aufrufen
 			- access.c 
 				-> sleep functionality
-				-> verbose output
-				-> refactoring
+				-> verbose output -> done
+				-> refactoring -> done
 			- testscripts
 			- make menuconfig (error) -> weil module umbenannt
 			
