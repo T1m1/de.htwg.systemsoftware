@@ -15,7 +15,7 @@
 #define DEFAULT_NUMBER_OF_THREADS 5;
 #define DEFAULT_DURATION 1;
 #define DEFAULT_REPEAT 5;
-#define NANO_TO_MILI 1000
+#define NANO_TO_MILI 1000000
 
 void *open_driver(void *threadarg);
 void help(void);
@@ -201,7 +201,7 @@ void *open_driver(void *threadarg)
 			verbPrintf(t->global->verbose, "Thread %d: open driver!\n", threadNumber);
 		}
 		
-		verbPrintf(t->global->verbose, "Thread %d: sleep %d miliseconds!\n", threadNumber, (duration * NANO_TO_MILI));
+		verbPrintf(t->global->verbose, "Thread %d: sleep %d miliseconds!\n", threadNumber, duration);
 		clock_nanosleep(CLOCK_REALTIME, 0, &sleep_time, NULL);
 
 
