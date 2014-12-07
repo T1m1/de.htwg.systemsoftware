@@ -11,9 +11,10 @@ Timi:
 		- OpenClose -> done
 			-> access.c -> done
 		- Zero -> fertig
-			-> testen mit access.c (offen)
+			-> testen mit access.c (function read) -> done
 	- Buildroot Pakete erstellen -> done
 	- modul null -> done
+			-> testen mit access.c (functin write) -> done
 	- Homepage Html angepasst -> done
 	- offen:
 			- homepage -> scripts aufrufen
@@ -30,6 +31,4 @@ Offene Punkte:
 	[ ] Source per Dropbear uebertragen
 		[ ] -> makefile option
 	[ ] "/sbin/mdev" als hotplug
-	[ ] access -> read function
-	[ ] access -> write function
 
