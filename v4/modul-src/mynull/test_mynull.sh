@@ -30,15 +30,14 @@ cat /proc/devices
 echo "********** test with access.c **********"
 # make own devices
 mknod /dev/major_0_test_$PROG_NAME c $major 0 
-mknod /dev/major_1_test_$PROG_NAME c $major 1 
 
 echo "create testfile for write"
-dd if=/dev/zero of=/usr/bin/testfile bs=1M count=1024
+dd if=/dev/zero of=/usr/bin/testfile bs=1 count=1024
 
 echo "parameter of access.c:"
-echo "-d /dev/major_0_test_$PROG_NAME -w /usr/bin/testfile -v -t 5000 -n 5 -e 5 -m /dev/major_1_test_$PROG_NAME"
+echo "-d /dev/major_0_test_$PROG_NAME -w /usr/bin/testfile -v -t 5000 -n 5 -e 5"
 
-./usr/bin/access -d /dev/major_0_test_$PROG_NAME -w /usr/bin/testfile -v -t 5000 -n 5 -e 5 -m /dev/major_1_test_$PROG_NAME
+./usr/bin/access -d /dev/major_0_test_$PROG_NAME -w /usr/bin/testfile -v -t 5000 -n 5 -e 5 
 
 echo "********** dmesg logs from access script **********"
 dmesg -c
