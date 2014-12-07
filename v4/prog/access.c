@@ -205,27 +205,28 @@ void *open_driver(void *threadarg)
 				verbPrintf(t->global->verbose, "Thread %d: could not open driver!\n", threadNumber);
 			} else {
 				verbPrintf(t->global->verbose, "Thread %d: open driver!\n", threadNumber);
+			
+					/* read test */
+				if (t->global->read) {
+					char buf[BUFFER_SIZE];
+					int ret;
+					int rounds = 0;
+					
+					while ((rounds < 50) && (ret = read(fd, buf, BUFFER_SIZE))) {
+						verbPrintf(t->global->verbose, "Read data %s\n", buf);
+						rounds++;
+					}
+
+					if (!ret || (rounds >= 50))
+						printf("Read finish after 50 lines or EOF\n");
+					else {
+						perror("Error closing file.\n");
+						pthread_exit(NULL);
+					}
+				}
 			}
 		}
 		
-		/* read test */
-		if (t->global->read) {
-			char buf[BUFFER_SIZE];
-			int ret;
-			int rounds = 0;
-			
-			while ((rounds < 50) && (ret = read(fd, buf, BUFFER_SIZE))) {
-				verbPrintf(t->global->verbose, "Read data %s\n", buf);
-				rounds++;
-			}
-
-			if (!ret)
-				printf("Reached EOF\n");
-			else {
-				perror("Error closing file.\n");
-				pthread_exit(NULL);
-			}
-		}
 		
 		/* write test */
 		if (t->global->write) {
