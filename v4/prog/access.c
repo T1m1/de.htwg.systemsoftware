@@ -44,7 +44,6 @@ int main(int argc, char *argv[])
 	char *minorOneDevice;
 	int minortest = FALSE;
 	char *device = NULL;
-	int verbose = FALSE;
 	
 	struct globalOptions *global;
     global = malloc (sizeof (struct globalOptions));
@@ -81,7 +80,7 @@ int main(int argc, char *argv[])
 				minortest = TRUE;
 				break;
 			case 'v':
-				verbose = TRUE;
+				global->verbose = TRUE;
 				break;
 			case 'h':
 				help();
@@ -96,13 +95,13 @@ int main(int argc, char *argv[])
 	}	
 	
 	/* print verbose information */
-	verbPrintf(verbose, "Verbose: ON\n");
-	verbPrintf(verbose, "Waiting time: %d\n",
+	verbPrintf(global->verbose, "Verbose: ON\n");
+	verbPrintf(global->verbose, "Waiting time: %d\n",
                             global->duration);
-    verbPrintf(verbose, "Number of threads: %d\n", numberOfThreads);
-    verbPrintf(verbose, "Path to device: %s\n", device);
-    verbPrintf(verbose, "Number of repeats: %d\n", global->repeat);
-    verbPrintf(verbose, "Multi-Testing for minor number is ON! With device: %s\n", minorOneDevice);	
+    verbPrintf(global->verbose, "Number of threads: %d\n", numberOfThreads);
+    verbPrintf(global->verbose, "Path to device: %s\n", device);
+    verbPrintf(global->verbose, "Number of repeats: %d\n", global->repeat);
+    verbPrintf(global->verbose, "Multi-Testing for minor number is ON! With device: %s\n", minorOneDevice);	
 		
 	/********************************************
     *       struct initialisiation              *
@@ -128,7 +127,7 @@ int main(int argc, char *argv[])
 	/* open test */
 	int i;
 	if(opentest) {
-		verbPrintf(verbose, "Start opentest:\n");
+		verbPrintf(global->verbose, "Start opentest:\n");
 		for(i = 0; i < numberOfThreads; i++) {
 			thread_struct[i].global = global;
 			thread_struct[i].threadNumber = i;
@@ -136,10 +135,10 @@ int main(int argc, char *argv[])
 			/* if minortest is active
 			 * 	-> every 2nd time use another minor number */
 			if(minortest && (i%2)) {
-				verbPrintf(verbose, "Thread nr. %d start with device %s\n", i, minorOneDevice);
+				verbPrintf(global->verbose, "Thread nr. %d start with device %s\n", i, minorOneDevice);
 				thread_struct[i].device = minorOneDevice;
 			} else {
-				verbPrintf(verbose, "Thread nr. %d start with device %s\n", i, device);
+				verbPrintf(global->verbose, "Thread nr. %d start with device %s\n", i, device);
 				thread_struct[i].device = device;	
 			}
 			
@@ -152,7 +151,7 @@ int main(int argc, char *argv[])
 		}	
 
 		for(i = 0; i < numberOfThreads; i++) {
-			verbPrintf(verbose, "Join thread nr. %d\n", i);
+			verbPrintf(global->verbose, "Join thread nr. %d\n", i);
 			pthread_join(threads[i], NULL);
 			
 			if (pthread_attr_destroy (&attr[i]) == -1)
@@ -161,13 +160,13 @@ int main(int argc, char *argv[])
 				exit (1);
 			}
 		}
-		verbPrintf(verbose, "Finish opentest!\n");
+		verbPrintf(global->verbose, "Finish opentest!\n");
 	}
 	
 	/* close test */
 	if(closetest) {
-		verbPrintf(verbose, "Start closetest:\n");
-		verbPrintf(verbose, "Finish closetest!\n");
+		verbPrintf(global->verbose, "Start closetest:\n");
+		verbPrintf(global->verbose, "Finish closetest!\n");
 	}
 	
 	free(threads);
@@ -175,7 +174,7 @@ int main(int argc, char *argv[])
 	free(thread_struct);
 	free(global);
 	
-	verbPrintf(verbose, "End of program!\n");
+	verbPrintf(global->verbose, "End of program!\n");
 	
 	return 0;
 }
