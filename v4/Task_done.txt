@@ -18,7 +18,7 @@ Timi:
 	- offen:
 			- homepage -> scripts aufrufen
 			- access.c 
-				-> sleep functionality
+				-> sleep functionality -> done
 				-> verbose output -> done
 				-> refactoring -> done
 			- testscripts
@@ -30,4 +30,6 @@ Offene Punkte:
 	[ ] Source per Dropbear uebertragen
 		[ ] -> makefile option
 	[ ] "/sbin/mdev" als hotplug
+	[ ] access -> read function
+	[ ] access -> write function
 
