@@ -47,10 +47,10 @@ static atomic_t lock = ATOMIC_INIT(MAX_NUMBER_OF_PROCESS);
 
 static int driver_open(struct inode *geraetedatei, struct file *instanz)
 {
-	printk(KERN_INFO "Try to open driver\n");
+	printk(KERN_INFO "Try to open driver..\n");
 	/* check if minor number 1 */
 	if (MINOR(geraetedatei->i_rdev) == 1) {
-		printk(KERN_INFO "...with minor number 1!\n");
+		printk(KERN_INFO "...with minor 1!\n");
 		if (!atomic_dec_and_test(&lock)) {
 			atomic_inc(&lock);
 			printk(KERN_INFO "Diver already in use!\n");
@@ -58,13 +58,14 @@ static int driver_open(struct inode *geraetedatei, struct file *instanz)
 		}
 		fobs.read = driver_read_single;
 		fobs.write = driver_write_single;
+		printk(KERN_INFO "Driver open with minor 1!\n");
 	} else {
-		printk(KERN_INFO "...with minor number0!\n");
+		printk(KERN_INFO "...with minor 0!\n");
 		/* if called with minor 0 after called with minor 1 */
 		fobs.read = driver_read;
 		fobs.write = driver_write;
+		printk(KERN_INFO "Driver open with minor 0!\n");
 	}
-	printk(KERN_INFO "Driver open!\n");
 	return EXIT_SUCCESS;
 }
 
@@ -72,8 +73,11 @@ static int driver_release(struct inode *geraetedatei, struct file *instanz)
 {
 	if (MINOR(geraetedatei->i_rdev) == 1) {
 		atomic_inc(&lock);
+		printk(KERN_INFO "Release driver with minor 1!\n");
+	} else {
+		printk(KERN_INFO "Release driver with minor 0!\n");
 	}
-	printk(KERN_INFO "Release driver!\n");
+	
 	return EXIT_SUCCESS;
 }
 
