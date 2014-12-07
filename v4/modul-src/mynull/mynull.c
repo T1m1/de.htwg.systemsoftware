@@ -36,13 +36,13 @@ static struct file_operations fobs =
 
 static int driver_open(struct inode *geraetedatei, struct file *instanz)
 {
-	printk(KERN_INFO "NULL Driver open!\n");
+	printk(KERN_INFO "MYNULL: Driver open!\n");
 	return EXIT_SUCCESS;
 }
 
 static int driver_release(struct inode *geraetedatei, struct file *instanz)
 {
-	printk(KERN_INFO "Release driver!\n");
+	printk(KERN_INFO "MYNULL: Release driver!\n");
 	return EXIT_SUCCESS;
 }
 
@@ -62,8 +62,8 @@ static ssize_t driver_write(struct file *instanz, const char *user, size_t count
 	printk(KERN_INFO "Read %s from user... byebye!", driver_buffer);
 	return to_copy;
  */
-	printk("NULL: Write\n");
-	printk("%d Bytes\n", count);
+	printk("MYNULL: Write\n");
+	printk("MYNULL: %d Bytes\n", count);
 	return count;
 }
 
