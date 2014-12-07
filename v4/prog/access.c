@@ -188,53 +188,37 @@ void *open_driver(void *threadarg)
 	int duration = t->global->duration;
 	int repeat = t->global->repeat;
 	int threadNumber = t->threadNumber;
-	
-	printf("Device: %s", t->device);
 
 	sleep_time.tv_sec = 0;
-	sleep_time.tv_nsec = NANO_TO_MILI * duration;
+	sleep_time.tv_nsec = (NANO_TO_MILI * duration);
+	
 	for(i = 0; i < repeat; i++ ){
-		printf("THREAD %d: repeat %d\n", threadNumber, i );
-
-		printf("THREAD %d: Try to open Driver...\n", threadNumber);
+		verbPrintf(t->global->verbose, "Thread %d: repeat %d\n", threadNumber, i);
+		verbPrintf(t->global->verbose, "Thread %d: try to open driver..\n", threadNumber);
 		fd = open(t->device, O_RDONLY);
 		if (fd < 0) {
-			printf("THREAD %d: Could not open", threadNumber);
+			verbPrintf(t->global->verbose, "Thread %d: could not open driver!\n", threadNumber);
 		} else {
-			printf("THREAD %d: Open Driver!\n", threadNumber);
+			verbPrintf(t->global->verbose, "Thread %d: open driver!\n", threadNumber);
 		}
 		
-		printf("THREAD %d: Sleep %d Millisecond\n", threadNumber, duration *NANO_TO_MILI);
+		verbPrintf(t->global->verbose, "Thread %d: sleep %d miliseconds!\n", threadNumber, (duration * NANO_TO_MILI));
 		clock_nanosleep(CLOCK_REALTIME, 0, &sleep_time, NULL);
 
-		printf("weiter gehts");
-		printf("THREAD %d: Try to close driver...\n", threadNumber);
+
+		verbPrintf(t->global->verbose, "Thread %d: try to close driver!\n", threadNumber);		
 		if(fd >= 0) {
 			if(close(fd) >= 0) {
-				printf("THREAD %d: Driver closed!\n", threadNumber);
+				verbPrintf(t->global->verbose, "Thread %d: driver closed!\n", threadNumber);
 			} else {
-				printf("THREAD %d: Driver not closed -.-.-.-.- !\n", threadNumber);
+				verbPrintf(t->global->verbose, "Thread %d: driver not closed!\n", threadNumber);
 			}
 		}
 	}
-	printf("THREAD %d: END THREAD\n", threadNumber);
+	verbPrintf(t->global->verbose, "Thread %d: end of thread!\n", threadNumber);
 	pthread_exit(NULL);
 }
-/*
-	TODO
-	- HELP text
-	- verbose output
-	- paraleller zugriff  -> done
-	- option -o = (open Test) -> done
-	- option -c = (close Test) -> why? :D
-	- option -t = (waint time)
-	- option -n = anzahl threads (default 5)
-	- option -r = repeat of test
-	- option -d = path to device
-	- option -m = multitesting with different minor
-	Vorraussetzung:
-	- Treiber ist geladen
-*/
+
 void help(void)
 {
 	printf(	"\nUsage: ./access -d [DEVICE_PATH] [OPTIONS]\n"
