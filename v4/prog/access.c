@@ -42,20 +42,21 @@ int main(int argc, char *argv[])
 	int numberOfThreads = DEFAULT_NUMBER_OF_THREADS;
 	int opentest, closetest = FALSE;
 	char *minorOneDevice;
-	int minortest=FALSE;
+	int minortest = FALSE;
 	char *device = NULL;
+	int verbose = FALSE;
 	
 	struct globalOptions *global;
     global = malloc (sizeof (struct globalOptions));
     if (global == NULL) {
-                perror ("malloc");
-                exit (EXIT_FAILURE);
+            perror ("malloc");
+            exit (EXIT_FAILURE);
     }
     global->duration = DEFAULT_DURATION;
     global->repeat = DEFAULT_REPEAT;
 
 
-	while(-1 != (opt = getopt (argc, argv, "d:oct:r:n:m:h"))) {
+	while(-1 != (opt = getopt (argc, argv, "d:oct:r:n:m:hv"))) {
 		switch(opt){
 			case 'o':
 				opentest = TRUE;
@@ -64,25 +65,23 @@ int main(int argc, char *argv[])
 				closetest = TRUE;
 				break;
 			case 't':
-				printf("waiting time: %s\n", optarg);
 				global->duration = atoi(optarg);
 				break;
 			case 'n':
-				printf("number of threads: %s\n", optarg);
 				numberOfThreads = atoi(optarg);
 				break;
 			case 'd':
-				printf("path to device: %s\n", optarg);
 				device = optarg;
 				break;
 			case 'r':
-				printf("number of repeats: %s\n", optarg);
 				global->repeat = atoi(optarg);
 				break;
 			case 'm':
-				printf("multi-testing for minor number with device: %s\n", optarg);
 				minorOneDevice = optarg;
 				minortest = TRUE;
+				break;
+			case 'v':
+				verbose = TRUE;
 				break;
 			case 'h':
 				help();
@@ -96,6 +95,14 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}	
 	
+	/* print verbose information */
+	verbPrintf(verbose, "Verbose: ON\n");
+	verbPrintf(verbose, "Waiting time: %d\n",
+                            global->duration);
+    verbPrintf(verbose, "Number of threads: %d\n", numberOfThreads);
+    verbPrintf(verbose, "Path to device: %s\n", device);
+    verbPrintf(verbose, "Number of repeats: %d\n", global->repeat);
+    verbPrintf(verbose, "Multi-Testing for minor number is ON! With device: %s\n", minorOneDevice);	
 		
 	/********************************************
     *       struct initialisiation              *
