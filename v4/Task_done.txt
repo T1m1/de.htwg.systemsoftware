@@ -17,10 +17,12 @@ Timi:
 			-> testen mit access.c (functin write) -> done
 	- Homepage Html angepasst -> done
 	- access.c -> done
+	- testscripts -> done!!!
+	- make menuconfig (error) -> weil module umbenannt -> done
+	
 	- offen:
 			- homepage -> scripts aufrufen
-			- testscripts
-			- make menuconfig (error) -> weil module umbenannt
+			
 			
 
 Offene Punkte:
