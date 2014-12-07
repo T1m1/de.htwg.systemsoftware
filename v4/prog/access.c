@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
 	/* open test */
 	int i;
 	if(opentest) {
-		printf("OpenTest:\n");
+		verbPrintf(verbose, "Start opentest:\n");
 		for(i = 0; i < numberOfThreads; i++) {
 			thread_struct[i].global = global;
 			thread_struct[i].threadNumber = i;
@@ -136,25 +136,23 @@ int main(int argc, char *argv[])
 			/* if minortest is active
 			 * 	-> every 2nd time use another minor number */
 			if(minortest && (i%2)) {
-				printf("status of minortest: %d %d = %d\n", minortest, (i%2), (minortest && (i%2)));
+				verbPrintf(verbose, "Thread nr. %d start with device %s\n", i, minorOneDevice);
 				thread_struct[i].device = minorOneDevice;
 			} else {
+				verbPrintf(verbose, "Thread nr. %d start with device %s\n", i, device);
 				thread_struct[i].device = device;	
 			}
-			//thread_struct->threadNumber= i;
+			
 			if (pthread_attr_init (&attr[i]) == -1)
             {
 				perror ("error in pthread_attr_init");
             }
             
-			printf("Start Thread %d\n", i);
 			pthread_create(&threads[i], &attr[i], open_driver, (void *) &thread_struct[i]);
-			printf("Thread %d created\n", i);
 		}	
 
-		printf("Alles losgeschickt\n");
 		for(i = 0; i < numberOfThreads; i++) {
-			printf("Join Thread %d\n", i);
+			verbPrintf(verbose, "Join thread nr. %d\n", i);
 			pthread_join(threads[i], NULL);
 			
 			if (pthread_attr_destroy (&attr[i]) == -1)
@@ -163,11 +161,13 @@ int main(int argc, char *argv[])
 				exit (1);
 			}
 		}
+		verbPrintf(verbose, "Finish opentest!\n");
 	}
 	
 	/* close test */
 	if(closetest) {
-		printf("Close Test:\n");
+		verbPrintf(verbose, "Start closetest:\n");
+		verbPrintf(verbose, "Finish closetest!\n");
 	}
 	
 	free(threads);
@@ -175,7 +175,7 @@ int main(int argc, char *argv[])
 	free(thread_struct);
 	free(global);
 	
-	printf("End program\n");
+	verbPrintf(verbose, "End of program!\n");
 	
 	return 0;
 }
