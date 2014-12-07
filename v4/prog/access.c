@@ -7,6 +7,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include <stdarg.h>
 
 #define TRUE 1
 #define FALSE 0
@@ -18,11 +19,13 @@
 
 void *open_driver(void *threadarg);
 void help(void);
+void verbPrintf (int verbosity, char *format, ...);
 
 struct globalOptions {
 	struct timespec sleep_time;
 	int repeat;
 	int duration;
+	int verbose;
 };
 
 struct thread_info {
@@ -240,5 +243,17 @@ void help(void)
 			"\t	  [PATH]  to device with different minor\n"
 			"\t-v 		  verbose\n"
 			"\t\n");
+}
+
+void
+verbPrintf (int verbosity, char *format, ...)
+{
+        va_list args;
+        va_start (args, format);
+        if (verbosity)
+        {
+                vfprintf (stdout, format, args);
+        }
+
 }
 
