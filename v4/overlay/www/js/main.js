@@ -15,7 +15,8 @@ $(document).ready(function () {
 		'#switchOn': 'cgi-bin/switchOn.sh',
 		'#switchOff': 'cgi-bin/switchOff.sh',
 		'#switchStatus': 'cgi-bin/switchStatus',
-		'#reboot': 'cgi-bin/reboot.sh'
+		'#reboot': 'cgi-bin/reboot.sh',
+		'#openclose': 'cgi-bin/openclose.sh'
 	};
 	
 	// click event on buttons (a - tag)
