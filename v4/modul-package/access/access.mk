@@ -20,7 +20,7 @@ define ACCESS_CLEAN_CMDS
 endef
 
 define ACCESS_UNINSTALL_TARGET_CMS
-	rm $(TARGET_DIR)/usr/bin/template
+	rm $(TARGET_DIR)/usr/bin/access
 endef
 
 $(eval $(generic-package))
