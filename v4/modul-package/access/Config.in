@@ -1,0 +1,4 @@
+config BR2_PACKAGE_ACCESS
+	bool "access"
+	help
+	  This is a template.
