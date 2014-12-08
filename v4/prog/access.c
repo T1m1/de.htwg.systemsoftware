@@ -198,7 +198,7 @@ void *open_driver(void *threadarg)
 	
 	for(i = 0; i < repeat; i++ ){
 		verbPrintf(t->global->verbose, "Thread %d: repeat %d\n", threadNumber, i);
-		if(t->global->open || t->global->close | t->global->read) {	
+		if(t->global->open || t->global->close || t->global->read) {	
 			verbPrintf(t->global->verbose, "Thread %d: try to open driver..\n", threadNumber);
 			fd = open(t->device, O_RDONLY);
 			if (fd < 0) {
