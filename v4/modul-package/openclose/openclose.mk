@@ -13,6 +13,7 @@ endef
 
 define OPENCLOSE_INSTALL_TARGET_CMDS
 	$(MAKE) $(LINUX_MAKE_FLAGS) -C $(LINUX_DIR) M=$(@D) modules_install
+	$(INSTALL) -m 0755 -D $(@D)/test_openclose.sh $(TARGET_DIR)/usr/bin/test_openclose.sh
 endef
 
 define OPENCLOSE_CLEAN_CMDS

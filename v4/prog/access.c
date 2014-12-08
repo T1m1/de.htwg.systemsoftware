@@ -6,38 +6,36 @@
 #include <time.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include <errno.h>
+#include <stdarg.h>
 
 #define TRUE 1
 #define FALSE 0
 
-#define DEFAULT_NUMBER_OF_THREADS 5;
-#define DEFAULT_DURATION 1;
-#define DEFAULT_REPEAT 5;
-#define NANO_TO_MILI 1000
+#define DEFAULT_NUMBER_OF_THREADS 5
+#define DEFAULT_DURATION 1000
+#define DEFAULT_REPEAT 5
+#define NANO_TO_MILI 1000000
+#define BUFFER_SIZE 128
 
-void *open_driver(void *thread_info);
+void *open_driver(void *threadarg);
 void help(void);
+void verbPrintf (int verbosity, char *format, ...);
 
-/*
-	TODO
-	- HELP text
-	- paraleller zugriff  -> done
-	- option -o = (open Test) -> done
-	- option -c = (close Test) -> why? :D
-	- option -t = (waint time)
-	- option -n = anzahl threads (default 5)
-	- option -r = repeat of test
-	- option -d = path to device
-	- option -m = multitesting with different minor
-	Vorraussetzung:
-	- Treiber ist geladen
-*/
-
-struct thread_info
-{
+struct globalOptions {
 	struct timespec sleep_time;
 	int repeat;
 	int duration;
+	int verbose;
+	int open;
+	int close;
+	int read;
+	int write;
+	char *writeFile;
+};
+
+struct thread_info {
+	struct globalOptions *global;
 	int threadNumber;
 	char *device;
 };
@@ -48,148 +46,260 @@ int main(int argc, char *argv[])
 	/* parse options */
 	int opt;
 	int numberOfThreads = DEFAULT_NUMBER_OF_THREADS;
-	int opentest, closetest = FALSE;
 	char *minorOneDevice;
-	int minortest=FALSE;
+	int minortest = FALSE;
+	char *device = NULL;
 	
-	struct thread_info *thread_struct = NULL;
-	
-	thread_struct = malloc(sizeof (struct thread_info));
-	if (thread_struct == NULL){
-		fprintf(stderr, "Failed to allocate memory!\n");
-		return(-1);
-	}
-	
-	thread_struct->duration = DEFAULT_DURATION;
-	thread_struct->repeat = DEFAULT_REPEAT;
-	
-	/* threads */
-	pthread_t *threads;
+	struct globalOptions *global;
+    global = malloc (sizeof (struct globalOptions));
+    if (global == NULL) {
+            perror ("malloc");
+            exit (EXIT_FAILURE);
+    }
+    global->duration = DEFAULT_DURATION;
+    global->repeat = DEFAULT_REPEAT;
 
-	while(-1 != (opt = getopt (argc, argv, "d:oct:r:n:m:"))) {
+
+	while(-1 != (opt = getopt (argc, argv, "d:oct:e:n:m:hvrw:"))) {
 		switch(opt){
 			case 'o':
-				opentest = TRUE;
+				global->open = TRUE;
 				break;
 			case 'c':
-				closetest = TRUE;
+				global->close = TRUE;
+				break;
+			case 'r':
+				global->read = TRUE;
+				break;
+			case 'w':
+				global->write = TRUE;
+				global->writeFile = optarg;
 				break;
 			case 't':
-				printf("waiting time: %s\n", optarg);
-				thread_struct->duration = atoi(optarg);
+				global->duration = atoi(optarg);
 				break;
 			case 'n':
-				printf("number of threads: %s\n", optarg);
 				numberOfThreads = atoi(optarg);
 				break;
 			case 'd':
-				printf("path to device: %s\n", optarg);
-				thread_struct->device = optarg;
+				device = optarg;
 				break;
-			case 'r':
-				printf("number of repeats: %s\n", optarg);
-				thread_struct->repeat = atoi(optarg);
+			case 'e':
+				/* echo instead of repead, r=read */
+				global->repeat = atoi(optarg);
 				break;
 			case 'm':
-				printf("multi-testing for minor number with device: %s\n", optarg);
 				minorOneDevice = optarg;
 				minortest = TRUE;
 				break;
-				
+			case 'v':
+				global->verbose = TRUE;
+				break;
+			case 'h':
+				help();
+				break;
 		}
 	}
 
 	/* check if path ommitted */
-	if(thread_struct->device == NULL) {
-		printf("Usage: ./access -d [DEVICE_PATH] [OPTIONS]\n");
+	if(device == NULL) {
+		help();
 		return EXIT_FAILURE;
 	}	
 	
+	/* print verbose information */
+	verbPrintf(global->verbose, "Verbose: ON\n");
+	verbPrintf(global->verbose, "Waiting time: %d\n",
+                            global->duration);
+    verbPrintf(global->verbose, "Number of threads: %d\n", numberOfThreads);
+    verbPrintf(global->verbose, "Path to device: %s\n", device);
+    verbPrintf(global->verbose, "Number of repeats: %d\n", global->repeat);
+    	
+	/********************************************
+    *       struct initialisiation              *
+    *********************************************/
+
+	struct thread_info *thread_struct = NULL;	
+	thread_struct = malloc(numberOfThreads * sizeof (struct thread_info));
+		
+	/* threads */
+	pthread_t *threads;
+	pthread_attr_t *attr;
+	
 	threads = malloc(numberOfThreads * sizeof(pthread_t));
-	if (threads == NULL) {
-		return EXIT_FAILURE;
+	attr = malloc(numberOfThreads * sizeof(pthread_attr_t));
+	
+	/* check memory allocation */
+	if (thread_struct == NULL || attr == NULL || threads == NULL){
+		fprintf(stderr, "Failed to allocate memory!\n");
+		perror ("malloc");
+        exit (EXIT_FAILURE);
 	}
 
 	/* open test */
 	int i;
-	if(opentest) {
-		printf("OpenTest:\n");
-		for(i = 0; i < numberOfThreads; i++) {
-			/* if minortest is active
-			 * 	-> every 2nd time use another minor number */
-			if(minortest && (i%2)) {
-				thread_struct->device = minorOneDevice;
-			}
-			thread_struct->threadNumber= i;
-			printf("Start Thread %d\n", i);
-			pthread_create(&threads[i], NULL, open_driver, thread_struct);
-		}	
+	verbPrintf(global->verbose, "Start tests:\n");
+	for(i = 0; i < numberOfThreads; i++) {
+		thread_struct[i].global = global;
+		thread_struct[i].threadNumber = i;
+		
+		/* if minortest is active
+		 * 	-> every 2nd time use another minor number */
+		if(minortest && (i%2)) {
+			verbPrintf(global->verbose, "Thread nr. %d start with device %s\n", i, minorOneDevice);
+			thread_struct[i].device = minorOneDevice;
+		} else {
+			verbPrintf(global->verbose, "Thread nr. %d start with device %s\n", i, device);
+			thread_struct[i].device = device;	
+		}
+		
+		if (pthread_attr_init (&attr[i]) == -1)
+		{
+			perror ("error in pthread_attr_init");
+		}
+		
+		pthread_create(&threads[i], &attr[i], open_driver, (void *) &thread_struct[i]);
+	}	
 
-		for(i = 0; i < numberOfThreads; i++) {
-			printf("Join Thread %d\n", i);
-			pthread_join(threads[i], NULL);
+	for(i = 0; i < numberOfThreads; i++) {
+		verbPrintf(global->verbose, "Join thread nr. %d\n", i);
+		pthread_join(threads[i], NULL);
+		
+		if (pthread_attr_destroy (&attr[i]) == -1)
+		{
+			perror ("error in pthread_attr_init");
+			exit (1);
 		}
 	}
+	verbPrintf(global->verbose, "Finish tests!\n");
 	
-	/* close test */
-	if(closetest) {
-		printf("Close Test:\n");
-	}
 	
 	free(threads);
-	printf("End program\n");
+	free(attr);
+	free(thread_struct);
+	free(global);
+	
+	verbPrintf(global->verbose, "End of program!\n");
 	
 	return 0;
 }
 
-void *open_driver(void *thread_info)
+void *open_driver(void *threadarg)
 {
 	int i, fd;
-	struct thread_info *t = (struct thread_info *) thread_info;
+	struct thread_info *t = (struct thread_info *) threadarg;
 	struct timespec sleep_time;
-	int duration = t->duration;
-	int repeat = t->repeat;
+	int duration = t->global->duration;
+	int repeat = t->global->repeat;
 	int threadNumber = t->threadNumber;
 
-	/* init time struct */
-	sleep_time.tv_sec = NANO_TO_MILI * duration;
+	sleep_time.tv_sec = 0;
+	sleep_time.tv_nsec = (NANO_TO_MILI * duration);
 	
 	for(i = 0; i < repeat; i++ ){
-		printf("THREAD %d: repeat %d\n", threadNumber, i );
+		verbPrintf(t->global->verbose, "Thread %d: repeat %d\n", threadNumber, i);
+		if(t->global->open || t->global->close | t->global->read) {	
+			verbPrintf(t->global->verbose, "Thread %d: try to open driver..\n", threadNumber);
+			fd = open(t->device, O_RDONLY);
+			if (fd < 0) {
+				verbPrintf(t->global->verbose, "Thread %d: could not open driver!\n", threadNumber);
+			} else {
+				verbPrintf(t->global->verbose, "Thread %d: open driver!\n", threadNumber);
+			
+					/* read test */
+				if (t->global->read) {
+					char buf[BUFFER_SIZE];
+					int ret;
+					int rounds = 0;
+					
+					while ((rounds < 50) && (ret = read(fd, buf, BUFFER_SIZE))) {
+						verbPrintf(t->global->verbose, "Thread %d: Read data %s\n", threadNumber, buf);
+						rounds++;
+					}
 
-		printf("THREAD %d: Try to open Driver...\n", threadNumber);
-		fd = open(t->device, O_RDONLY);
-		if (fd < 0) {
-			printf("THREAD %d: Could not open", threadNumber);
-		} else {
-			printf("THREAD %d: Open Driver!\n", threadNumber);
+					if (!ret || (rounds >= 50))
+						printf("Thread %d: Read finish after 50 lines or EOF\n", threadNumber);
+					else {
+						perror("Error closing file.\n");
+						pthread_exit(NULL);
+					}
+				}
+			}
 		}
 		
-		printf("THREAD %d: Sleep %d Millisecond\n", threadNumber, duration);
+		
+		/* write test */
+		if (t->global->write) {
+			ssize_t nrd;
+			char buf[BUFFER_SIZE];
+			
+			int wf_fd = open(t->global->writeFile, O_RDONLY);
+			int w_fd = open(t->device, O_WRONLY);
+
+			if ((w_fd < 0) || (wf_fd < 0)) {
+				verbPrintf(t->global->verbose, "Thread %d: could not open driver for writing or file for reading!\n", threadNumber);
+			} else {
+				verbPrintf(t->global->verbose, "Thread %d: open driver for writing!\n", threadNumber);
+				
+				while((nrd = read(wf_fd, buf, 50))){
+					 write(w_fd, buf, nrd);
+					 verbPrintf(t->global->verbose, "Thread %d: Write data %s\n", threadNumber, buf);
+				}
+				close(wf_fd);
+				close(w_fd);
+			}
+		}
+
+		verbPrintf(t->global->verbose, "Thread %d: sleep %d miliseconds!\n", threadNumber, duration);
 		clock_nanosleep(CLOCK_REALTIME, 0, &sleep_time, NULL);
 
-		/* close driver */
-		printf("THREAD %d: Try to close driver...\n", threadNumber);
-		if(fd >= 0) {
-			if(close(fd) >= 0) {
-				printf("THREAD %d: Driver closed!\n", threadNumber);
-			} else {
-				printf("THREAD %d: Driver not closed -.-.-.-.- !\n", threadNumber);
+		if(t->global->open || t->global->close | t->global->read) {	
+			verbPrintf(t->global->verbose, "Thread %d: try to close driver!\n", threadNumber);		
+			if(fd >= 0) {
+				if(close(fd) >= 0) {
+					verbPrintf(t->global->verbose, "Thread %d: driver closed!\n", threadNumber);
+				} else {
+					verbPrintf(t->global->verbose, "Thread %d: driver not closed!\n", threadNumber);
+				}
 			}
 		}
 	}
-	printf("THREAD %d: END THREAD\n", threadNumber);
+	verbPrintf(t->global->verbose, "Thread %d: end of thread!\n", threadNumber);
 	pthread_exit(NULL);
 }
 
+
 void help(void)
 {
-	printf(	"\n\n"
+	printf(	"\nUsage: ./access -d [DEVICE_PATH] [OPTIONS]\n"
 			"\n"
 			"\n"
-			"\n"
-			"\n"
-			"\n"
-			"\n");
+			"\tOPTIONS:\n"
+			"\t-d			path to device"
+			"\t-o			open test\n"
+			"\t-c			close test\n"
+			"\t-r			read test\n"
+			"\t-w [PATH]	write test - PATH to any file to read\n"
+			"\t-t [TIME]	time in millisecond to sleep between open and close\n"
+			"\t				default: 1000\n"
+			"\t-n [NR]		number of threads\n"
+			"\t				default: 5\n"
+			"\t-e [NR]		number of echos (repeats)\n"
+			"\t				default: 5\n"
+			"\t-m [PATH]	start tests with different minor numbers\n"
+			"\t	  [PATH]	to device with different minor\n"
+			"\t-v			verbose\n"
+			"\t\n");
+}
+
+void
+verbPrintf (int verbosity, char *format, ...)
+{
+        va_list args;
+        va_start (args, format);
+        if (verbosity)
+        {
+                vfprintf (stdout, format, args);
+        }
 }
 

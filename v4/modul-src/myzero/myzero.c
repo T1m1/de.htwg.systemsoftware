@@ -7,11 +7,12 @@
 #include <asm/uaccess.h>
 
 
-#define DRIVER_NAME "zero"
+#define DRIVER_NAME "myzero"
 
 /* normaly in stdlib.h */
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
+#define NUMBER_OF_MINOR 2
 
 static int major;
 static struct file_operations fobs;
@@ -24,6 +25,7 @@ static int driver_open(struct inode *geraetedatei, struct file *instanz);
 static int driver_release(struct inode *geraetedatei, struct file *instanz);
 
 static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_t *offset);
+static ssize_t driver_read_hello(struct file *instanz, char *user, size_t count, loff_t *offset);
 
 static struct file_operations fobs =
 {
@@ -36,6 +38,15 @@ static struct file_operations fobs =
 static int driver_open(struct inode *geraetedatei, struct file *instanz)
 {	
 	printk(KERN_INFO "ZERO: driver open!\n");
+	/* check if minor number 1 */
+	if (MINOR(geraetedatei->i_rdev) == 1) {
+		printk(KERN_INFO "...with minor number 1!\n");
+		fobs.read = driver_read_hello;
+	} else {
+		printk(KERN_INFO "ZERO: ...with minor number0!\n");
+		/* if called with minor 0 after called with minor 1 */
+		fobs.read = driver_read;
+	}
 	return EXIT_SUCCESS;
 }
 
@@ -45,12 +56,25 @@ static int driver_release(struct inode *geraetedatei, struct file *instanz)
 	return EXIT_SUCCESS;
 }
 
-static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_t *offset)
+static ssize_t driver_read_hello(struct file *instanz, char *user, size_t count, loff_t *offset)
 {
 	size_t not_copied, to_copy;
 	char str[] = "Hello World\n";
 
-	printk(KERN_INFO "ZERO: read...\n");
+	printk(KERN_INFO "ZERO: read Hello World\n");
+	
+	to_copy =  min(strlen(str) + 1, count);
+	not_copied = copy_to_user(user, str, to_copy);
+
+	return to_copy - not_copied;
+}
+
+static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_t *offset)
+{
+	size_t not_copied, to_copy;
+	char str[] = "0";
+
+	printk(KERN_INFO "ZERO: read 0\n");
 	
 	to_copy =  min(strlen(str) + 1, count);
 	not_copied = copy_to_user(user, str, to_copy);
@@ -61,9 +85,9 @@ static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_
 static int __init ModInit(void)
 {
 	/* reserve device driver number */
-	if(alloc_chrdev_region(&dev_number, 0, 1, DRIVER_NAME) < 0)
+	if(alloc_chrdev_region(&dev_number, 0, NUMBER_OF_MINOR, DRIVER_NAME) < 0)
 	{
-		printk("failed to alloc_chrdev_region\n");	
+		printk("ZERO: failed to alloc_chrdev_region\n");	
 		return -EIO;
 	}
 	/* reserve object */
@@ -76,7 +100,7 @@ static int __init ModInit(void)
 	driver_object->owner = THIS_MODULE;
 	driver_object->ops = &fobs;
 	
-	if(cdev_add(driver_object, dev_number, 1))
+	if(cdev_add(driver_object, dev_number, NUMBER_OF_MINOR))
 	{
 		goto free_cdev;
 	}
@@ -93,7 +117,7 @@ free_cdev:
 	kobject_put(&driver_object->kobj);
 	
 free_device_number:
-	unregister_chrdev_region(dev_number, 1);
+	unregister_chrdev_region(dev_number, NUMBER_OF_MINOR);
 	return -EIO;
 	
 }
@@ -103,7 +127,7 @@ static void __exit ModExit(void)
 	device_destroy(template_class, dev_number);
 	class_destroy(template_class);
 	cdev_del(driver_object);
-	unregister_chrdev_region(dev_number, 1);
+	unregister_chrdev_region(dev_number, NUMBER_OF_MINOR);
 	return;
 }
 
@@ -112,7 +136,7 @@ module_exit(ModExit);
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Timotheus Ruprecht and  Steffen Gorenflo");
-MODULE_DESCRIPTION("Modul Zero");
+MODULE_DESCRIPTION("Modul MyZero");
 MODULE_SUPPORTED_DEVICE("none");
 
 

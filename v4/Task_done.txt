@@ -6,20 +6,26 @@ Steffen:
 
 Timi:
 	- Kernel Modul Basic -> done
-	- template.c -> fehlt noch "/sbin/mdev" als hotplug
+	- template.c -> done 
 	- test-template.sh -> done
 	- Modul:
-		- OpenClose -> fertig
-			-> access.c -> refactoring & testing steht noch aus
-		- Zero -> Ausgabe von "Hello World" läuft
-			-> testen mit access.c -> sobald fertig
-			-> Minor Funktionalitaet erweitern (return '0')
-			-> testscript anpassen
+		- OpenClose -> done
+			-> access.c -> done
+		- Zero -> done
+			-> testen mit access.c (function read) -> done
+		- MyNull -> done
+			-> testen mit access.c (function write) -> done
 	- Buildroot Pakete erstellen -> done
+	- Homepage Html angepasst -> done
+	- access.c -> done
+	- testscripts -> done
+	- make menuconfig (error) -> weil module umbenannt -> done
+	- homepage -> scripts aufrufen -> done!
+			
 
 Offene Punkte:
 
-	[X] Source per Dropbear uebertragen
-	[ ] Modul null
-	[ ] Homepage anpassen
-
+	[ ] Source per Dropbear uebertragen
+		[ ] -> makefile option
+	[ ] "/sbin/mdev" als hotplug
+	[ ] komische Ausgaben beim Booten

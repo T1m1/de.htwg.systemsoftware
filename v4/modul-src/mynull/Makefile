@@ -3,7 +3,7 @@ export KDIR=../../../buildroot/output/build/linux-3.17.2
 export ARCH=arm
 export CROSS_COMPILE=/group/labworks/toolchain/buildroot.git/output/host/usr/bin/arm-buildroot-linux-uclibcgnueabihf-
 
-SOURCES=zero.c
+SOURCES=mynull.c
 OBJECTS=$(SOURCES:.c=.o)
 
 .PHONY: clean

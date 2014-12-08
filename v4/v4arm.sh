@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# versions
+LINUX_VERSION=linux-3.17.2
 
 # architecture
 ARCH=arm
@@ -12,10 +14,32 @@ HOME_PATH=$PWD
 BUILDROOT_PATH=../buildroot
 BR2_CONFIG=../v4/myconfig.buildroot
 BUILDROOT_BUILD_PATH=$BUILDROOT_PATH/output/build
+SERVER_PATH=/srv/tftp/rpi/3/
+BR_KERNEL_PATH=$BUILDROOT_BUILD_PATH/$LINUX_VERSION
+
+# dtb files and paths
+DTB_BCM=bcm2835-rpi-b.dtb
+DTB_BCM_PATH=$BR_KERNEL_PATH/arch/arm/boot/dts/$DTB_BCM
 
 # Names
 LINUX_VERSION=linux-3.17.2
 BUSYBOX_VERSION=busybox-1.22.1
+
+################ RPi ##############
+
+copy_to_server()
+{
+	cp $BUILDROOT_PATH/output/images/rootfs.cpio.uboot $SERVER_PATH/rootfs.cpio.uboot
+	cp $BUILDROOT_PATH/output/images/zImage $SERVER_PATH/zImage
+	cp $HOME_PATH/uboot/tftpboot.scr $SERVER_PATH/tftpboot.scr
+	cp $DTB_BCM_PATH $SERVER_PATH/$DTB_BCM
+}
+
+make_bcm_dtb() 
+{
+	# make the dtb for rpi
+	cd $BR_KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER $DTB_BCM
+}
 
 
 ################ br packages ##############

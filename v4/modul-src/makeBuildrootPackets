@@ -55,7 +55,7 @@ cd $HOME
 
 ################ make zero archive -> START
 
-APP_NAME=zero
+APP_NAME=myzero
 VERSION=1.0
 ARCHIVE_NAME=$APP_NAME-$VERSION
 
@@ -71,6 +71,25 @@ cd $HOME && rm -fr $ARCHIVE_NAME.tar.gz
 cd $HOME
 
 ################ make zero archive -> END
+
+################ make null archive -> START
+
+APP_NAME=mynull
+VERSION=1.0
+ARCHIVE_NAME=$APP_NAME-$VERSION
+
+cd $HOME && cd $APP_NAME && make clean
+cd $HOME && tar -cvzf $ARCHIVE_NAME.tar.gz $APP_NAME
+
+# copy package to d1
+cd $HOME && cp $ARCHIVE_NAME.tar.gz $DL_PATH/$ARCHIVE_NAME.tar.gz
+
+cd $HOME && rm -fr $ARCHIVE_NAME
+cd $HOME && rm -fr $ARCHIVE_NAME.tar.gz
+
+cd $HOME
+
+################ make null archive -> END
 
 
 echo "...done!"
