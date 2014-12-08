@@ -213,12 +213,12 @@ void *open_driver(void *threadarg)
 					int rounds = 0;
 					
 					while ((rounds < 50) && (ret = read(fd, buf, BUFFER_SIZE))) {
-						verbPrintf(t->global->verbose, "Read data %s\n", buf);
+						verbPrintf(t->global->verbose, "Thread %d: Read data %s\n", threadNumber, buf);
 						rounds++;
 					}
 
 					if (!ret || (rounds >= 50))
-						printf("Read finish after 50 lines or EOF\n");
+						printf("Thread %d: Read finish after 50 lines or EOF\n", threadNumber);
 					else {
 						perror("Error closing file.\n");
 						pthread_exit(NULL);
@@ -243,7 +243,7 @@ void *open_driver(void *threadarg)
 				
 				while((nrd = read(wf_fd, buf, 50))){
 					 write(w_fd, buf, nrd);
-					 verbPrintf(t->global->verbose, "Write data %s\n", buf);
+					 verbPrintf(t->global->verbose, "Thread %d: Write data %s\n", threadNumber, buf);
 				}
 				close(wf_fd);
 				close(w_fd);
@@ -301,6 +301,5 @@ verbPrintf (int verbosity, char *format, ...)
         {
                 vfprintf (stdout, format, args);
         }
-
 }
 
