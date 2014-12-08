@@ -1,0 +1,13 @@
+ -*- Patch physical to virtual translations at runtime      
+
+General Setup:
+     Kernel compression mode (XZ)
+    [*] Initial RAM filesystem and RAM disk (initramfs/initrd) support
+    [*]   Support initial ramdisks compressed using XZ (optional)
+    [*] Optimize for size  (optional)
+    -*- Configure standard kernel features (expert users)  --->
+	[*] Embedded system 
+     
+      
+
+[*] Enable loadable module support  
