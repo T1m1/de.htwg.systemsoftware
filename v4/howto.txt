@@ -1,0 +1,36 @@
+# clone git repo
+git clone git@burns.in.htwg-konstanz.de:labworks-SYSO_WS1415/syso_ws1415_14.git
+
+# get buildroot source
+cd /syso_ws1415_14/v4 && ./v4qemu -e source_buildroot
+
+#create dl package
+cd ../buildroot && mkdir dl
+
+# prepare for buildroot packages
+cd modul-src && ./makeBuildrootPackages
+cd modul-packages && ./prepareModul.sh
+
+# open menuconfig
+cd ../../buildroot && make menuconfig
+
+# activate packages 
+-> Target packages -> Miscellaneous -> syso [y]
+-> Modules --->
+	[y] access
+	[y] template
+	[y] openclose
+	[y] systeminfo
+	[y] myzero
+	[y] mynull
+
+# build 
+cd ../v4/ && ./v4arm -e make_buildroot
+
+# wait...
+# wait...
+# wait...
+# wait...
+
+
+ 
