@@ -21,5 +21,4 @@ Module.symvers
 *.o
 modules.order
 .tmp_versions
-access
 *.gz
