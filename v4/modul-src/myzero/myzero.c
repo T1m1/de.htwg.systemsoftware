@@ -25,7 +25,6 @@ static int driver_open(struct inode *geraetedatei, struct file *instanz);
 static int driver_release(struct inode *geraetedatei, struct file *instanz);
 
 static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_t *offset);
-static ssize_t driver_read_hello(struct file *instanz, char *user, size_t count, loff_t *offset);
 
 static struct file_operations fobs =
 {
@@ -40,12 +39,9 @@ static int driver_open(struct inode *geraetedatei, struct file *instanz)
 	printk(KERN_INFO "ZERO: driver open!\n");
 	/* check if minor number 1 */
 	if (MINOR(geraetedatei->i_rdev) == 1) {
-		printk(KERN_INFO "...with minor number 1!\n");
-		fobs.read = driver_read_hello;
+		printk(KERN_INFO "ZERO: ...with minor number 1!\n");
 	} else {
 		printk(KERN_INFO "ZERO: ...with minor number0!\n");
-		/* if called with minor 0 after called with minor 1 */
-		fobs.read = driver_read;
 	}
 	return EXIT_SUCCESS;
 }
@@ -56,28 +52,26 @@ static int driver_release(struct inode *geraetedatei, struct file *instanz)
 	return EXIT_SUCCESS;
 }
 
-static ssize_t driver_read_hello(struct file *instanz, char *user, size_t count, loff_t *offset)
-{
-	size_t not_copied, to_copy;
-	char str[] = "Hello World\n";
-
-	printk(KERN_INFO "ZERO: read Hello World\n");
-	
-	to_copy =  min(strlen(str) + 1, count);
-	not_copied = copy_to_user(user, str, to_copy);
-
-	return to_copy - not_copied;
-}
-
 static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_t *offset)
 {
 	size_t not_copied, to_copy;
-	char str[] = "0";
+	char *message;
+	char zero[] = "0";
+	char hello[] = "Hello World\n";
 
-	printk(KERN_INFO "ZERO: read 0\n");
+
+	int minor = iminor(instanz->f_path.dentry->d_inode);
+	if (minor == 0) {
+		message = zero;
+		printk(KERN_INFO "ZERO: read 0\n");
+	} else {
+		message = hello;
+		printk(KERN_INFO "ZERO: read Hello World\n");
+	}
 	
-	to_copy =  min(strlen(str) + 1, count);
-	not_copied = copy_to_user(user, str, to_copy);
+	
+	to_copy =  min(strlen(message) + 1, count);
+	not_copied = copy_to_user(user, message, to_copy);
 
 	return to_copy - not_copied;
 }
