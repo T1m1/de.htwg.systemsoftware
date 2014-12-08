@@ -37,7 +37,7 @@ dd if=/dev/zero of=/usr/bin/testfile bs=1 count=1024
 echo "parameter of access.c:"
 echo "-d /dev/major_0_test_$PROG_NAME -w /usr/bin/testfile -v -t 5000 -n 5 -e 5"
 
-./usr/bin/access -d /dev/major_0_test_$PROG_NAME -w /usr/bin/testfile -v -t 5000 -n 5 -e 5 
+/usr/bin/access -d /dev/major_0_test_$PROG_NAME -w /usr/bin/testfile -v -t 5000 -n 5 -e 5 
 
 echo "********** dmesg logs from access script **********"
 dmesg -c
