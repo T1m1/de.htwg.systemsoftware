@@ -10,7 +10,6 @@ depend
 gpio.o
 led5
 switch
-systeminfo
 *.ko.cmd
 *.mod.o.cmd
 *.o.cmd
