@@ -10,19 +10,16 @@ Timi:
 	- Modul:
 		- OpenClose -> done
 			-> access.c -> done
-		- Zero -> fertig
+		- Zero -> done
 			-> testen mit access.c (function read) -> done
+		- MyNull -> done
+			-> testen mit access.c (function write) -> done
 	- Buildroot Pakete erstellen -> done
-	- modul null -> done
-			-> testen mit access.c (functin write) -> done
 	- Homepage Html angepasst -> done
 	- access.c -> done
-	- testscripts -> done!!!
+	- testscripts -> done
 	- make menuconfig (error) -> weil module umbenannt -> done
-	
-	- offen:
-			- homepage -> scripts aufrufen
-			
+	- homepage -> scripts aufrufen -> done!
 			
 
 Offene Punkte:
