@@ -10,7 +10,6 @@ depend
 gpio.o
 led5
 switch
-systeminfo
 *.ko.cmd
 *.mod.o.cmd
 *.o.cmd
@@ -21,5 +20,4 @@ Module.symvers
 *.o
 modules.order
 .tmp_versions
-access
 *.gz

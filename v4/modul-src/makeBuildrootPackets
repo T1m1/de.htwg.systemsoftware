@@ -91,6 +91,44 @@ cd $HOME
 
 ################ make null archive -> END
 
+################ make access archive -> START
+
+APP_NAME=access
+VERSION=1.0
+ARCHIVE_NAME=$APP_NAME-$VERSION
+
+cd $HOME && cd $APP_NAME && make clean
+cd $HOME && tar -cvzf $ARCHIVE_NAME.tar.gz $APP_NAME
+
+# copy package to d1
+cd $HOME && cp $ARCHIVE_NAME.tar.gz $DL_PATH/$ARCHIVE_NAME.tar.gz
+
+cd $HOME && rm -fr $ARCHIVE_NAME
+cd $HOME && rm -fr $ARCHIVE_NAME.tar.gz
+
+cd $HOME
+
+################ make access archive -> END
+
+################ make access archive -> START
+
+APP_NAME=systeminfo
+VERSION=1.0
+ARCHIVE_NAME=$APP_NAME-$VERSION
+
+cd $HOME && cd $APP_NAME && make clean
+cd $HOME && tar -cvzf $ARCHIVE_NAME.tar.gz $APP_NAME
+
+# copy package to d1
+cd $HOME && cp $ARCHIVE_NAME.tar.gz $DL_PATH/$ARCHIVE_NAME.tar.gz
+
+cd $HOME && rm -fr $ARCHIVE_NAME
+cd $HOME && rm -fr $ARCHIVE_NAME.tar.gz
+
+cd $HOME
+
+################ make access archive -> END
+
 
 echo "...done!"
 
