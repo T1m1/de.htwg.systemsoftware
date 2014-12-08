@@ -16,6 +16,8 @@ $(document).ready(function () {
 		'#switchOff': 'cgi-bin/switchOff.sh',
 		'#switchStatus': 'cgi-bin/switchStatus',
 		'#reboot': 'cgi-bin/reboot.sh',
+		'#mynull': 'cgi-bin/mynull.sh',
+		'#myzero': 'cgi-bin/myzero.sh',
 		'#openclose': 'cgi-bin/openclose.sh'
 	};
 	
