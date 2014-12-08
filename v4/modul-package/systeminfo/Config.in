@@ -1,0 +1,4 @@
+config BR2_PACKAGE_SYSTEMINFO
+	bool "systeminfo"
+	help
+	  This is a template.
