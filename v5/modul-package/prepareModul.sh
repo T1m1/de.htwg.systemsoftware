@@ -1,7 +1,7 @@
 #!/bin/sh
 
 BUILDROOT_PACKAGE=../../buildroot/package
-MODUL_PACKAGE=../../v4/modul-package
+MODUL_PACKAGE=../../v5/modul-package
 PACKAGE=syso
 
 cd $BUILDROOT_PACKAGE
