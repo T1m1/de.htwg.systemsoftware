@@ -1,0 +1,19 @@
+config BR2_PACKAGE_SYSO
+        bool "syso"
+        help
+          All Syso Packages
+
+          https://burns.in.htwg-konstanz.de/labworks-SYSO_WS1415/syso_ws1415_14
+
+
+if BR2_PACKAGE_SYSO
+        menu "Modules"
+                source package/syso/access/Config.in
+                source package/syso/template/Config.in
+                source package/syso/openclose/Config.in
+                source package/syso/systeminfo/Config.in
+                source package/syso/myzero/Config.in
+                source package/syso/mynull/Config.in
+
+        endmenu
+endif
