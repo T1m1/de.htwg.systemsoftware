@@ -31,6 +31,8 @@ THREADFLAG=-lpthread
 LDFLAGS=-lrt
 
 #Variablen
+NAME=access
+TARGET_DIR=/usr/bin/
 SOURCES=$(wildcard *.c) 
 HEADERS=$(wildcard *.h)
 OBJECTS=$(SOURCES:.c=.o)
@@ -39,7 +41,7 @@ TARGETS=$(SOURCES:.c=)
 .PHONY: all clean nice
 
 #Compiles all C-Files
-all:$(TARGETS:gpio=)
+all default:$(TARGETS:gpio=)
 
 #Remove all Files that are created with make
 clean:
@@ -57,6 +59,9 @@ nice:
 
 depend: $(SOURCES) $(HEADERS) 
 	$(CC) $(CFLAGS) -MM $(SOURCES) > $@ 
+	
+install:
+	scp $(NAME) root@192.168.29.33:$(TARGET_DIR)$(NAME)
 
 -include depend
 

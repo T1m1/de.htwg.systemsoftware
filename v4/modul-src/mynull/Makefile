@@ -3,8 +3,11 @@ export KDIR=../../../buildroot/output/build/linux-3.17.2
 export ARCH=arm
 export CROSS_COMPILE=/group/labworks/toolchain/buildroot.git/output/host/usr/bin/arm-buildroot-linux-uclibcgnueabihf-
 
-SOURCES=mynull.c
+NAME=mynull
+TARGET_DIR=/usr/bin/
+SOURCES=$(NAME).c
 OBJECTS=$(SOURCES:.c=.o)
+
 
 .PHONY: clean
 
@@ -21,3 +24,6 @@ endif
 
 clean:
 	rm -rf *.o *.ko *.mod.c *.symvers *.order
+	
+install:
+	scp $(NAME).ko root@192.168.29.33:$(TARGET_DIR)$(NAME).ko

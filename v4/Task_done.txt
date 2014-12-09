@@ -2,6 +2,8 @@ Steffen:
 	- Toolchain konfigurieren (Aufgabenstellung System) check
 	- mit debugger rumspielen -> mostly done
 	- Kernel minimieren -> in Arbeit
+	- boot script ändern -> check
+	- Source per Dropbear uebertragen -> done (endlich)
 
 Timi:
 	- Kernel Modul Basic -> done
@@ -20,11 +22,4 @@ Timi:
 	- testscripts -> done
 	- make menuconfig (error) -> weil module umbenannt -> done
 	- homepage -> scripts aufrufen -> done!
-			
 
-Offene Punkte:
-
-	[ ] Source per Dropbear uebertragen
-		[ ] -> makefile option
-	[ ] "/sbin/mdev" als hotplug
-	[ ] komische Ausgaben beim Booten

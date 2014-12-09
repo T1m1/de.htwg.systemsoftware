@@ -4,6 +4,7 @@
 
 ::sysinit:/bin/busybox --install -s /bin/
 ::sysinit:mdev -s
+::sysinit:echo "/sbin/mdev" > /proc/sys/kernel/hotplug
 
 ::sysinit:/etc/init.d/rcS
 

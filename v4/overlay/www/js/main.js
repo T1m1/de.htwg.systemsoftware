@@ -29,6 +29,8 @@ $(document).ready(function () {
 			return;
 		}
 		
+		replaceHtml("call ...", '#output');
+		
 		$.ajax({
 			url: hash[current],
 			dataType: "html",
