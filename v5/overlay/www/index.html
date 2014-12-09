@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+	
+
+
+	
+    <!-- Bootstrap core CSS -->
+     <link href="css/bootstrap.css" rel="stylesheet">
+     <link href="css/toggles.css" rel="stylesheet">
+     <link href="css/toggles-light.css" rel="stylesheet">
+
+    <!-- Add custom CSS here -->
+    <style>
+	body {margin-top: 60px;}
+	</style>
+	
+	
+    <title>ARM Linux</title>
+
+
+  </head>
+
+  <body>
+
+	
+    <nav class="navbar navbar-inverse navbar-fixed-top text-center" role="navigation">
+      <div class="container text-center">
+        <div class="navbar-header text-center">
+		         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+	    <span class="icon-bar"></span> 
+         </button>
+          <a class="navbar-brand" href="index.html">QEMU VirtualARM</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse navbar-ex1-collapse text-center">
+          <ul class="nav navbar-nav">
+            <li><a href="#cpu" class="cpu">CPU info</a></li>
+            <li><a href="#network" class="network">Network info</a></li>
+	    <li><a href="#mem" class"mem">Mem Info</a></li>
+            <li><a href="#devices" class="devices">Devices</a></li>
+	    <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+		Module<span class="caret"></span>
+		</a>
+		<ul class="dropdown-menu">
+            		<li><a href="#openclose" class="openclose">OpenClose</a></li>
+            		<li><a href="#myzero" class="myzero">MyZero</a></li>
+            		<li><a href="#mynull" class="mynull">MyNull</a></li>
+		</ul>
+		</li>
+		<li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+		Other Options<span class="caret"></span>
+		</a>
+		<ul class="dropdown-menu">
+            		<li><a href="#deleteTmp" class="deleteTmp">Delete tmo</a></li>
+            		<li><a href="#reboot" class="reboot">Reboot</a></li>
+		</ul>
+		</li>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container -->
+    </nav>
+
+    <div class="container text-center">
+
+      <div class="row">
+        <div class="col-lg-12">
+          <h1 class="text-center">Welcome to Embedded Linux HTTP Server</h1>
+          <h3 class="text-center lead">of <b>Steffen Gorenflo</b> and <b>Timotheus Ruprecht</b></h3>
+        </div>
+      </div>
+
+
+    <div class="row toggle-light">
+        <div class="col-md-offset-4 col-md-2">
+			<div> <h4>LED Status</h4>
+				<div class="led">
+					<div class="toggle-slide">
+						<div class="toggle-inner">
+							<div class="toggle-on">ON</div>
+							<div class="toggle-blob"></div>
+							<div class="toggle-off active"
+								style="height: 35px; width: 92.5px; margin-left: -17.5px; text-indent: 17.5px; line-height: 35px;">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		        <div class="col-md-2">
+			<div> <h4>Switch Status</h4>
+				<div class="switch">
+					<div class="toggle-slide">
+						<div class="toggle-inner">
+							<div class="toggle-on">ON</div>
+							<div class="toggle-blob"></div>
+							<div class="toggle-off active"
+								style="height: 35px; width: 92.5px; margin-left: -17.5px; text-indent: 17.5px; line-height: 35px;">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+	<textarea id="output" rows="17" readonly=false style="margin-top: 20px; border:1px solid; width:800px;"></textarea> 
+</br>
+</br>
+<div class="alert alert-success text-center" id="info" style="background-color: rgb(220, 220, 220); ">
+	<div id="osinfo"></div>
+	<div id="uptime"></div>
+</div>
+
+    </div><!-- /.container -->
+
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/toggles.min.js"></script>
+    <script src="js/toggles.js"></script>
+  </body>
+</html>

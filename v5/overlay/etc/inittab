@@ -1,0 +1,17 @@
+::sysinit:/bin/mount -t proc proc /proc
+::sysinit:/bin/mount -t sysfs none /sys
+::sysinit:/bin/mount -t tmpfs none /tmp
+
+::sysinit:/bin/busybox --install -s /bin/
+::sysinit:mdev -s
+::sysinit:echo "/sbin/mdev" > /proc/sys/kernel/hotplug
+
+::sysinit:/etc/init.d/rcS
+
+::respawn:-/bin/sh
+::restart:/sbin/init
+::ctrlaltdel:/sbin/reboot
+
+::shutdown:/etc/init.d/rcK
+::shutdown:/bin/umount -a -r
+
