@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Busybox version: 1.22.1
-# Mon Dec  8 22:12:03 2014
+# Tue Dec  9 09:50:51 2014
 #
 CONFIG_HAVE_DOT_CONFIG=y
 
@@ -1017,6 +1017,10 @@ CONFIG_FEATURE_IPC_SYSLOG_BUFFER_SIZE=16
 CONFIG_LOGREAD=y
 CONFIG_FEATURE_LOGREAD_REDUCED_LOCKING=y
 CONFIG_FEATURE_KMSG_SYSLOG=y
-# CONFIG_KLOGD is not set
-# CONFIG_FEATURE_KLOGD_KLOGCTL is not set
+CONFIG_KLOGD=y
+
+#
+# klogd should not be used together with syslog to kernel printk buffer
+#
+CONFIG_FEATURE_KLOGD_KLOGCTL=y
 CONFIG_LOGGER=y
