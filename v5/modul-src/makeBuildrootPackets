@@ -1,0 +1,28 @@
+#!/bin/sh
+
+HOME=$PWD
+BUILDROOT_PATH=../../buildroot
+DL_PATH=$BUILDROOT_PATH/dl
+PROG_PATH=modul-src
+VERSION=1.0
+
+# create packages and copy to downlaod directory of buildroot
+for TEST in $(ls -d */)
+do
+	APP_NAME=${TEST%%/}
+	ARCHIVE_NAME=$APP_NAME-$VERSION
+	
+	cd $HOME && cd $APP_NAME && make clean
+	cd $HOME && tar -cvzf $ARCHIVE_NAME.tar.gz $APP_NAME
+	
+	# copy package to d1
+	cd $HOME && cp $ARCHIVE_NAME.tar.gz $DL_PATH/$ARCHIVE_NAME.tar.gz
+	
+	cd $HOME && rm -fr $ARCHIVE_NAME
+	cd $HOME && rm -fr $ARCHIVE_NAME.tar.gz
+	
+	cd $HOME
+done
+
+
+echo "...done!"
