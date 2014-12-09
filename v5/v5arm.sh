@@ -27,6 +27,7 @@ DTB_BCM_PATH=$BR_KERNEL_PATH/arch/arm/boot/dts/$DTB_BCM
 LINUX_VERSION=linux-3.17.2
 BUSYBOX_VERSION=busybox-1.22.1
 
+
 ################ RPi ##############
 
 copy_to_server()
