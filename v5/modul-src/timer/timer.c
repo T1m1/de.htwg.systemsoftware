@@ -4,7 +4,9 @@
 #include <linux/fs.h>
 #include <linux/cdev.h>
 #include <linux/device.h>
-
+/* timer */
+#include <linux/timer.h>
+#include <linux/sched.h>
 
 #define DRIVER_NAME "timer"
 
@@ -18,6 +20,16 @@ static dev_t dev_number;
 static struct cdev *driver_object;
 struct class *template_class;
 
+static struct timer_list mytimer;
+
+/**
+ *  TODO: Sicheres Einhänges eines Timer-Objekts
+ **/
+
+static void inc_count(unsigned long arg)
+{
+    printk("inc_count called (%ld)...\n", mytimer.expires );
+}
 
 
 static int __init ModInit(void)
@@ -47,9 +59,14 @@ static int __init ModInit(void)
 	device_create(template_class, NULL, dev_number, NULL, "%s", DRIVER_NAME);
 	
 	major = MAJOR(dev_number);
-
-	
 	printk("Major number: %d\n", major);
+	
+	init_timer( &mytimer );
+    mytimer.function = inc_count;
+    mytimer.data = 0;
+    mytimer.expires = jiffies + (2*HZ); // 2 second
+    add_timer( &mytimer );
+    printk("Timer init done!\n");
 	return EXIT_SUCCESS;
 	
 free_cdev:
@@ -63,6 +80,15 @@ free_device_number:
 
 static void __exit ModExit(void) 
 {
+	if( timer_pending( &mytimer ) ) {
+        printk("Timer ist aktiviert ...\n");
+	}
+    if( del_timer_sync( &mytimer ) ) {
+        printk("Aktiver Timer deaktiviert\n");
+	} else {
+        printk("Kein Timer aktiv\n");
+	}
+        
 	device_destroy(template_class, dev_number);
 	class_destroy(template_class);
 	cdev_del(driver_object);
