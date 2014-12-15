@@ -1,11 +1,13 @@
+Steffen:
+	[ ] Treiberinstanz
 
 Timi:
-	[ ] Tasklets
-
+	[x] Tasklets -> done
+	[ ] Timer
 
 TODO:
-	[ ] Treiberinstanz
-	[ ] Timer
+
+
 	[ ] Kernel Threads
 	[ ] Work Queues
 	[ ] Semaphore - Spinlock
