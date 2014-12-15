@@ -4,9 +4,11 @@
 #include <linux/fs.h>
 #include <linux/cdev.h>
 #include <linux/device.h>
+/* header for tasklet function*/
+#include <linux/interrupt.h>
 
 
-#define DRIVER_NAME "template"
+#define DRIVER_NAME "tasklet"
 
 /* normaly in stdlib.h */
 #define EXIT_SUCCESS 0
@@ -17,6 +19,17 @@ static struct file_operations fobs;
 static dev_t dev_number;
 static struct cdev *driver_object;
 struct class *template_class;
+
+
+
+static void tasklet_function (unsigned long data)
+{
+	printk("Tasklet called...\n");
+	return;
+}
+
+DECLARE_TASKLET(tldescr, tasklet_function, 0L );
+
 
 static int __init ModInit(void)
 {
@@ -46,6 +59,10 @@ static int __init ModInit(void)
 	
 	major = MAJOR(dev_number);
 	
+	/* TASKLET INIT */
+	tasklet_schedule(&tldescr);
+	printk("Tasklet created!");
+	
 	printk("Major number: %d\n", major);
 	return EXIT_SUCCESS;
 	
@@ -60,6 +77,7 @@ free_device_number:
 
 static void __exit ModExit(void) 
 {
+	tasklet_kill(&tldescr);
 	device_destroy(template_class, dev_number);
 	class_destroy(template_class);
 	cdev_del(driver_object);
