@@ -61,7 +61,7 @@ static int __init ModInit(void)
 	
 	/* TASKLET INIT */
 	tasklet_schedule(&tldescr);
-	printk("Tasklet created!");
+	printk("Tasklet created!\n");
 	
 	printk("Major number: %d\n", major);
 	return EXIT_SUCCESS;
@@ -78,6 +78,7 @@ free_device_number:
 static void __exit ModExit(void) 
 {
 	tasklet_kill(&tldescr);
+	printk("Tasklet removed!\n");
 	device_destroy(template_class, dev_number);
 	class_destroy(template_class);
 	cdev_del(driver_object);

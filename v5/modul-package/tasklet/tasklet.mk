@@ -13,6 +13,7 @@ endef
 
 define TASKLET_INSTALL_TARGET_CMDS
 	$(MAKE) $(LINUX_MAKE_FLAGS) -C $(LINUX_DIR) M=$(@D) modules_install
+	$(INSTALL) -m 0755 -D $(@D)/test_tasklet.sh $(TARGET_DIR)/usr/bin/test_tasklet.sh
 endef
 
 define TASKLET_CLEAN_CMDS
