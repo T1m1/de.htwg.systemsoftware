@@ -1,0 +1,4 @@
+config BR2_PACKAGE_TASKLET
+	bool "tasklet"
+	help
+	  This is a template.
