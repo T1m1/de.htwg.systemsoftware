@@ -1,0 +1,4 @@
+config BR2_PACKAGE_TIMER
+	bool "timer"
+	help
+	  This is a timer template.
