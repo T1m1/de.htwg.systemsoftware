@@ -1,0 +1,4 @@
+config BR2_PACKAGE_WQ
+	bool "wq"
+	help
+	  This is a wq.
