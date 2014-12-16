@@ -1,0 +1,4 @@
+config BR2_PACKAGE_MYNULL
+	bool "mynull"
+	help
+	  This is mynull.
