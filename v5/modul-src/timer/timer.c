@@ -7,7 +7,9 @@
 /* timer */
 #include <linux/timer.h>
 #include <linux/sched.h>
-
+/* time measurement */
+#include <linux/cpufreq.h>
+#include <linux/timex.h>
 
 #define DRIVER_NAME "timer"
 
@@ -25,26 +27,43 @@ static struct timer_list mytimer;
 static atomic_t stop_timer = ATOMIC_INIT(0);
 static DECLARE_COMPLETION(on_exit);
 
+/* timer calculation */
+static unsigned int min, max, cur, last = 0;
+/* time cycles */
+cycles_t min_cyc, max_cyc, cur_cyc, last_cyc = 0;
+	
 
 static void inc_count(unsigned long arg)
-{
-	/* timer calculation */
-	static unsigned int min, max, latest, last;
-	latest = jiffies -last;
+{	
+	cur = jiffies -last;
+	cur_cyc = get_cycles() - last_cyc;
+	
+	//number_of_cycles get_cycles(void);
+	if( last_cyc ) {
+		if( cur_cyc > max_cyc ) {
+			max_cyc = cur_cyc;
+		}
+		if( cur_cyc < min_cyc ) {
+			min_cyc = cur_cyc;
+		}
+	}
+	last_cyc = get_cycles();
 	
 	if( last ) {
-		if( latest > max ) {
-			max = latest;
+		if( cur > max ) {
+			max = cur;
 		}
-		if( latest < min ) {
-			min = latest;
+		if( cur < min ) {
+			min = cur;
 		}
 	}
 	last = jiffies;
 	
 	
     printk("inc_count called (%ld)... \ncurrent: %d\nmin: %d\nmax: %d\n",
-			mytimer.expires, latest, min, max );
+			mytimer.expires, cur, min, max );
+	printk("inc_count called (%ld)... \ncurrent (cycles): %d\nmin (cycles): %d\nmax (cycles): %d\n",
+			mytimer.expires, (int) cur_cyc, (int) min_cyc, (int) max_cyc );
 			
     /* call timer again in 2 sec */
     mytimer.expires = jiffies + (2*HZ); 
