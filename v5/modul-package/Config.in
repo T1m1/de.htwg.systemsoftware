@@ -9,5 +9,6 @@ config BR2_PACKAGE_SYSO
 if BR2_PACKAGE_SYSO
         menu "Modules"
                 source package/syso/tasklet/Config.in
+                source package/syso/timer/Config.in
         endmenu
 endif
