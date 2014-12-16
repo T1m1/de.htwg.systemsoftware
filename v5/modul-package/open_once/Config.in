@@ -1,0 +1,4 @@
+config BR2_PACKAGE_OPEN_ONCE
+	bool "open_once"
+	help
+	  This is a open_once.
