@@ -10,5 +10,8 @@ if BR2_PACKAGE_SYSO
         menu "Modules"
                 source package/syso/tasklet/Config.in
                 source package/syso/timer/Config.in
+                source package/syso/tasklet/Config.in
+                source package/syso/kthread/Config.in
+                source package/syso/wq/Config.in
         endmenu
 endif
