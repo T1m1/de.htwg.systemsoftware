@@ -5,6 +5,10 @@
 #include <linux/cdev.h>
 #include <linux/device.h>
 
+#include <linux/ioctl.h>
+
+/* kthread */
+#include <linux/kthread.h>
 
 #define DRIVER_NAME "kthread"
 
@@ -16,7 +20,32 @@ static int major;
 static struct file_operations fobs;
 static dev_t dev_number;
 static struct cdev *driver_object;
-struct class *template_class;
+struct class *ktrhead_class;
+
+/* thread specific */
+static struct task_struct* thread_id;
+static wait_queue_head_t wq;
+static DECLARE_COMPLETION(on_exit);
+
+static int thread_code(void *data)
+{
+	unsigned long timeout;
+	
+	allow_signal(SIGTERM);
+	while( !signal_pending(current) ) {
+		/* wait 2 second */
+		timeout= 2 * HZ;
+		timeout=wait_event_interruptible_timeout(
+				wq, (timeout==0), timeout);
+		printk("thread_function: wake up... after 2 seconds!d\n");
+		if(timeout==ERESTARTSYS) {
+			printk("got signal, break\n");
+			break;
+		}
+	}
+	complete_and_exit( &on_exit, 0 );
+}
+
 
 static int __init ModInit(void)
 {
@@ -41,12 +70,22 @@ static int __init ModInit(void)
 		goto free_cdev;
 	}
 	
-	template_class = class_create(THIS_MODULE, DRIVER_NAME);
-	device_create(template_class, NULL, dev_number, NULL, "%s", DRIVER_NAME);
+	ktrhead_class = class_create(THIS_MODULE, DRIVER_NAME);
+	device_create(ktrhead_class, NULL, dev_number, NULL, "%s", DRIVER_NAME);
+	
+	
+	/* thread init */
+	init_waitqueue_head(&wq);
+	thread_id=kthread_create(thread_code, NULL, "mykthread");
+	if(thread_id == 0) {
+		return -EIO;
+	}
+	wake_up_process(thread_id);
+		
 	
 	major = MAJOR(dev_number);
-	
 	printk("Major number: %d\n", major);
+	
 	return EXIT_SUCCESS;
 	
 free_cdev:
@@ -60,8 +99,12 @@ free_device_number:
 
 static void __exit ModExit(void) 
 {
-	device_destroy(template_class, dev_number);
-	class_destroy(template_class);
+	/* kill thread */
+	kill_pid(task_pid(thread_id), SIGTERM, 1);
+	wait_for_completion(&on_exit);
+	
+	device_destroy(ktrhead_class, dev_number);
+	class_destroy(ktrhead_class);
 	cdev_del(driver_object);
 	unregister_chrdev_region(dev_number, 1);
 	return;
@@ -72,7 +115,7 @@ module_exit(ModExit);
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Timotheus Ruprecht and  Steffen Gorenflo");
-MODULE_DESCRIPTION("Modul Template");
+MODULE_DESCRIPTION("Modul Ktrhead");
 MODULE_SUPPORTED_DEVICE("none");
 
 
