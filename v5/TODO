@@ -3,12 +3,10 @@ Steffen:
 
 Timi:
 	[x] Tasklets -> done
-	[ ] Timer
+	[ ] Timer -> Taktzyklenzähler fehlt
+	[ ] Kernel Threads
 
 TODO:
-
-
-	[ ] Kernel Threads
 	[ ] Work Queues
 	[ ] Semaphore - Spinlock
 	[ ] Mutex
