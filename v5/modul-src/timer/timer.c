@@ -8,6 +8,7 @@
 #include <linux/timer.h>
 #include <linux/sched.h>
 
+
 #define DRIVER_NAME "timer"
 
 /* normaly in stdlib.h */
@@ -21,14 +22,39 @@ static struct cdev *driver_object;
 struct class *template_class;
 
 static struct timer_list mytimer;
+static atomic_t stop_timer = ATOMIC_INIT(0);
+static DECLARE_COMPLETION(on_exit);
 
-/**
- *  TODO: Sicheres Einhänges eines Timer-Objekts
- **/
 
 static void inc_count(unsigned long arg)
 {
-    printk("inc_count called (%ld)...\n", mytimer.expires );
+	/* timer calculation */
+	static unsigned int min, max, latest, last;
+	latest = jiffies -last;
+	
+	if( last ) {
+		if( latest > max ) {
+			max = latest;
+		}
+		if( latest < min ) {
+			min = latest;
+		}
+	}
+	last = jiffies;
+	
+	
+    printk("inc_count called (%ld)... \ncurrent: %d\nmin: %d\nmax: %d\n",
+			mytimer.expires, latest, min, max );
+			
+    /* call timer again in 2 sec */
+    mytimer.expires = jiffies + (2*HZ); 
+    /* check if timer should be added again */
+    if (atomic_read(&stop_timer)) {
+		complete(&on_exit);
+		printk(KERN_INFO "inc_count: do not call add_timer");
+	} else {
+		add_timer(&mytimer);
+	}
 }
 
 
@@ -80,14 +106,9 @@ free_device_number:
 
 static void __exit ModExit(void) 
 {
-	if( timer_pending( &mytimer ) ) {
-        printk("Timer ist aktiviert ...\n");
-	}
-    if( del_timer_sync( &mytimer ) ) {
-        printk("Aktiver Timer deaktiviert\n");
-	} else {
-        printk("Kein Timer aktiv\n");
-	}
+	atomic_set(&stop_timer, 1);
+	wait_for_completion(&on_exit);
+	printk(KERN_INFO "ModExit after timer finished\n");
         
 	device_destroy(template_class, dev_number);
 	class_destroy(template_class);
