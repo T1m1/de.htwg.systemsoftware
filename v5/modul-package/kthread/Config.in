@@ -1,0 +1,4 @@
+config BR2_PACKAGE_KTHREAD
+	bool "kthread"
+	help
+	  This is a kthread.
