@@ -1,0 +1,4 @@
+config BR2_PACKAGE_TEMPLATE
+	bool "template"
+	help
+	  This is a template.
