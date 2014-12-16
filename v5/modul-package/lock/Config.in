@@ -1,0 +1,4 @@
+config BR2_PACKAGE_LOCK
+	bool "lock"
+	help
+	  This is a lock.
