@@ -30,16 +30,18 @@ static DECLARE_COMPLETION(on_exit);
 static int thread_code(void *data)
 {
 	unsigned long timeout;
-	
-	allow_signal(SIGTERM);
+
+	allow_signal( SIGTERM );
+	init_waitqueue_head( &wq );
+	printk("thread_code startet ...\n");
 	while( !signal_pending(current) ) {
 		/* wait 2 second */
 		timeout= 2 * HZ;
 		timeout=wait_event_interruptible_timeout(
-				wq, (timeout==0), timeout);
-		printk("thread_function: wake up... after 2 seconds!d\n");
-		if(timeout==ERESTARTSYS) {
-			printk("got signal, break\n");
+			wq, (timeout==0),timeout );
+		printk("thread_function: wake up... after 2 seconds!\n");
+		if( timeout==-ERESTARTSYS ) {
+			printk("got signal...\n");
 			break;
 		}
 	}
