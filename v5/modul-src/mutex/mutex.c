@@ -24,12 +24,14 @@ struct mutex my_mutex;
 DEFINE_MUTEX(my_mutex);
 
 static int driver_open( struct inode *geraetedatei, struct file *instanz );
+static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_t *offset);
 
 
 static struct file_operations fobs =
 {
 	.owner = THIS_MODULE,
 	.open = driver_open,
+	.read = driver_read,
 };
 
 static int driver_open( struct inode *geraetedatei, struct file *instanz )
@@ -44,11 +46,17 @@ static int driver_open( struct inode *geraetedatei, struct file *instanz )
 			return -EIO;
 		}
 	}
-	printk("MUTEX: sleeping 3 seconds -> start");
+	printk("MUTEX: sleeping 3 seconds -> start\n");
 	/* sleep for 3 seconds */
 	schedule_timeout_interruptible( 3*HZ );
-	printk("MUTEX: sleeping 3 seconds -> finish");
+	printk("MUTEX: sleeping 3 seconds -> finish\n");
 	mutex_unlock( &my_mutex );
+	return 0;
+}
+
+static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_t *offset)
+{
+	printk(KERN_INFO "MUTEX: read called...\n");
 	return 0;
 }
 
