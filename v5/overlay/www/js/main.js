@@ -16,9 +16,11 @@ $(document).ready(function () {
 		'#switchOff': 'cgi-bin/switchOff.sh',
 		'#switchStatus': 'cgi-bin/switchStatus',
 		'#reboot': 'cgi-bin/reboot.sh',
-		'#mynull': 'cgi-bin/mynull.sh',
-		'#myzero': 'cgi-bin/myzero.sh',
-		'#openclose': 'cgi-bin/openclose.sh'
+		'#tasklet': 'cgi-bin/tasklet.sh',
+		'#mutex': 'cgi-bin/mutex.sh',
+		'#kthread': 'cgi-bin/kthread.sh',
+		'#timer': 'cgi-bin/timer.sh',
+		'#wq': 'cgi-bin/wq.sh'
 	};
 	
 	// click event on buttons (a - tag)
