@@ -26,3 +26,4 @@ clean:
 
 install:
 	scp $(NAME).ko root@192.168.29.31:$(TARGET_DIR)$(NAME).ko
+	scp test_$(NAME).sh root@192.168.29.31:$(TARGET_DIR)test_$(NAME).sh

@@ -1,16 +1,20 @@
 #!/bin/sh
 
 PROG_NAME=mutex
+PATH_TO_KO=/lib/modules/3.17.2/extra
 
-# clear dmesg output
+## init
+# unload modul (if loaded)
+rmmod $PROG_NAME > /dev/null
+# clear dmesg output 
 dmesg -c > /dev/null
 
 # show modul informations
 echo "********** modul info **********"
-modinfo $PROG_NAME.ko
+modinfo $PATH_TO_KO/$PROG_NAME.ko
 
 # load modul
-insmod $PROG_NAME.ko
+insmod $PATH_TO_KO/$PROG_NAME.ko
 
 # show kernel logs for loading (e.g. last 10 lines)
 echo "********** kernel logs for loading **********"
@@ -19,6 +23,10 @@ dmesg -c
 # show information from /proc/devices
 echo "********** /proc/devices **********"
 cat /proc/devices
+
+# test parallel access to mutes
+cat /dev/mutex &
+cat /dev/mutex
 
 # unload modul (without .ko)
 rmmod $PROG_NAME
