@@ -20,6 +20,7 @@ $(document).ready(function () {
 		'#mutex': 'cgi-bin/mutex.sh',
 		'#kthread': 'cgi-bin/kthread.sh',
 		'#timer': 'cgi-bin/timer.sh',
+		'#lock': 'cgi-bin/lock.sh',
 		'#wq': 'cgi-bin/wq.sh'
 	};
 	
