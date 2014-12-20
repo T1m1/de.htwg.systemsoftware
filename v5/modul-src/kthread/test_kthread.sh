@@ -23,13 +23,18 @@ dmesg -c
 # show information from /proc/devices
 echo "********** /proc/devices **********"
 cat /proc/devices
-
+echo `ps -a`
 # wait 5 seconds 
 sleep 5
 
 # TODO kill process
-processID=`ps -ax | grep -o "[^ ]*$"`
-kill 
+processID=`ps -a | grep mykthread -m 1 | grep -o "[0-9]*" | grep -o "^[0-9]*" -m 1`
+echo "kill $processID"
+kill $processID
+
+echo "********** kernel logs for testing **********"
+dmesg -c
+
 # unload modul (without .ko)
 rmmod $PROG_NAME
 
