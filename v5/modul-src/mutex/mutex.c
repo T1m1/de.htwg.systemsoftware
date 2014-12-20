@@ -4,7 +4,9 @@
 #include <linux/fs.h>
 #include <linux/cdev.h>
 #include <linux/device.h>
-
+/* mutex */
+#include <linux/mutex.h>
+#include <linux/sched.h>
 
 #define DRIVER_NAME "mutex"
 
@@ -13,10 +15,43 @@
 #define EXIT_FAILURE 1
 
 static int major;
-static struct file_operations fobs;
 static dev_t dev_number;
 static struct cdev *driver_object;
-struct class *template_class;
+struct class *mutex_class;
+
+/* define mutex */
+struct mutex my_mutex;
+DEFINE_MUTEX(my_mutex);
+
+static int driver_open( struct inode *geraetedatei, struct file *instanz );
+
+
+static struct file_operations fobs =
+{
+	.owner = THIS_MODULE,
+	.open = driver_open,
+};
+
+static int driver_open( struct inode *geraetedatei, struct file *instanz )
+{
+	/* try to get the mutex */
+	while( mutex_trylock( &my_mutex ) == 0 ) {
+		printk("MUTEX: busy (%ld)...\n", jiffies);
+		/* wait 200 mili seconds */
+		schedule_timeout_interruptible( 200*HZ/1000 );
+		if( signal_pending(current) ) {
+			mutex_unlock( &my_mutex );
+			return -EIO;
+		}
+	}
+	printk("MUTEX: sleeping 3 seconds -> start");
+	/* sleep for 3 seconds */
+	schedule_timeout_interruptible( 3*HZ );
+	printk("MUTEX: sleeping 3 seconds -> finish");
+	mutex_unlock( &my_mutex );
+	return 0;
+}
+
 
 static int __init ModInit(void)
 {
@@ -41,8 +76,8 @@ static int __init ModInit(void)
 		goto free_cdev;
 	}
 	
-	template_class = class_create(THIS_MODULE, DRIVER_NAME);
-	device_create(template_class, NULL, dev_number, NULL, "%s", DRIVER_NAME);
+	mutex_class = class_create(THIS_MODULE, DRIVER_NAME);
+	device_create(mutex_class, NULL, dev_number, NULL, "%s", DRIVER_NAME);
 	
 	major = MAJOR(dev_number);
 	
@@ -60,8 +95,8 @@ free_device_number:
 
 static void __exit ModExit(void) 
 {
-	device_destroy(template_class, dev_number);
-	class_destroy(template_class);
+	device_destroy(mutex_class, dev_number);
+	class_destroy(mutex_class);
 	cdev_del(driver_object);
 	unregister_chrdev_region(dev_number, 1);
 	return;
