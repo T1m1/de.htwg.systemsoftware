@@ -9,7 +9,7 @@ if BR2_PACKAGE_SYSO
         menu "Modules"
 				source package/syso/kthread/Config.in
 				source package/syso/lock/Config.in
-				source package/syso/mynull/Config.in
+				source package/syso/myzero/Config.in
 				source package/syso/open_once/Config.in
                 source package/syso/tasklet/Config.in
                 source package/syso/timer/Config.in
