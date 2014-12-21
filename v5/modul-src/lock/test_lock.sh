@@ -24,6 +24,10 @@ dmesg -c
 echo "********** /proc/devices **********"
 cat /proc/devices
 
+# test parallel access to lock
+cat /dev/lock &
+cat /dev/lock
+
 # unload modul (without .ko)
 rmmod $PROG_NAME
 
