@@ -36,11 +36,6 @@ echo "********** test with access.c **********"
 mknod /dev/major_0_test_$PROG_NAME c $major 0 
 mknod /dev/major_1_test_$PROG_NAME c $major 1 
 
-echo "parameter of access.c:"
-echo "-d /dev/major_0_test_$PROG_NAME -r -v -t 5000 -n 8 -e 8 -m /dev/major_1_test_$PROG_NAME"
-
-/usr/bin/access -d /dev/major_0_test_$PROG_NAME -r -v -t 5000 -n 8 -e 8 -m /dev/major_1_test_$PROG_NAME
-
 echo "********** dmesg logs from access script **********"
 dmesg -c
 
