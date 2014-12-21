@@ -4,11 +4,14 @@
 #include <linux/fs.h>
 #include <linux/cdev.h>
 #include <linux/device.h>
+/* timeout */
+#include <linux/sched.h>
+/* semaphore */
+#include <linux/semaphore.h>
 
 
 #define DRIVER_NAME "lock"
 
-/* normaly in stdlib.h */
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
 
@@ -17,6 +20,45 @@ static struct file_operations fobs;
 static dev_t dev_number;
 static struct cdev *driver_object;
 struct class *lock_class;
+
+/* semaphore */
+static struct semaphore sema;
+static DEFINE_SEMAPHORE(sema);
+
+static int driver_open(struct inode *geraetedatei, struct file *instanz)
+{
+	/* try to get access */
+	while( down_trylock( &sema ) != 0 ) {
+		printk("LOCK: busy...\n");
+		/* wait 200 mili seconds */
+		schedule_timeout_interruptible( 200*HZ/1000 );
+		if( signal_pending(current) ) {
+			/* leave critical section */
+			up(&sema);
+			return -EIO;
+		}
+	}
+	printk("LOCK: sleeping 3 seconds -> start\n");
+	/* sleep for 3 seconds */
+	schedule_timeout_interruptible( 3*HZ );
+	printk("LOCK: sleeping 3 seconds -> finish\n");
+	/* leave critical section */
+	up(&sema);
+	return EXIT_SUCCESS;
+}
+
+static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_t *offset)
+{
+	printk(KERN_INFO "LOCK: read called...\n");
+	return 0;
+}
+
+static struct file_operations fobs =
+{
+	.owner = THIS_MODULE,
+	.open = driver_open,
+	.read = driver_read
+};
 
 static int __init ModInit(void)
 {
