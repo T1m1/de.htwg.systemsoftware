@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 SYSO_EXERCISE=v5
 
 # versions
