@@ -1,0 +1,4 @@
+config BR2_PACKAGE_BUF
+	bool "buf"
+	help
+	  This is a buf.
