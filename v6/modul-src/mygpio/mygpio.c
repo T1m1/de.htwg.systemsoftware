@@ -5,12 +5,26 @@
 #include <linux/cdev.h>
 #include <linux/device.h>
 
-
 #define DRIVER_NAME "mygpio"
 
 /* normaly in stdlib.h */
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
+
+/** register for GPIO **/
+/* gpio pin 10 - 19 */
+#define GPFSEL1 0xF2200004
+/* gpio pin 20 - 29 */
+#define GPFSEL2 0xF2200008
+
+/* address for gpio 18 and 25 */
+#define GPIO_18 GPFSEL1
+#define GPIO_25 GPFSEL2
+
+/* mask to clear bits */
+#define CLEAR_GPIO_18 0xF8FFFFFF
+#define CLEAR_GPIO_25 0xFFFC7FFF
+
 
 static int major;
 static struct file_operations fobs;
@@ -28,6 +42,25 @@ static struct file_operations fobs =
 
 static int driver_open(struct inode *geraetedatei, struct file *instanz)
 {
+	u32 *ptr_gpio18 = (u32 *)GPIO_18;
+	u32 *ptr_gpio25 = (u32 *)GPIO_25;
+	
+	u32 old_value;
+	
+	printk(KERN_INFO "gpio pin 18 as output");
+	old_value = readl(ptr_gpio18);
+	/* clear bits for GPIO-18 */
+	old_value = old_value & CLEAR_GPIO_18;
+	/* configure GPIO-18 as output */
+	writel(old_value | GPIO_18, ptr_gpio18);
+	
+	printk(KERN_INFO "gpio pin 25 as input");
+	old_value = readl(ptr_gpio25);
+	/* clear bits for GPIO-25 */
+	old_value = old_value & CLEAR_GPIO_25;
+	/* configure GPIO-25 as output */
+	writel(old_value | GPIO_25, ptr_gpio25);
+	
 	return EXIT_SUCCESS;
 }
 
