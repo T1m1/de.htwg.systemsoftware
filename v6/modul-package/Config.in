@@ -1,0 +1,12 @@
+config BR2_PACKAGE_SYSO
+        bool "syso"
+        help
+          All Syso Packages
+
+          https://burns.in.htwg-konstanz.de/labworks-SYSO_WS1415/syso_ws1415_14
+
+if BR2_PACKAGE_SYSO
+        menu "Modules"
+				source package/syso/TODO/Config.in
+        endmenu
+endif
