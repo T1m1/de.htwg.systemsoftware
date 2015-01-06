@@ -4,15 +4,19 @@
 #include <linux/fs.h>
 #include <linux/cdev.h>
 #include <linux/device.h>
-
 /* header for io control */
 #include <asm/io.h>
+/* header for copy to/from user */
+#include <linux/uaccess.h>
 
 #define DRIVER_NAME "mygpio"
 
 /* normaly in stdlib.h */
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
+
+/* 1 BYTE */
+#define ONE_BYTE 1
 
 /** register for GPIO **/
 /* gpio pin 10 - 19 */
@@ -51,17 +55,28 @@ static struct file_operations fobs =
 
 static ssize_t driver_write(struct file *instanz, const char *user, size_t count, loff_t *offset)
 {
+	
+	size_t to_copy, not_copied;
+	char value;
+	
 	/* check size of parameter is one byte */
 	if (1 != count) {
-		printk(KERN_INFO "write: can only write 1 byte!");
+		printk(KERN_INFO "write: can only write 1 byte!\n");
 		return -EAGAIN;
 	}
 	
+	/* copy byte form user */
+	to_copy = ONE_BYTE;
+	to_copy = min(to_copy, count);
+	not_copied = copy_from_user(&value, user, to_copy);
 	
+	/* check for correct value of element */
+	if('1' != value && '0' != value) {
+		printk(KERN_INFO "write: Wrong value! Can only write 1 or 0!\n");
+		return -EAGAIN;
+	}
 	
-	
-	/****************** TODO return ********************/
-	return 0;
+	return to_copy - not_copied;
 }
 
 static int driver_open(struct inode *geraetedatei, struct file *instanz)
