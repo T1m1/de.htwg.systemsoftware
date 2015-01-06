@@ -18,6 +18,19 @@ static dev_t dev_number;
 static struct cdev *driver_object;
 struct class *mygpio_class;
 
+static int driver_open(struct inode *geraetedatei, struct file *instanz);
+
+static struct file_operations fobs =
+{
+	.owner = THIS_MODULE,
+	.open = driver_open,
+};
+
+static int driver_open(struct inode *geraetedatei, struct file *instanz)
+{
+	return EXIT_SUCCESS;
+}
+
 static int __init ModInit(void)
 {
 	/* reserve device driver number */
