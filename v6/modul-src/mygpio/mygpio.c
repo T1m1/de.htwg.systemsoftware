@@ -28,6 +28,9 @@
 #define CLEAR_GPIO_18 0xF8FFFFFF
 #define CLEAR_GPIO_25 0xFFFC7FFF
 
+#define GPIO_18_AS_OUTPUT 0x01000000
+#define GPIO_25_AS_INPUT 0x000C7000
+
 
 static int major;
 static struct file_operations fobs;
@@ -36,7 +39,7 @@ static struct cdev *driver_object;
 struct class *mygpio_class;
 
 static int driver_open(struct inode *geraetedatei, struct file *instanz);
-
+static void gpio_init(unsigned long gpio_address, unsigned long gpio_clear, unsigned long gpio_direction);
 static struct file_operations fobs =
 {
 	.owner = THIS_MODULE,
@@ -45,36 +48,34 @@ static struct file_operations fobs =
 
 static int driver_open(struct inode *geraetedatei, struct file *instanz)
 {
-	u32 *ptr_gpio18 = (u32 *)GPIO_18;
-	u32 *ptr_gpio25 = (u32 *)GPIO_25;
+	/* init gpio 18 as output */
+	gpio_init(GPIO_18, CLEAR_GPIO_18, GPIO_18_AS_OUTPUT);
+	/* init gpio 25 as input */
+	gpio_init(GPIO_25, CLEAR_GPIO_25, GPIO_25_AS_INPUT);
+	
+	
+	
+	
+	return EXIT_SUCCESS;
+}
+
+
+static void gpio_init(unsigned long gpio_address, unsigned long gpio_clear, unsigned long gpio_direction) 
+{
+	u32 *ptr = (u32 *)gpio_address;
 	
 	u32 old_value;
 	
-	printk(KERN_INFO "gpio pin 18 as output");
-	/* read value for GPIO-18 */
-	old_value = readl(ptr_gpio18);
+	/* read value */
+	old_value = readl(ptr);
 	/* after read - add memory barrier */
 	rmb();
-	/* clear bits for GPIO-18 */
-	old_value = old_value & CLEAR_GPIO_18;
+	/* clear bits */
+	old_value = old_value & gpio_clear;
 	/* before write - add memory barrier */
 	wmb();
-	/* configure GPIO-18 as output */
-	writel(old_value | GPIO_18, ptr_gpio18);
-	
-	printk(KERN_INFO "gpio pin 25 as input");
-	/* read value for GPIO-25 */
-	old_value = readl(ptr_gpio25);
-	/* after read - add memory barrier */
-	rmb();
-	/* clear bits for GPIO-25 */
-	old_value = old_value & CLEAR_GPIO_25;
-	/* before write - add memory barrier */
-	wmb();
-	/* configure GPIO-25 as output */
-	writel(old_value | GPIO_25, ptr_gpio25);
-	
-	return EXIT_SUCCESS;
+	/* configure direction */
+	writel(old_value | gpio_direction, ptr);
 }
 
 static int __init ModInit(void)
