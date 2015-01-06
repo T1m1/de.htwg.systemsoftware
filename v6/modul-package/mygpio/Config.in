@@ -1,0 +1,4 @@
+config BR2_PACKAGE_MYGPIO
+	bool "mygpio"
+	help
+	  This is a template.
