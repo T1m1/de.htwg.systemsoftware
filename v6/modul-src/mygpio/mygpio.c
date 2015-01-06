@@ -40,11 +40,29 @@ struct class *mygpio_class;
 
 static int driver_open(struct inode *geraetedatei, struct file *instanz);
 static void gpio_init(unsigned long gpio_address, unsigned long gpio_clear, unsigned long gpio_direction);
+static ssize_t driver_write(struct file *instanz, const char *user, size_t count, loff_t *offset);
+
 static struct file_operations fobs =
 {
 	.owner = THIS_MODULE,
 	.open = driver_open,
+	.write = driver_write
 };
+
+static ssize_t driver_write(struct file *instanz, const char *user, size_t count, loff_t *offset)
+{
+	/* check size of parameter is one byte */
+	if (1 != count) {
+		printk(KERN_INFO "write: can only write 1 byte!");
+		return -EAGAIN;
+	}
+	
+	
+	
+	
+	/****************** TODO return ********************/
+	return 0;
+}
 
 static int driver_open(struct inode *geraetedatei, struct file *instanz)
 {
@@ -53,17 +71,12 @@ static int driver_open(struct inode *geraetedatei, struct file *instanz)
 	/* init gpio 25 as input */
 	gpio_init(GPIO_25, CLEAR_GPIO_25, GPIO_25_AS_INPUT);
 	
-	
-	
-	
 	return EXIT_SUCCESS;
 }
-
 
 static void gpio_init(unsigned long gpio_address, unsigned long gpio_clear, unsigned long gpio_direction) 
 {
 	u32 *ptr = (u32 *)gpio_address;
-	
 	u32 old_value;
 	
 	/* read value */
