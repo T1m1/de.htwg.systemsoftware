@@ -19,10 +19,12 @@
 #define ONE_BYTE 1
 
 /** register for GPIO **/
-/* gpio pin 10 - 19 */
+/* register for gpio pin 10 - 19 */
 #define GPFSEL1 0xF2200004
-/* gpio pin 20 - 29 */
+/* register for gpio pin 20 - 29 */
 #define GPFSEL2 0xF2200008
+/* register for gpio values 0 - 31 */
+#define GPLEV0 0xF2200034
 
 /* address for gpio 18 and 25 */
 #define GPIO_18 GPFSEL1
@@ -36,9 +38,15 @@
 #define GPIO_18_AS_OUTPUT 0x01000000
 #define GPIO_25_AS_INPUT 0x000C7000
 
-/* HIGH - LOW for GPIO-18 */
+/* HIGH - LOW for GPIO 18 */
 #define GPIO_HIGH_18 0x00040000
 #define GPIO_LOW_18 0x00040000
+
+/* MASK to check GPIO 25 */
+#define GPIO_25_MASK 0x02000000
+
+/* VALUE of GPIO 25 */
+#define GPIO_25_VALUE GPLEV0
 
 static int major;
 static struct file_operations fobs;
@@ -63,12 +71,38 @@ static struct file_operations fobs =
 	.read = driver_read
 };
 
-static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_t *offset) {
+static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_t *offset)
+{
+	size_t to_copy, not_copied;
+	char value;
+	u32 *ptr;
+	u32 old_value;
 	
+	/* check size of parameter is one byte */
+	if (1 != count) {
+		printk(KERN_INFO "read: can only write 1 byte!\n");
+		return -EAGAIN;
+	}
 	
+	/* read value from GPIO_25 */
+	ptr = (u32 *)GPIO_25_VALUE;
+	old_value = readl(ptr);
+	/* after read - add memory barrier */
+	rmb();
 	
-	/************* TODO return **************/
-	return 0;
+	/* check register */
+	if(0 != (old_value&GPIO_25_MASK)) {
+		value = '1';
+	} else {
+		value = '0';
+	}
+	
+	/* read value */
+	to_copy = ONE_BYTE;
+	to_copy = min(to_copy, count);
+	not_copied = copy_to_user(user, &value, to_copy);
+
+	return to_copy - not_copied;
 }
 
 static ssize_t driver_write(struct file *instanz, const char *user, size_t count, loff_t *offset)
@@ -123,7 +157,6 @@ static ssize_t driver_write(struct file *instanz, const char *user, size_t count
 		/* leave critical section */
 		mutex_unlock(&write_access);
 	}
-	
 	
 	return to_copy - not_copied;
 }
