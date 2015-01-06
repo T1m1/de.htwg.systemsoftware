@@ -32,6 +32,7 @@
 #define CLEAR_GPIO_18 0xF8FFFFFF
 #define CLEAR_GPIO_25 0xFFFC7FFF
 
+/* direction of gpio pins */
 #define GPIO_18_AS_OUTPUT 0x01000000
 #define GPIO_25_AS_INPUT 0x000C7000
 
@@ -55,7 +56,6 @@ static struct file_operations fobs =
 
 static ssize_t driver_write(struct file *instanz, const char *user, size_t count, loff_t *offset)
 {
-	
 	size_t to_copy, not_copied;
 	char value;
 	
@@ -75,6 +75,20 @@ static ssize_t driver_write(struct file *instanz, const char *user, size_t count
 		printk(KERN_INFO "write: Wrong value! Can only write 1 or 0!\n");
 		return -EAGAIN;
 	}
+	
+	/* check if byte could be copied */
+	if(0 == not_copied) {
+		// try to enter critical section
+		
+		// check if blocking or nonblocking mode
+		
+		// enter critical section
+		
+			// set GPIO pin to 1 or 0 
+			
+		// leave critical section
+	}
+	
 	
 	return to_copy - not_copied;
 }
