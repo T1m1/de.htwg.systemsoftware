@@ -5,6 +5,9 @@
 #include <linux/cdev.h>
 #include <linux/device.h>
 
+/* header for io control */
+#include <asm/io.h>
+
 #define DRIVER_NAME "mygpio"
 
 /* normaly in stdlib.h */
@@ -48,16 +51,26 @@ static int driver_open(struct inode *geraetedatei, struct file *instanz)
 	u32 old_value;
 	
 	printk(KERN_INFO "gpio pin 18 as output");
+	/* read value for GPIO-18 */
 	old_value = readl(ptr_gpio18);
+	/* after read - add memory barrier */
+	rmb();
 	/* clear bits for GPIO-18 */
 	old_value = old_value & CLEAR_GPIO_18;
+	/* before write - add memory barrier */
+	wmb();
 	/* configure GPIO-18 as output */
 	writel(old_value | GPIO_18, ptr_gpio18);
 	
 	printk(KERN_INFO "gpio pin 25 as input");
+	/* read value for GPIO-25 */
 	old_value = readl(ptr_gpio25);
+	/* after read - add memory barrier */
+	rmb();
 	/* clear bits for GPIO-25 */
 	old_value = old_value & CLEAR_GPIO_25;
+	/* before write - add memory barrier */
+	wmb();
 	/* configure GPIO-25 as output */
 	writel(old_value | GPIO_25, ptr_gpio25);
 	
