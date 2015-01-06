@@ -50,23 +50,31 @@ static int driver_open(struct inode *geraetedatei, struct file *instanz);
 static void gpio_init(unsigned long gpio_address, unsigned long gpio_clear, unsigned long gpio_direction);
 static ssize_t driver_write(struct file *instanz, const char *user, size_t count, loff_t *offset);
 static void gpio_write(unsigned long gpio_value);
+static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_t *offset);
 
 /* write MUTEXfor GPIO pin */
 DEFINE_MUTEX(write_access);
-
 
 static struct file_operations fobs =
 {
 	.owner = THIS_MODULE,
 	.open = driver_open,
-	.write = driver_write
+	.write = driver_write,
+	.read = driver_read
 };
+
+static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_t *offset) {
+	
+	
+	
+	/************* TODO return **************/
+	return 0;
+}
 
 static ssize_t driver_write(struct file *instanz, const char *user, size_t count, loff_t *offset)
 {
 	size_t to_copy, not_copied;
 	char value;
-
 	
 	/* check size of parameter is one byte */
 	if (1 != count) {
@@ -105,7 +113,7 @@ static ssize_t driver_write(struct file *instanz, const char *user, size_t count
 		/* enter critical section */
 		if('1' == value) {
 			/* set bit of GPIO_18 to high */
-			gpio_write(GPIO_HIGH_18)
+			gpio_write(GPIO_HIGH_18);
 			printk(KERN_INFO "write: HIGH to gpio18\n");
 		} else {
 			/* set bit of GPIO_18 to low  */
@@ -193,7 +201,6 @@ free_cdev:
 free_device_number:
 	unregister_chrdev_region(dev_number, 1);
 	return -EIO;
-	
 }
 
 static void __exit ModExit(void) 
