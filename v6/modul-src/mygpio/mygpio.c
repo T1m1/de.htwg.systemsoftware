@@ -36,6 +36,9 @@
 #define GPIO_18_AS_OUTPUT 0x01000000
 #define GPIO_25_AS_INPUT 0x000C7000
 
+/* HIGH - LOW for GPIO-18 */
+#define GPIO_HIGH_18 0x00040000
+#define GPIO_LOW_18 0x00040000
 
 static int major;
 static struct file_operations fobs;
@@ -46,6 +49,11 @@ struct class *mygpio_class;
 static int driver_open(struct inode *geraetedatei, struct file *instanz);
 static void gpio_init(unsigned long gpio_address, unsigned long gpio_clear, unsigned long gpio_direction);
 static ssize_t driver_write(struct file *instanz, const char *user, size_t count, loff_t *offset);
+static void gpio_write(unsigned long gpio_value);
+
+/* write MUTEXfor GPIO pin */
+DEFINE_MUTEX(write_access);
+
 
 static struct file_operations fobs =
 {
@@ -58,6 +66,7 @@ static ssize_t driver_write(struct file *instanz, const char *user, size_t count
 {
 	size_t to_copy, not_copied;
 	char value;
+
 	
 	/* check size of parameter is one byte */
 	if (1 != count) {
@@ -78,19 +87,46 @@ static ssize_t driver_write(struct file *instanz, const char *user, size_t count
 	
 	/* check if byte could be copied */
 	if(0 == not_copied) {
-		// try to enter critical section
-		
-		// check if blocking or nonblocking mode
-		
-		// enter critical section
-		
-			// set GPIO pin to 1 or 0 
-			
-		// leave critical section
+		/* try to enter critical section */
+		if(0 == mutex_trylock(&write_access)) {
+			printk(KERN_INFO "write: blocked \n");
+		}
+		/* check if blocking or nonblocking mode */
+		if (instanz->f_flags & O_NONBLOCK) {
+			/* nonblocking */ 
+			printk(KERN_INFO "write: nonblocking state - write not possible\n");
+			return -EAGAIN;
+		}
+		/* blocking */
+		if(mutex_lock_interruptible(&write_access)) {
+			printk(KERN_INFO "write: blocking acces - interrupted\n");
+			return -EAGAIN;
+		}
+		/* enter critical section */
+		if('1' == value) {
+			/* set bit of GPIO_18 to high */
+			gpio_write(GPIO_HIGH_18)
+			printk(KERN_INFO "write: HIGH to gpio18\n");
+		} else {
+			/* set bit of GPIO_18 to low  */
+			gpio_write(GPIO_HIGH_18);
+			printk(KERN_INFO "write: LOW to gpio18\n");
+		}
+		/* leave critical section */
+		mutex_unlock(&write_access);
 	}
 	
 	
 	return to_copy - not_copied;
+}
+
+static void gpio_write(unsigned long gpio_value) {
+	u32 *ptr;
+	ptr = (u32 *)gpio_value;
+	/* after read and before write- add memory barrier */
+	mb();
+	/* write new value to gpio */
+	writel(gpio_value, ptr);
 }
 
 static int driver_open(struct inode *geraetedatei, struct file *instanz)
