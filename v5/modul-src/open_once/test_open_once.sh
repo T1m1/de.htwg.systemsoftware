@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PROG_NAME=mutex
+PROG_NAME=open_once
 PATH_TO_KO=/lib/modules/3.17.2/extra
 
 ## init

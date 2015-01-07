@@ -17,7 +17,7 @@ $(document).ready(function () {
 		'#switchStatus': 'cgi-bin/switchStatus',
 		'#reboot': 'cgi-bin/reboot.sh',
 		'#tasklet': 'cgi-bin/tasklet.sh',
-		'#mutex': 'cgi-bin/mutex.sh',
+		'#open_once': 'cgi-bin/open_once.sh',
 		'#kthread': 'cgi-bin/kthread.sh',
 		'#timer': 'cgi-bin/timer.sh',
 		'#lock': 'cgi-bin/lock.sh',
