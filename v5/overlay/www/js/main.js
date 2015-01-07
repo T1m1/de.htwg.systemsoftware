@@ -127,15 +127,5 @@ $(document).ready(function () {
 			}, 10000);
 	})();
 
-
-
-	(function initGpio() {
-		setInterval(function()  {
-			gpioStatus('#ledStatus');
-			gpioStatus('#switchStatus');
-			}, 250);
-			
-			
-	})();
 	
 });

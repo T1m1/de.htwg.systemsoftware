@@ -86,7 +86,7 @@ qemu()
 	-kernel zImage -m 128M -M vexpress-a9 \
 	-nographic -append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" \
 	-initrd rootfs.cpio\
-	-net nic,macaddr=00:00:00:00:00:1D,vlan=0\
+	-net nic,macaddr=00:00:00:00:00:1F,vlan=0\
 	-net vde,sock="/tmp/vde2-tap0.ctl",vlan=0
 }
 
@@ -97,7 +97,7 @@ qemu_serial()
 	-initrd rootfs.cpio\
 	-nographic -serial pty \
 	-append "root=/dev/ram initrd=/sbin/init console=ttyAMA0" \
-	-net nic,macaddr=00:00:00:00:00:1D,vlan=0\
+	-net nic,macaddr=00:00:00:00:00:1F,vlan=0\
 	-net vde,sock="/tmp/vde2-tap0.ctl",vlan=0
 	
 	# conect with ... screen /dev/pts/33 (Number can vary)

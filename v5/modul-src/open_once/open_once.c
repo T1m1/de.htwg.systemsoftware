@@ -8,7 +8,7 @@
 #include <linux/mutex.h>
 #include <linux/sched.h>
 
-#define DRIVER_NAME "mutex"
+#define DRIVER_NAME "open_once"
 
 /* normaly in stdlib.h */
 #define EXIT_SUCCESS 0
@@ -115,7 +115,7 @@ module_exit(ModExit);
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Timotheus Ruprecht and  Steffen Gorenflo");
-MODULE_DESCRIPTION("Modul Mutex");
+MODULE_DESCRIPTION("Modul Open Once");
 MODULE_SUPPORTED_DEVICE("none");
 
 

@@ -25,8 +25,8 @@ echo "********** /proc/devices **********"
 cat /proc/devices
 
 # test parallel access to mutes
-cat /dev/mutex &
-cat /dev/mutex
+cat /dev/$PROG_NAME &
+cat /dev/$PROG_NAME
 
 # unload modul (without .ko)
 rmmod $PROG_NAME
