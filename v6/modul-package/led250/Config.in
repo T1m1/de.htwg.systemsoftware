@@ -1,0 +1,4 @@
+config BR2_PACKAGE_LED250
+	bool "led250"
+	help
+	  This is a template.
