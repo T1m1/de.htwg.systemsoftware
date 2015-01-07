@@ -7,6 +7,7 @@ config BR2_PACKAGE_SYSO
 
 if BR2_PACKAGE_SYSO
         menu "Modules"
-				source package/syso/TODO/Config.in
+				source package/syso/mygpio/Config.in
+				source package/syso/led250/Config.in
         endmenu
 endif
