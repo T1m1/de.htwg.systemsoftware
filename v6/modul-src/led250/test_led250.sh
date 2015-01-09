@@ -33,7 +33,7 @@ sleep 5
 # kill process
 processID=`ps -a | grep led250 -m 1 | grep -o "[0-9]*" | grep -o "^[0-9]*" -m 1`
 echo "kill $processID"
-kill $processID
+kill -SIGINT $processID
 
 echo "********** kernel logs for testing **********"
 dmesg -c
