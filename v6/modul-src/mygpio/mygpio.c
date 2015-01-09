@@ -89,13 +89,13 @@ static struct file_operations fobs =
 
 static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_t *offset)
 {
-	//size_t to_copy, not_copied;
+	size_t to_copy, not_copied;
 	char value;
 	u32 *ptr;
 	u32 old_value, bitmask;
 	
 	/* check size of parameter is one byte */
-	if (MEM_REG_LEN != count) {
+	if (1 != count) {
 		printk(KERN_INFO "read: can only write 1 byte!\n");
 		printk(KERN_INFO "read: size = %d!\n", count);
 		printk(KERN_INFO "read: MEMREGLEN = %d!\n", MEM_REG_LEN);
@@ -117,7 +117,7 @@ static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_
 	
 	/* check register */
 	//if(0 != (old_value&GPIO_25_MASK)) {
-	if((old_value) != INS ) {
+	if(old_value != bitmask ) {
 		value = '1';
 	} else {
 		value = '0';
