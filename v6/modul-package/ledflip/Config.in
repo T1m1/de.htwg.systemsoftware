@@ -1,0 +1,4 @@
+config BR2_PACKAGE_LEDFLIP
+	bool "ledflip"
+	help
+	  This is a template.
