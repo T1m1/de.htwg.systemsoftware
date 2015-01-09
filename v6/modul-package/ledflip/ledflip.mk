@@ -13,6 +13,7 @@ endef
 
 define LEDFLIP_INSTALL_TARGET_CMDS
 	$(INSTALL) -m 0755 -D $(@D)/ledflip $(TARGET_DIR)/usr/bin/ledflip
+	$(INSTALL) -m 0755 -D $(@D)/test_ledflip.sh $(TARGET_DIR)/usr/bin/test_ledflip.sh
 endef
 
 define LEDFLIP_CLEAN_CMDS
@@ -20,7 +21,7 @@ define LEDFLIP_CLEAN_CMDS
 endef
 
 define LEDFLIP_UNINSTALL_TARGET_CMS
-	rm $(TARGET_DIR)/usr/bin/access
+	rm $(TARGET_DIR)/usr/bin/ledflip
 endef
 
 $(eval $(generic-package))
