@@ -31,6 +31,7 @@
 #define GPFSET(pin) (u32*)(gpio + 7 + (pin / 32))
 #define GPFCLR(pin) (u32*)(gpio + 10 + (pin / 32))
 #define GPFLEV(pin) (u32*)(gpio + 13 + (pin / 32))
+#define GPIOLEV gpio + 13
 
 /* address for gpio 18 and 25 */
 #define GPIO_18 (gpio + (18 / 10))
@@ -88,7 +89,7 @@ static struct file_operations fobs =
 
 static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_t *offset)
 {
-	size_t to_copy, not_copied;
+	//size_t to_copy, not_copied;
 	char value;
 	u32 *ptr;
 	u32 old_value, bitmask;
@@ -128,6 +129,8 @@ static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_
 	not_copied = copy_to_user(user, &value, to_copy);
 
 	return to_copy - not_copied;
+
+
 }
 
 static ssize_t driver_write(struct file *instanz, const char *user, size_t count, loff_t *offset)
