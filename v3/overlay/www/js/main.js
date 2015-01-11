@@ -15,7 +15,10 @@ $(document).ready(function () {
 		'#switchOn': 'cgi-bin/switchOn.sh',
 		'#switchOff': 'cgi-bin/switchOff.sh',
 		'#switchStatus': 'cgi-bin/switchStatus',
-		'#reboot': 'cgi-bin/reboot.sh'
+		'#reboot': 'cgi-bin/reboot.sh',
+		'#led250': 'cgi-bin/led250.sh',
+		'#ledflip': 'cgi-bin/ledflip.sh',
+		'#wq': 'cgi-bin/wq.sh'
 	};
 	
 	// click event on buttons (a - tag)
@@ -25,6 +28,8 @@ $(document).ready(function () {
 			event.preventDefault();
 			return;
 		}
+		
+		replaceHtml("call ...", '#output');
 		
 		$.ajax({
 			url: hash[current],
@@ -119,15 +124,5 @@ $(document).ready(function () {
 			}, 10000);
 	})();
 
-
-
-	(function initGpio() {
-		setInterval(function()  {
-			gpioStatus('#ledStatus');
-			gpioStatus('#switchStatus');
-			}, 250);
-			
-			
-	})();
 	
 });
