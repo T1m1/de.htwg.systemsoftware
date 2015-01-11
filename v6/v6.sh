@@ -12,18 +12,26 @@ init()
 	cd $RPI_PATH && ./v3_2 -run
 	cd $HOME_PATH/modul-package && ./prepareModul.sh
 	cd $HOME_PATH/modul-src && ./makeBuildrootPackets
+	cd $HOME_PATH
 }
 
 compile()
 {
 	cd $RPI_PATH && ./v3_2 -co
+	cd $HOME_PATH
 }
 
 git_source()
 {
 	cd $RPI_PATH && ./v3_2 -cp
+	cd $HOME_PATH
 }
 
+buildroot_menu()
+{
+	cd ../buildroot && make menuconfig
+	cd $HOME_PATH
+}
 
 ################ br packages ##############
 prepare_br()
@@ -42,6 +50,7 @@ help ()
 	echo " -co		compile"
 	echo " -cp		copy files to server"
 	echo " -p		copy buildroot (p)ackages "	
+	echo " -m		buildroot menu"
 	echo " -h		help"
 	
 }
@@ -66,6 +75,10 @@ do
 			shift 2;;
 		'-p')
 			prepare_br
+			argument=1
+			shift 2;;
+		'-m')
+			buildroot_menu
 			argument=1
 			shift 2;;
 		'-c')
