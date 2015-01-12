@@ -10,6 +10,7 @@ if BR2_PACKAGE_SYSO
 				source package/syso/mygpio/Config.in
 				source package/syso/led250/Config.in
 				source package/syso/ledflip/Config.in
+				source package/syso/ledmax/Config.in
 				source package/syso/website/Config.in
         endmenu
 endif
