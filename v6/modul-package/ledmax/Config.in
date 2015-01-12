@@ -1,0 +1,4 @@
+config BR2_PACKAGE_LEDMAX
+	bool "ledmax"
+	help
+	  This is a template.
