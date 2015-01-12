@@ -4,6 +4,8 @@
 #include <linux/fs.h>
 #include <linux/cdev.h>
 #include <linux/device.h>
+#include <linux/kernel.h>
+#include <asm/atomic.h>
 
 #define DRIVER_NAME "buf"
 
@@ -11,15 +13,12 @@
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
 
-/* define makro for atomic read */
-#define READ_POSSIBLE (atomic_read(&bytes_available)!=0)
-
 static int major;
 static dev_t dev_number;
 static struct cdev *driver_object;
 struct class *buf_class;
 
-
+/* prototype functions */
 static int driver_open(struct inode *geraetedatei, struct file *instanz);
 static int driver_close(struct inode *geraetedatei, struct file *instanz);
 static ssize_t driver_read(struct file *instanz, char __user *userbuffer, size_t count, loff_t *offset);
@@ -33,6 +32,11 @@ static struct file_operations fobs =
 	.write = driver_write,
 	.release = driver_close,
 };
+
+atomic_t bytes_available;
+
+/* define makro for atomic read */
+#define READ_POSSIBLE (atomic_read(&bytes_available)!=0)
 
 
 
