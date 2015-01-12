@@ -8,6 +8,7 @@
 #include <asm/atomic.h>
 #include <linux/wait.h>
 #include <asm/signal.h>
+#include <linux/sched.h>
 
 #define DRIVER_NAME "buf"
 
@@ -56,7 +57,7 @@ static int driver_close(struct inode *geraetedatei, struct file *instanz) {
 
 static ssize_t driver_read(struct file *instanz, char __user *userbuffer, size_t count, loff_t *offset) {
 	
-	int not_copied, to_copy retval;
+	int not_copied, to_copy, retval;
 	/*TODO: initialize "data_available"*/
 
 	/* non blocking mode and no data available */
@@ -65,19 +66,21 @@ static ssize_t driver_read(struct file *instanz, char __user *userbuffer, size_t
 	}
 	
 	/* blocking mode*/
+		/* check available data and maybe wait */
 	retval = wait_event_interruptible(wait_queue_for_read, READ_POSSIBLE);	
+	
 	if (retval == -ERESTARTSYS) {
+		printk("Failure reading data: Interrupt by signal\n");
 		return -ERESTARTSYS;
 	}
-	
 	if (retval != 0) {
 		printk("Failure reading data\n");
 		return -EIO;
 	}
+	
 		
 	to_copy = min((size_t) atomic_read(&bytes_available), count);
 	not_copied = copy_to_user(userbuffer, /*TODO: driver buffer*/, to_copy);
-    not_copied=copy_to_user(user,hello_world,to_copy);
 
 	/* TODO: reduce buffer*/
 	atomic_sub(to_copy-not_copied, &bytes_available);
@@ -116,6 +119,10 @@ static int __init ModInit(void)
 	
 	buf_class = class_create(THIS_MODULE, DRIVER_NAME);
 	device_create(buf_class, NULL, dev_number, NULL, "%s", DRIVER_NAME);
+	
+	/* init queues */
+	init_waitqueue_head( &wait_queue_for_read );
+    init_waitqueue_head( &wait_queue_for_write );
 	
 	major = MAJOR(dev_number);
 	
