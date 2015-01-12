@@ -128,6 +128,9 @@ free_device_number:
 
 static void __exit ModExit(void) 
 {
+	atomic_set(&stop_timer, 1);
+	wait_for_completion(&on_exit);
+	
 	pr_debug("ModExit called\n");
 	/* destroy workqueue */
 	if (wq) {

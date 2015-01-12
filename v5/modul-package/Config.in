@@ -16,5 +16,6 @@ if BR2_PACKAGE_SYSO
                 source package/syso/tasklet/Config.in
                 source package/syso/timer/Config.in
                 source package/syso/wq/Config.in
+                source package/syso/mygpio/Config.in
         endmenu
 endif
