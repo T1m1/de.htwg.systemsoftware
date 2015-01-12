@@ -31,6 +31,8 @@ BUSYBOX_VERSION=busybox-1.22.1
 
 ################ RPi ##############
 
+
+
 copy_to_server()
 {
 	cp $BUILDROOT_PATH/output/images/rootfs.cpio.uboot $SERVER_PATH/rootfs.cpio.uboot
@@ -44,6 +46,7 @@ make_bcm_dtb()
 	# make the dtb for rpi
 	cd $BR_KERNEL_PATH && make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILER $DTB_BCM
 }
+
 
 
 ################ br packages ##############
