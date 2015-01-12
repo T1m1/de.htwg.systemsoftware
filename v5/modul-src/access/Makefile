@@ -22,7 +22,6 @@ ARCH=arm
 #Flag for Compiler-Optionen
 
 
-
 CFLAGS=-g -Wall -Werror -static
 
 THREADFLAG=-lpthread
@@ -31,7 +30,7 @@ THREADFLAG=-lpthread
 LDFLAGS=-lrt
 
 #Variablen
-NAME=systeminfo
+NAME=access
 TARGET_DIR=/usr/bin/
 SOURCES=$(wildcard *.c) 
 HEADERS=$(wildcard *.h)
@@ -64,7 +63,4 @@ install:
 	scp $(NAME) root@192.168.29.33:$(TARGET_DIR)$(NAME)
 
 -include depend
-
-led5 : led5.c gpio.o
-switch : switch.c gpio.o
 

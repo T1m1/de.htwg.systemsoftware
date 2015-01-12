@@ -26,7 +26,11 @@ cat /proc/devices
 
 # test module
 echo "********** testing module **********"
-./usr/bin/access
+echo "listening on device"
+cat /dev/buf &
+
+echo "writing in device"
+echo "hello world" > /dev/buf
 
 # unload modul (without .ko)
 rmmod $PROG_NAME

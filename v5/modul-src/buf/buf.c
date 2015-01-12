@@ -256,13 +256,6 @@ int buf_destroy(buffer *buf) {
 	return 1;
 }
 
-int buf_isempty(buffer *buf) {
-	return buf->byteCount <= 0;
-}
-
-	int buf_isfull(buffer *buf) {
-	return buf->byteCount >= buf->size;
-}
 
 module_init(ModInit);
 module_exit(ModExit);

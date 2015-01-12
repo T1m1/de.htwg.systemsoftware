@@ -10,15 +10,14 @@
 #include <stdarg.h>
 #include <signal.h>
 #include <sys/types.h>
+#include <time.h>
 
 #define THREAD_COUNT 10
 
 void *write_test(void *thread_info);
 void *read_test(void *thread_info);
 void verbPrintf (int verbosity, char *format, ...);
-void sigHandler(int);
 
-int done;
 int file;
 
 struct thread_info
@@ -45,16 +44,15 @@ int main(int argc, char *argv[])
 		perror ("malloc");
         exit (EXIT_FAILURE);
 	}
-	
-	done = 0;
-	signal(SIGINT, sigHandler);
-	
+
 	file = open("/dev/buf", O_RDWR);
 	if (file < 0)
 	{
 		perror("module device /dev/buf");
 		return file;
 	}
+	
+	srand(time(NULL));
 	
 	/* start threads */
 	for(i = 0; i < numberOfThreads; i++) {
@@ -68,33 +66,54 @@ int main(int argc, char *argv[])
 		}
 	}	
 	
+	for(i = 0; i < numberOfThreads; i++) {
+		printf("join thread number %d", i);
+		pthread_join(threads[i], NULL);
+	}
+	
+	free(threads);
+	free(thread_struct);
+	
+	return 0;
+	
+	
 	
 }
 
 void *
 write_test(void *thread_info) 
 {
+	char* buf = "\nThread writes: hello\n";
+	int r, i;
 
-	
-	
-	
+	for(i = 0; i < 5; i++) 
+	{
+		r = rand() % 2;
+		write(file, buf, 22);
+		sleep(r);
+	}
+	return (void*) 0;
 }
 
 
 void *
 read_test(void *thread_info) 
 {
+	char buf[32];
+	struct thread_info *t = (struct thread_info *) thread_info;
+	int r, i;
 
-	
-	
+	for(i = 0; i < 5; i++) 
+	{
+		r = rand() % 2;
+		read(file, buf, 32);
+		printf("Thread nr %d received data: %s\n", t->id, buf);
+		sleep(r);
+	}
+	return (void*) 0;
 }
 
-void 
-sigHandler(int sig)
-{
-	printf("\nEnd led blinking\n");
-	done = 1;	
-}
+
 
 
 void
