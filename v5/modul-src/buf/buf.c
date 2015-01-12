@@ -13,10 +13,44 @@
 #define EXIT_FAILURE 1
 
 static int major;
-static struct file_operations fobs;
 static dev_t dev_number;
 static struct cdev *driver_object;
 struct class *buf_class;
+
+
+static int driver_open(struct inode *geraetedatei, struct file *instanz);
+static int driver_close(struct inode *geraetedatei, struct file *instanz);
+static ssize_t driver_read(struct file *instanz, char __user *userbuffer, size_t count, loff_t *offset);
+static ssize_t driver_write(struct file *instanz, const char __user *userbuffer, size_t count, loff_t *offs);
+
+static struct file_operations fobs =
+{
+	.owner = THIS_MODULE,
+	.open = driver_open,
+	.read = driver_read,
+	.write = driver_write,
+	.release = driver_close,
+};
+
+
+
+static int driver_open(struct inode *geraetedatei, struct file *instanz) {
+	printk("Device openend");	
+	return 0;
+}
+
+static int driver_close(struct inode *geraetedatei, struct file *instanz) {
+	printk("Device released");	
+	return 0;
+}
+
+static ssize_t driver_read(struct file *instanz, char __user *userbuffer, size_t count, loff_t *offset) {
+			
+}
+
+static ssize_t driver_write(struct file *instanz, const char __user *userbuffer, size_t count, loff_t *offs) {
+	
+}
 
 static int __init ModInit(void)
 {
