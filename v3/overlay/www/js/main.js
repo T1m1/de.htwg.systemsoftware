@@ -18,6 +18,7 @@ $(document).ready(function () {
 		'#reboot': 'cgi-bin/reboot.sh',
 		'#led250': 'cgi-bin/ledrpi250.sh',
 		'#ledflip': 'cgi-bin/ledrpiflip.sh',
+		'#ledmax': 'cgi-bin/ledrpimax.sh',
 		'#wq': 'cgi-bin/wq.sh'
 	};
 	
