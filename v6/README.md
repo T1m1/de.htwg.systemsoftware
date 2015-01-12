@@ -3,7 +3,7 @@
 Für den Versuch V6 wird der Source-Code aus der Übungsaufgabe V3 benötigt. In dieser Beschreibung wird von einem neu ausgecheckten (clone) Repositroy ausgegangen.
 
 ## Vorbereitung
-Zu Beginn muss der Buildroot Ordner neu **ausgecheckt** werden und für die Verwendung der Buildroot Pakete von **V6 vorbereitet** werden. Dies geschicht mit folgendem Aufruf:
+Zu Beginn muss der Buildroot Ordner neu **ausgecheckt** und für die Verwendung der Buildroot Pakete von **V6 vorbereitet** werden. Dies geschicht mit folgendem Befehl:
 ```sh
 $ ./v6.sh -init
 ```
@@ -18,7 +18,7 @@ Im Menü müssen an folgender Stelle die gewünschten Pakete **aktiviert** werde
 Target packages -> Miscellaneous -> syso -> Modules -> <name>
 ```
 
-Nach Auswahl der Pakete müssen die Änderungen beim beenden des Menüs **gespeichert** werden. Jetzt kann das **compilieren** der Sourcen gestartet werden. 
+Nach Auswahl der Pakete müssen die Änderungen beim Beenden des Menüs **gespeichert** werden. Jetzt kann das **compilieren** der Sourcen starten. 
 ```sh
 $ ./v6.sh -co
 ```
@@ -27,6 +27,6 @@ Im Anschluss müssen die generierten Dateien noch auf das Netzlaufwerk für den 
 $ ./v6.sh -cp
 ```
 
-Jetzt kann der Raspberry Pi neu gestartet werden.
+Nach einem Neustart des Raspberry Pi sollte die Aufgabe V6 getestet werden können.
 
 Viel Spaß!
