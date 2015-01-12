@@ -24,6 +24,10 @@ dmesg -c
 echo "********** /proc/devices **********"
 cat /proc/devices
 
+####### wait 5 seconds
+sleep 5
+dmesg -c
+
 # unload modul (without .ko)
 rmmod $PROG_NAME
 

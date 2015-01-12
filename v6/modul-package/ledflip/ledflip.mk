@@ -13,7 +13,7 @@ endef
 
 define LEDFLIP_INSTALL_TARGET_CMDS
 	$(INSTALL) -m 0755 -D $(@D)/ledflip $(TARGET_DIR)/usr/bin/ledflip
-	$(INSTALL) -m 0755 -D $(@D)/test_ledflip.sh $(TARGET_DIR)/usr/bin/test_ledflip.sh
+	$(INSTALL) -m 0755 -D $(@D)/test_ledflip.sh $(TARGET_DIR)/usr/bin/test_ledrpiflip.sh
 endef
 
 define LEDFLIP_CLEAN_CMDS

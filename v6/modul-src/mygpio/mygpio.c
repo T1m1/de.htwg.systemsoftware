@@ -97,9 +97,6 @@ static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_
 	/* check size of parameter is one byte */
 	if (1 != count) {
 		printk(KERN_INFO "read: can only write 1 byte!\n");
-		printk(KERN_INFO "read: size = %d!\n", count);
-		printk(KERN_INFO "read: MEMREGLEN = %d!\n", MEM_REG_LEN);
-		printk(KERN_INFO "read: MEMREGLEN = %d!\n", (MEM_REG_LEN != count));
 		return -EAGAIN;
 	}
 	
@@ -107,22 +104,19 @@ static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_
 	ptr = (u32 *)GPFLEV(GPIO_IN);
 	old_value = readl(ptr);
 	
-	printk(KERN_INFO "gpio read -> %.8x\n", old_value);
 	bitmask = 0x1 << GPIO_IN;
 	old_value = old_value & bitmask;
-	printk(KERN_INFO "gpio read -> %.8x\n", old_value);
-	printk(KERN_INFO "bitmask -> %.8x\n", bitmask);
+	
 	/* after read - add memory barrier */
 	rmb();
 	
 	/* check register */
-	//if(0 != (old_value&GPIO_25_MASK)) {
 	if(old_value != bitmask ) {
 		value = '1';
 	} else {
 		value = '0';
 	}
-	printk(KERN_INFO "value_  -> %c\n", value);
+	printk(KERN_INFO "gpio-read value: %c\n", value);
 	/* read value */
 	to_copy = ONE_BYTE;
 	to_copy = min(to_copy, count);
@@ -154,13 +148,11 @@ static ssize_t driver_write(struct file *instanz, const char *user, size_t count
 		/** LED ON **/
 		/* set bit of GPIO_18 to high */
 		gpio_write(GPIO_HIGH_18, 1);
-		printk(KERN_INFO "write: writel(%d, %p) \n", GPIO_HIGH_18, ptr);
 	} 
 	if('1' == value[0]) {
 		/** LED OFF **/
 		/* set bit of GPIO_18 to low */	
 		gpio_write(GPIO_LOW_18, 0);
-		printk(KERN_INFO "write: writel(%d, %p) \n", GPIO_HIGH_18, ptr);
 	}
 
 	
@@ -201,20 +193,16 @@ static void gpio_init(int gpio_pin, unsigned long gpio_clear, unsigned long gpio
 	u32 *ptr = GPFLEV(gpio_pin);
 	u32 old_value;
 	
-	
-	printk(KERN_INFO "read value\n");
 	/* read value */
 	old_value = readl(ptr);
 	/* after read - add memory barrier */
 	rmb();
 	
-	printk(KERN_INFO "clear bits\n");
 	/* clear bits */
 	old_value = old_value & gpio_clear;
 	/* before write - add memory barrier */
 	wmb();
 	
-	printk(KERN_INFO "wrtie ..\n");
 	/* configure direction */
 	//writel(old_value | gpio_direction, ptr);
 	*ptr = old_value | gpio_direction;

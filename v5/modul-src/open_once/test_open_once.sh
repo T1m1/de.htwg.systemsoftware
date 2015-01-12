@@ -28,6 +28,7 @@ cat /proc/devices
 cat /dev/$PROG_NAME &
 cat /dev/$PROG_NAME
 
+sleep 3
 # unload modul (without .ko)
 rmmod $PROG_NAME
 
