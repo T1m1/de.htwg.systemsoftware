@@ -23,7 +23,8 @@ dmesg -c
 # show information from /proc/devices
 echo "********** /proc/devices **********"
 cat /proc/devices
-./usr/bin/led250 &
+cd /usr/bin
+./led250 &
 echo `ps -a`
 
 echo "wait 5 seconds ..."
