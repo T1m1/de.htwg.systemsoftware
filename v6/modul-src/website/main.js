@@ -16,8 +16,13 @@ $(document).ready(function () {
 		'#switchOff': 'cgi-bin/switchOff.sh',
 		'#switchStatus': 'cgi-bin/switchStatus',
 		'#reboot': 'cgi-bin/reboot.sh',
-		'#led250': 'cgi-bin/ledrpi250.sh',
-		'#ledflip': 'cgi-bin/ledrpiflip.sh',
+		'#tasklet': 'cgi-bin/tasklet.sh',
+		'#open_once': 'cgi-bin/open_once.sh',
+		'#kthread': 'cgi-bin/kthread.sh',
+		'#timer': 'cgi-bin/timer.sh',
+		'#lock': 'cgi-bin/lock.sh',
+		'#led250': 'cgi-bin/led250.sh',
+		'#ledflip': 'cgi-bin/ledflip.sh',
 		'#wq': 'cgi-bin/wq.sh'
 	};
 	
@@ -122,13 +127,6 @@ $(document).ready(function () {
 			request('#uptime');
 			request('#osinfo');
 			}, 10000);
-	})();
-	
-	(function initGpio() {
-		setInterval(function() {
-		gpioStatus('#ledStatus');
-		gpioStatus('#switchStatus');
-	}, 250);
 	})();
 
 	

@@ -65,6 +65,3 @@ install:
 
 -include depend
 
-led5 : led5.c gpio.o
-switch : switch.c gpio.o
-
