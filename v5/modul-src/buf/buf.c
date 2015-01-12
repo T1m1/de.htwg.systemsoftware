@@ -6,6 +6,8 @@
 #include <linux/device.h>
 #include <linux/kernel.h>
 #include <asm/atomic.h>
+#include <linux/wait.h>
+#include <asm/signal.h>
 
 #define DRIVER_NAME "buf"
 
@@ -17,6 +19,8 @@ static int major;
 static dev_t dev_number;
 static struct cdev *driver_object;
 struct class *buf_class;
+static wait_queue_head_t wait_queue_for_read;
+static wait_queue_head_t wait_queue_for_write;
 
 /* prototype functions */
 static int driver_open(struct inode *geraetedatei, struct file *instanz);
@@ -41,30 +45,36 @@ atomic_t bytes_available;
 
 
 static int driver_open(struct inode *geraetedatei, struct file *instanz) {
-	printk("Device openend");	
+	printk("Device openend\n");	
 	return 0;
 }
 
 static int driver_close(struct inode *geraetedatei, struct file *instanz) {
-	printk("Device released");	
+	printk("Device released\n");	
 	return 0;
 }
 
 static ssize_t driver_read(struct file *instanz, char __user *userbuffer, size_t count, loff_t *offset) {
 	
-	int not_copied, to_copy;
+	int not_copied, to_copy retval;
 	/*TODO: initialize "data_available"*/
 
 	/* non blocking mode and no data available */
-	if (!READ_POSSIBLE && (instanz->f_flags&O_NONBLOCK)) {
+	if (!READ_POSSIBLE && (instanz->f_flags & O_NONBLOCK)) {
 		return -EAGAIN;
 	}
 	
 	/* blocking mode*/
-	if (wait_event_interruptible(wq_read, READ_POSSIBLE)) {
+	retval = wait_event_interruptible(wait_queue_for_read, READ_POSSIBLE);	
+	if (retval == -ERESTARTSYS) {
 		return -ERESTARTSYS;
 	}
 	
+	if (retval != 0) {
+		printk("Failure reading data\n");
+		return -EIO;
+	}
+		
 	to_copy = min((size_t) atomic_read(&bytes_available), count);
 	not_copied = copy_to_user(userbuffer, /*TODO: driver buffer*/, to_copy);
     not_copied=copy_to_user(user,hello_world,to_copy);
