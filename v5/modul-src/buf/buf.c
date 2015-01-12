@@ -5,12 +5,14 @@
 #include <linux/cdev.h>
 #include <linux/device.h>
 
-
 #define DRIVER_NAME "buf"
 
 /* normaly in stdlib.h */
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
+
+/* define makro for atomic read */
+#define READ_POSSIBLE (atomic_read(&bytes_available)!=0)
 
 static int major;
 static dev_t dev_number;
@@ -45,6 +47,29 @@ static int driver_close(struct inode *geraetedatei, struct file *instanz) {
 }
 
 static ssize_t driver_read(struct file *instanz, char __user *userbuffer, size_t count, loff_t *offset) {
+	
+	int not_copied, to_copy;
+	/*TODO: initialize "data_available"*/
+
+	/* non blocking mode and no data available */
+	if (!READ_POSSIBLE && (instanz->f_flags&O_NONBLOCK)) {
+		return -EAGAIN;
+	}
+	
+	/* blocking mode*/
+	if (wait_event_interruptible(wq_read, READ_POSSIBLE)) {
+		return -ERESTARTSYS;
+	}
+	
+	to_copy = min((size_t) atomic_read(&bytes_available), count);
+	not_copied = copy_to_user(userbuffer, /*TODO: driver buffer*/, to_copy);
+    not_copied=copy_to_user(user,hello_world,to_copy);
+
+	/* TODO: reduce buffer*/
+	atomic_sub(to_copy-not_copied, &bytes_available);
+	     
+	/* return to user application */
+    return to_copy-not_copied;
 			
 }
 
