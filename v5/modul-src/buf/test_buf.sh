@@ -24,6 +24,10 @@ dmesg -c
 echo "********** /proc/devices **********"
 cat /proc/devices
 
+# test module
+echo "********** testing module **********"
+./usr/bin/access
+
 # unload modul (without .ko)
 rmmod $PROG_NAME
 

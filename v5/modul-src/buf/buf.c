@@ -79,7 +79,7 @@ static int driver_close(struct inode *geraetedatei, struct file *instanz) {
 
 static ssize_t driver_read(struct file *instanz, char __user *userbuffer, size_t count, loff_t *offset) {
 	
-	int not_copied, to_copy, retval;
+	int not_copied, to_copy, retval, copied;
 	char tmp[count];
 
 	/* non blocking mode and no data available */
@@ -101,15 +101,16 @@ static ssize_t driver_read(struct file *instanz, char __user *userbuffer, size_t
 		
 	to_copy = buf_read(&driver_buffer, tmp, count);
 	not_copied = copy_to_user(userbuffer, tmp, to_copy);
+	copied = to_copy - not_copied;
 	
-	atomic_sub(to_copy-not_copied, &bytes_available);
-	atomic_add(to_copy-not_copied, &bytes_that_can_be_written);
+	atomic_sub(copied, &bytes_available);
+	atomic_add(copied, &bytes_that_can_be_written);
 	
 	/* wake up the writers */
 	wake_up_interruptible(&wait_queue_for_write);
 	     
 	/* return to user application */
-    return to_copy-not_copied;
+    return copied;
 			
 }
 
@@ -138,7 +139,6 @@ static ssize_t driver_write(struct file *instanz, const char __user *userbuffer,
 	not_copied = copy_from_user(tmp, userbuffer, to_copy);
 	copied = to_copy - not_copied;
 
-	/* TODO: write bytes to buffer*/
 	buf_write(&driver_buffer, tmp, copied);
 		
 	atomic_sub(copied, &bytes_that_can_be_written);
@@ -178,14 +178,11 @@ static int __init ModInit(void)
 	buf_class = class_create(THIS_MODULE, DRIVER_NAME);
 	device_create(buf_class, NULL, dev_number, NULL, "%s", DRIVER_NAME);
 
-	
 	major = MAJOR(dev_number);
 	printk("Major number: %d\n", major);
 	
-		
-	/*TODO: initialize fifo buffer*/
 	if (!buf_init(&driver_buffer, BUF_SIZE)) {
-		return -ENOMEM; /*TODO: korrekt error code*/
+		return -ENOMEM; 
 	}
 	atomic_set(&bytes_available, 0);
 	atomic_set(&bytes_that_can_be_written, buffer_size);
