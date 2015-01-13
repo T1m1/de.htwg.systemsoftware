@@ -155,6 +155,7 @@ static ssize_t driver_write(struct file *instanz, const char *user, size_t count
 		gpio_write(GPIO_LOW_18, 0);
 	}
 
+	printk(KERN_INFO "gpio-write value: %c\n", value[0]);
 	
 	return count;
 }
