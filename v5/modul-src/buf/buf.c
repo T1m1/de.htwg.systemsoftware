@@ -83,6 +83,8 @@ static ssize_t driver_read(struct file *instanz, char __user *userbuffer, size_t
 	
 	int not_copied, to_copy, retval, copied;
 	char tmp[count];
+	
+	printk("Reading from device\n");
 
 	/* non blocking mode and no data available */
 	if (!READ_POSSIBLE && (instanz->f_flags & O_NONBLOCK)) {
@@ -105,6 +107,8 @@ static ssize_t driver_read(struct file *instanz, char __user *userbuffer, size_t
 	not_copied = copy_to_user(userbuffer, tmp, to_copy);
 	copied = to_copy - not_copied;
 	
+	printk("Read: %s\n", tmp);
+	
 	atomic_sub(copied, &bytes_available);
 	atomic_add(copied, &bytes_that_can_be_written);
 	
@@ -120,6 +124,8 @@ static ssize_t driver_write(struct file *instanz, const char __user *userbuffer,
 	
 	int not_copied, to_copy, retval, copied;
 	char tmp[count];
+	
+	printk("Writitng to device\n");
 	
 	/* non blocking mode and no space to write */
 	if (!WRITE_POSSIBLE && (instanz->f_flags & O_NONBLOCK)) {
@@ -142,6 +148,7 @@ static ssize_t driver_write(struct file *instanz, const char __user *userbuffer,
 	copied = to_copy - not_copied;
 
 	buf_write(&driver_buffer, tmp, copied);
+	printk("Wrote: %s\n", tmp);
 		
 	atomic_sub(copied, &bytes_that_can_be_written);
 	atomic_add(copied, &bytes_available);

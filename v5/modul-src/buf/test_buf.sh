@@ -29,7 +29,7 @@ echo "********** testing module **********"
 echo "listening on device"
 cat /dev/buf &
 
-echo "writing in device"
+echo "writing in device: hello world"
 echo "hello world" > /dev/buf
 
 # unload modul (without .ko)
