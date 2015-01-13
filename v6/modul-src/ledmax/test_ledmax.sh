@@ -32,7 +32,7 @@ echo "wait 5 seconds ..."
 sleep 10
 
 # kill process
-processID=`ps -a | grep ledflip -m 1 | grep -o "[0-9]*" | grep -o "^[0-9]*" -m 1`
+processID=`ps -a | grep ledmax -m 1 | grep -o "[0-9]*" | grep -o "^[0-9]*" -m 1`
 echo "kill $processID"
 kill -SIGINT $processID
 
