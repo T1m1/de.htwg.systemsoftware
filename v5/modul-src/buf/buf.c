@@ -42,6 +42,8 @@ static int driver_open(struct inode *geraetedatei, struct file *instanz);
 static int driver_close(struct inode *geraetedatei, struct file *instanz);
 static ssize_t driver_read(struct file *instanz, char __user *userbuffer, size_t count, loff_t *offset);
 static ssize_t driver_write(struct file *instanz, const char __user *userbuffer, size_t count, loff_t *offs);
+
+/* buffer functions */
 int buf_init(buffer *buf, const int size);
 int buf_read(buffer *buf, char *out, int byte);
 int buf_write(buffer *buf, char *in, int byte);
@@ -98,7 +100,7 @@ static ssize_t driver_read(struct file *instanz, char __user *userbuffer, size_t
 		printk("Failure reading data\n");
 		return -EIO;
 	}
-		
+	
 	to_copy = buf_read(&driver_buffer, tmp, count);
 	not_copied = copy_to_user(userbuffer, tmp, to_copy);
 	copied = to_copy - not_copied;
