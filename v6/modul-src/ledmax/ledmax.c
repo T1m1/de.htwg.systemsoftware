@@ -1,24 +1,28 @@
-#include <stdlib.h>
 #include <stdio.h>
-#include <stdbool.h>
 #include <signal.h>
 #include <time.h>
 #include <pthread.h>
+#include <stdbool.h>
 #include <fcntl.h>
 #include <string.h>
+#include <stdlib.h>
+#include <errno.h>
 #include <unistd.h>
+
 
 /* blink thousand times */
 #define MAX_BLINK            		1000
 
+
 #define LED_ON                      "0"
 #define LED_OFF                     "1"
-
-/* fix path for mygpio driver */
 #define DRIVER_PATH                 "/dev/mygpio"
+
 
 void check(int err);
 int calculate(struct timespec time_before, struct timespec time_after);
+
+
 
 int main(void)
 {
@@ -38,7 +42,7 @@ int main(void)
 	check(err);
 	for(i = 0; i < MAX_BLINK; i++) 
 	{
-		
+
         /* led off */
         if (1 != write(file, LED_OFF, 1)) 
         {
@@ -52,6 +56,7 @@ int main(void)
             printf("Switch on failed during %d!\n", i);
             break;
         }
+
     }
     err = clock_gettime(CLOCK_REALTIME, &time_after);
 	check(err);
@@ -70,9 +75,12 @@ int main(void)
         printf("Closing driver failed!\n");
     }
 
+        
+
     printf("End of Programm.\n");
     return EXIT_SUCCESS;
 }
+
 
 void
 check(int err)
@@ -81,8 +89,9 @@ check(int err)
 		printf("Error while getting time\n");
 		exit(EXIT_FAILURE);
 	}
-	
 }
+	
+
 
 int
 calculate(struct timespec time_before, struct timespec time_after) 
@@ -97,4 +106,5 @@ calculate(struct timespec time_before, struct timespec time_after)
 	res = MAX_BLINK / s;
 	
 	return res;
+
 }

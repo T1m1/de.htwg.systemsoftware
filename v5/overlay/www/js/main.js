@@ -21,6 +21,7 @@ $(document).ready(function () {
 		'#kthread': 'cgi-bin/kthread.sh',
 		'#timer': 'cgi-bin/timer.sh',
 		'#lock': 'cgi-bin/lock.sh',
+		'#buf': 'cgi-bin/buf.sh',
 		'#wq': 'cgi-bin/wq.sh'
 	};
 	

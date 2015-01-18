@@ -20,6 +20,7 @@ insmod $PATH_TO_KO/$PROG_NAME.ko
 echo "********** kernel logs for loading **********"
 dmesg -c
 
+sleep 6
 # show information from /proc/devices
 echo "********** /proc/devices **********"
 cat /proc/devices
