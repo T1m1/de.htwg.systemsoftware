@@ -20,25 +20,47 @@
 
 
 void check(int err);
-int calculate(struct timespec time_before, struct timespec time_after);
+ulong calculate(struct timespec time_before, struct timespec time_after);
 
 
 
 int main(void)
 {
-	int file, i, hz;
+	int file, i;
+	ulong hz;
 	int err;
 	struct timespec time_before, time_after;
+	clockid_t clk_id;
 	
-	
+	printf("Check clock id\n");
+	clk_id = CLOCK_REALTIME;
+	if (clock_gettime(CLOCK_REALTIME, &time_before) != 0)
+	{
+		if (errno == EINVAL)
+		{
+			printf("Realtime not supported, switching to monotonic\n");
+			clk_id = CLOCK_MONOTONIC;
+			errno = 0;
+		}
+		else
+		{
+			printf("Other Failure occured\n");
+			exit(EXIT_FAILURE);
+		}
+		
+	}
+
 	/* open driver */
+	printf("Open driver\n");
     file = open(DRIVER_PATH, O_WRONLY);
     if( file < 0 ) {
         printf("Open driver failed.\n");
          exit(EXIT_FAILURE);
     }
-
-	err = clock_gettime(CLOCK_REALTIME, &time_before);
+    
+	printf("Let the LED blink thousand times\n");
+	
+	err = clock_gettime(clk_id, &time_before);
 	check(err);
 	for(i = 0; i < MAX_BLINK; i++) 
 	{
@@ -58,12 +80,15 @@ int main(void)
         }
 
     }
-    err = clock_gettime(CLOCK_REALTIME, &time_after);
+    err = clock_gettime(clk_id, &time_after);
 	check(err);
+	printf("Done blinking\n");
 	
 	hz = calculate(time_before, time_after);
 	
-	printf("The calculated max frequency is: %d\n", hz);
+	printf("Time before: %ld\n", time_before.tv_sec);
+	printf("Time after: %ld\n", time_after.tv_sec);
+	printf("The calculated max frequency is: %lu\n", hz);
 
     /* led off */
     if (1 != write(file, LED_OFF, 1)) {
@@ -74,8 +99,6 @@ int main(void)
     if (0 != close(file)) {
         printf("Closing driver failed!\n");
     }
-
-        
 
     printf("End of Programm.\n");
     return EXIT_SUCCESS;
@@ -91,19 +114,21 @@ check(int err)
 	}
 }
 	
-
-
-int
+ulong
 calculate(struct timespec time_before, struct timespec time_after) 
 {
-	int s;
-	/*int ns;*/
-	int res;
+	ulong s;
+	ulong ns;
+	ulong res;
 	
 	s = time_before.tv_sec - time_after.tv_sec;
-	/*ns = time_before.tv_nsec - time_after.tv_nsec;*/
+	ns = time_before.tv_nsec - time_after.tv_nsec;
 	
-	res = MAX_BLINK / s;
+	res = s + (ns / 1000000000);
+	
+	printf("Duration: %lu\n", res);
+	
+	res = MAX_BLINK / res;
 	
 	return res;
 
