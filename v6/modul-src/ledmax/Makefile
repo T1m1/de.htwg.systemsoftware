@@ -64,4 +64,5 @@ install:
 	scp $(NAME) root@192.168.29.33:$(TARGET_DIR)$(NAME)
 
 -include depend
+ledmax : ledmax.c gpio.o
 
