@@ -73,3 +73,5 @@ Bei der Initialisierungsfunktion des Treibers wird im Grunde die gleiche Methodi
 Zusätzlich wird die Methode `ioremap()` bei der Initialisierung des Treibers verwendet um die physikalische Adresse der GPIO Pins zu erhalten.
 
 ### Öffnen der Datei
+Bei der initialisierung des Treibers angelegten Datei, kann nun aus der User-Ebene zugegriffen werden. Öffnet eine Applikation diese Datei
+um darin zu schreiben werden folgende Schritte im Treibercode ausgeführt:
