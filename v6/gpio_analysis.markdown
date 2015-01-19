@@ -59,10 +59,10 @@ Da die Zugriffszeit auf das Sys-Filesystem aber bis zu 250 mal* langsamer sein k
 _*) Aus Vorbereitung von V6_
 
 ## Treiberdisskusion
-Im folgenden wird auf die Implementierung des Treibers eingegangen. Dabei wird ein grober Überblick der Funktionen gegeben. Auf etwaige 
-Fehlerbehandlung wird im Detail nicht eingegangen. Es kann aber davon ausgegangen werden, dass nach jedem kritischen Methodenaufruf, der 
+Im folgenden wird auf die Implementierung des Treibers eingegangen. Dabei wird ein grober Überblick der Funktionen gegeben, welche ausgeführt werden. 
+Auf etwaige Fehlerbehandlung wird im Detail nicht eingegangen. Es kann aber davon ausgegangen werden, dass nach jedem kritischen Methodenaufruf, der 
 Rückgabewert geprüft wird und ggf. die entsprechende Aktion ausgeführt wird. (Rückgabe eines Fehlerwertes und/oder Abbruch des Programms mit 
-anschließendem "Aufräumen" der allozierten Resourcen.)
+anschließendem "Aufräumen" der allozierten Resourcen.) Jedoch werden mögliche Probleme bei dem Programmablauf besprochen und wie diese zu Vermeiden sind.
 
 ### Initialisierung
 Bei der Initialisierungsfunktion des Treibers wird im Grunde die gleiche Methodik, wie in den zuvor programmierten Treibern, verwendet:
@@ -74,4 +74,19 @@ Zusätzlich wird die Methode `ioremap()` bei der Initialisierung des Treibers ve
 
 ### Öffnen der Datei
 Bei der initialisierung des Treibers angelegten Datei, kann nun aus der User-Ebene zugegriffen werden. Öffnet eine Applikation diese Datei
-um darin zu schreiben werden folgende Schritte im Treibercode ausgeführt:
+um darin zu schreiben oder zu lesen werden folgende Schritte im Treibercode ausgeführt.
+Es wird der GPIO pin 18 als Ausgang und 25 als Eingang konfiguriert. Bei diesem Vorgang muss ein korrektes
+Bitmuster in das zugehörige Register geschrieben werden. Dabei wird _zuerst_ das Register ausgelesen und 
+die relevanten Bits per UND-Operation gelöscht um danach die Richtung (Aus- oder Eingang)
+per ODER-Operation gesetzt. 
+
+Dabei ist zu beachten, dass die richtige Adresse für die jeweiligen Pins vorher ermittelt
+wurde. Ebenfalls muss auch das Bitmuster für die Richtung und die Löschung bekannt sein.
+All diese Adressen sind in eigenen Makros definiert um unteranderem die Benutzung im Code
+zu erleichtern.
+
+Nach dem konfigurieren der Pins ist es dem Benutzer aus der Applikation nun möglich die LED 
+anzusteuern indem einfach eine 0 oder 1 in die Datei geschrieben werden kann um die LED aus- 
+oder einzuschalten. Das Lesen des aktuellen Zustandes ist ebenfalls möglich.
+
+###
