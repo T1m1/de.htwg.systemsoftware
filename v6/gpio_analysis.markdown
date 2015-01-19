@@ -59,6 +59,10 @@ Da die Zugriffszeit auf das Sys-Filesystem aber bis zu 250 mal* langsamer sein k
 _*) Aus Vorbereitung von V6_
 
 ## Treiberdisskusion
+Im folgenden wird auf die Implementierung des Treibers eingegangen. Dabei wird ein grober Überblick der Funktionen gegeben. Auf etwaige 
+Fehlerbehandlung wird im Detail nicht eingegangen. Es kann aber davon ausgegangen werden, dass nach jedem kritischen Methodenaufruf, der 
+Rückgabewert geprüft wird und ggf. die entsprechende Aktion ausgeführt wird. (Rückgabe eines Fehlerwertes und/oder Abbruch des Programms mit 
+anschließendem "Aufräumen" der allozierten Resourcen.)
 
 ### Initialisierung
 Bei der Initialisierungsfunktion des Treibers wird im Grunde die gleiche Methodik, wie in den zuvor programmierten Treibern, verwendet:
@@ -66,4 +70,6 @@ Bei der Initialisierungsfunktion des Treibers wird im Grunde die gleiche Methodi
  - Instanzierung und Registrierung eines zeichorientierten Gerätetreiber mit `cdev_alloc()` und `cdev_add()`
  - Registrierung im Sysfs mit `device_create()` und `class_create()`
 
-Zusätzlich wird die Methode `ioremap()` bei der Initialisierung des Treibers verwendet. 
+Zusätzlich wird die Methode `ioremap()` bei der Initialisierung des Treibers verwendet um die physikalische Adresse der GPIO Pins zu erhalten.
+
+### Öffnen der Datei
