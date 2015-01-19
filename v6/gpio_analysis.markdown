@@ -93,3 +93,31 @@ anzusteuern indem einfach eine 0 oder 1 in die Datei geschrieben werden kann um 
 oder einzuschalten. Das Lesen des aktuellen Zustandes ist ebenfalls möglich.
 
 ### Lesen von Werten
+Es wird zunächst überprüft ob der Benutzer mehr als ein Byte zum Lesen anfordert, da auch nur 
+maximal ein Byte zurückgeliefert werden kann. Ist dies der Fall, wird der Fehlercode 
+EAGAIN zurückgegeben. Im Prinzip kann diese Abfrage auch weggelassen werden und einfach immer nur ein
+Byte zurückliefern, sie soll aber dazu dienen den Benutzer zu informieren, dass 
+generell immer nur ein Byte zurückgeliefert wird.
+
+Es wird also das Register eingelesen und mithilfe von Makros überprüft, welcher Wert
+sich darin befindet und das dementsprechende Byte wird zurückgeliefert. ('0' oder '1')
+
+
+### Schreiben von Werten
+Das Schreiben in die Datei funktioniert im Grunde ähnlich wie das Lesen und das 
+Initialisieren. Als erstes findet eine Fehlerbehandlung statt, die falsche Benutzereingaben
+abfängt. Es sind nur die Werte '1' oder '0' erlaubt.
+
+Danach wird die richtige Adresse ermittelt und das Bitmuster erstellt, welches in das 
+Register geschrieben wird. Dieses Bitmuster hängt von dem Wert, welches die Applikation
+übergeben hat, hab. 
+
+### Allgemeines
+Alle Addressberechnungen werden, wie auch schon die Adressen selbst, in Makros definiert. 
+Dies ermöglicht auch unteranderem die Wiederbenutzbarkeit im Code, sowie eine bessere
+Lesbarkeit.
+
+Um gewisse Race Conditions zu vermeiden, wird nach jedem Lesen und Schreiben eine Barrier
+eingefügt, um den Compiler daran zu hindern gewisse Code Optimierungen vorzunehmen.
+
+### Schutz kritischer Bereiche
