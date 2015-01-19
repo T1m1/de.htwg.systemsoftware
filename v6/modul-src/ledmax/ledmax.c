@@ -84,16 +84,18 @@ int main(void)
 	check(err);
 	printf("Done blinking\n");
 	
+	/* led off */
+    if (1 != write(file, LED_OFF, 1)) {
+        printf("Switch off driver failed after loop!\n");
+    }
+	
 	hz = calculate(time_before, time_after);
 	
 	printf("Time before: %ld\n", time_before.tv_sec);
 	printf("Time after: %ld\n", time_after.tv_sec);
 	printf("The calculated max frequency is: %lu\n", hz);
 
-    /* led off */
-    if (1 != write(file, LED_OFF, 1)) {
-        printf("Switch off driver failed after loop!\n");
-    }
+
 
     /* close driver */
     if (0 != close(file)) {
@@ -124,7 +126,7 @@ calculate(struct timespec time_before, struct timespec time_after)
 	s = time_before.tv_sec - time_after.tv_sec;
 	ns = time_before.tv_nsec - time_after.tv_nsec;
 	
-	res = s + (ns / 1000000000);
+	res = s + (ns / 1000000000.0);
 	
 	printf("Duration: %lu\n", res);
 	

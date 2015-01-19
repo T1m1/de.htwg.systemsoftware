@@ -24,7 +24,7 @@ dmesg -c
 echo "********** /proc/devices **********"
 cat /proc/devices
 cd /usr/bin
-./ledmax &
+chrt 99 ./ledmax &
 echo `ps -a`
 
 echo "wait 5 seconds ..."
