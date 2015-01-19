@@ -60,3 +60,10 @@ _*) Aus Vorbereitung von V6_
 
 ## Treiberdisskusion
 
+### Initialisierung
+Bei der Initialisierungsfunktion des Treibers wird im Grunde die gleiche Methodik, wie in den zuvor programmierten Treibern, verwendet:
+ - Reservierung der Gerätenummer mit `alloc_chredev_region()` mit der automatischen Zuweisung der Gerätenummer
+ - Instanzierung und Registrierung eines zeichorientierten Gerätetreiber mit `cdev_alloc()` und `cdev_add()`
+ - Registrierung im Sysfs mit `device_create()` und `class_create()`
+
+Zusätzlich wird die Methode `ioremap()` bei der Initialisierung des Treibers verwendet. 
