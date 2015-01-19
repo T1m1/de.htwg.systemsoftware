@@ -4,7 +4,8 @@
 Über einen Raspberry pi ist eine LED angeschloseen, welche sich sowohl über das 
 Sys-Filesystem als auch über einen eigens geschriebenen Treiber ansprechen
 lässt. Um die LED blinken zu lassen, werden aus der User-Ebene die Werte 0 oder 
-1 in eine entsprechende Datei geschrieben.
+1 in eine entsprechende Datei geschrieben. Im ersten Teil wird die Zugriffsgeschwindigkeit bestimmt und der zweite Teil beschäftigt sich mit
+dem selbst geschriebenen Treiber.
 
 ## Maximale Frequenz
 Es soll nun bestimmt werden mit welcher maximalen Frequenz auf diese Datei (und
@@ -45,3 +46,15 @@ Maximale Frequenz: **198,165 kHz**
 Durchschnitt: **180,086 kHz**
 
 Daraus ergibt sich eine Zugriffsgeschwindigkeit von **2,523 µs** (5,046 µs pro Periode)
+
+### Interpretation
+Man kann deutlich erkennen, dass der Treiber eine höhere Zugriffsgeschwindigkeit aufweist. 
+Die gemessenen Werte lassen erkennen, dass mit mehr als der doppelten Geschwindigkeit die LED blinkt. Genauer: **2,53 mal** schneller.
+Bei dieser Berechnung wurden die jeweils maximalen Werte herangezogen. Wenn man die Rechnung mit den Durchschnittswerten durchführt, ist
+der Treiberzugriff etwas höher: **2,78 mal**.
+Da die Zugriffszeit auf das Sys-Filesystem aber bis zu 250 mal* langsamer sein kann, sind diese Werte zwar gut aber nicht perfekt.
+
+_*) Aus Vorbereitung von V6_
+
+## Treiberdisskusion
+
