@@ -32,6 +32,8 @@ Durchschnitt: **500,727 kHz**
 
 Daraus ergibt sich eine Treiberzugriffsgeschwindigkeit von **0,9966 µs** (1,993 µs pro Periode)
 
+_Anmerkung: Bei mehrmaligen Testdurchläufen, ergab sich in unregelmäßigen Abständen ein Wert um ca. 1 MHz. Dieses Verhalten konnte jedoch nicht
+gezielt reproduziert werden, sondern trat vollkommen zufällig auf._
 
 ### Ergebnis Sys-Filesystem
 Bei dem Test über das Sys-Filesystem ergaben sich folgende Messwerte
