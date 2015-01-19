@@ -136,7 +136,7 @@ static ssize_t driver_write(struct file *instanz, const char *user, size_t count
 	/* copy byte form user */
 	not_copied = copy_from_user(&value, user, count);
 	
-	printk(KERN_DEBUG "write: %s\n", user);
+	/*printk(KERN_DEBUG "write: %s\n", user);*/
 	/* check for correct value of element */
 	if('1' != value[0] && '0' != value[0]) {
 		printk(KERN_INFO "write: Wrong value! Can only write 1 or 0!\n");
@@ -155,7 +155,7 @@ static ssize_t driver_write(struct file *instanz, const char *user, size_t count
 		gpio_write(GPIO_LOW_18, 0);
 	}
 
-	printk(KERN_INFO "gpio-write value: %c\n", value[0]);
+	/*printk(KERN_INFO "gpio-write value: %c\n", value[0]);*/
 	
 	return count;
 }
