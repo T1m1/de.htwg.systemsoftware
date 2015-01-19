@@ -42,7 +42,7 @@ prepare_br()
 
 help ()
 {
-	echo "Usage: ./v3_2.sh [OPTIONS]"
+	echo "Usage: ./v6.sh [OPTIONS]"
 	echo ""
 	echo "excample call: ./v3_1.sh -dn -pa"
 	echo ""
@@ -55,7 +55,7 @@ help ()
 	
 }
 
-ARGS=`getopt -o hr:pc:q: -- "$@"`
+ARGS=`getopt -o hr:pc:q:i:m: -- "$@"`
 
 eval set -- "$ARGS"
 
@@ -67,7 +67,7 @@ do
 		'-i')
 			if [ "$2" = "nit" ] 
 			then
-				buildroot
+				init
 			else
 				help
 			fi
