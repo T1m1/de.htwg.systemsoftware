@@ -31,3 +31,17 @@ Durchschnitt: **500,727 kHz**
 
 Daraus ergibt sich eine Treiberzugriffsgeschwindigkeit von **0,9966 µs** (1,993 µs pro Periode)
 
+
+### Ergebnis Sys-Filesystem
+Bei dem Test über das Sys-Filesystem ergaben sich folgende Messwerte
+ - 168,032 kHz
+ - 198,166 kHz
+ - 168,032 kHz
+ - 198,165 kHz
+ - 168,033 kHz
+
+Maximale Frequenz: **198,165 kHz**
+
+Durchschnitt: **180,086 kHz**
+
+Daraus ergibt sich eine Zugriffsgeschwindigkeit von **2,523 µs** (5,046 µs pro Periode)
