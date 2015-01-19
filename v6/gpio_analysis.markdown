@@ -71,6 +71,9 @@ Bei der Initialisierungsfunktion des Treibers wird im Grunde die gleiche Methodi
  - Registrierung im Sysfs mit `device_create()` und `class_create()`
 
 Zusätzlich wird die Methode `ioremap()` bei der Initialisierung des Treibers verwendet um die physikalische Adresse der GPIO Pins zu erhalten.
+Diese Adresse wird später verwendet um an der richtige Stelle bestimmte Werte zu schreiben bzw. davon zu lesen.
+
+Für den Zugriff auf User-Ebene werden die Funktionen Open, Close, Write, Read im Treiber implementiert.
 
 ### Öffnen der Datei
 Bei der initialisierung des Treibers angelegten Datei, kann nun aus der User-Ebene zugegriffen werden. Öffnet eine Applikation diese Datei
@@ -89,4 +92,4 @@ Nach dem konfigurieren der Pins ist es dem Benutzer aus der Applikation nun mög
 anzusteuern indem einfach eine 0 oder 1 in die Datei geschrieben werden kann um die LED aus- 
 oder einzuschalten. Das Lesen des aktuellen Zustandes ist ebenfalls möglich.
 
-###
+### Lesen von Werten
