@@ -116,7 +116,8 @@ Register geschrieben wird. Dieses Bitmuster hängt von dem Wert, welches die App
 ### Allgemeines
 Alle Adressberechnungen werden, wie auch schon die Adressen selbst, in Makros definiert. 
 Dies ermöglicht auch unteranderem die Wiederbenutzbarkeit im Code, sowie eine bessere
-Lesbarkeit. 
+Lesbarkeit. Die Adressberechnung erfolgt mit `u32` pointern. Die Setzung von bestimmten Bits erfolgt
+durch UND- oder ODER-Operationen.
 
 Um gewisse Race Conditions zu vermeiden, wird nach jedem Lesen und Schreiben eine Barrier
 eingefügt, um den Compiler daran zu hindern gewisse Code Optimierungen vorzunehmen.
