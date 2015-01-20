@@ -1,7 +1,7 @@
 # GPIO Zugriff
 
 ## Ausgangssituation
-Über einen Raspberry pi ist eine LED angeschloseen, welche sich sowohl über das 
+Über einen Raspberry pi ist eine LED angeschlossen, welche sich sowohl über das 
 Sys-Filesystem als auch über einen eigens geschriebenen Treiber ansprechen
 lässt. Um die LED blinken zu lassen, werden aus der User-Ebene die Werte 0 oder 
 1 in eine entsprechende Datei geschrieben. Im ersten Teil wird die Zugriffsgeschwindigkeit bestimmt und der zweite Teil beschäftigt sich mit
@@ -59,26 +59,26 @@ Da die Zugriffszeit auf das Sys-Filesystem aber bis zu 250 mal* langsamer sein k
 _*) Aus Vorbereitung von V6_
 
 ## Treiberdisskusion
-Im folgenden wird auf die Implementierung des Treibers eingegangen. Dabei wird ein grober Überblick der Funktionen gegeben, welche ausgeführt werden. 
+Im Folgenden wird auf die Implementierung des Treibers eingegangen. Dabei wird ein grober Überblick der Funktionen gegeben, welche ausgeführt werden. 
 Auf etwaige Fehlerbehandlung wird im Detail nicht eingegangen. Es kann aber davon ausgegangen werden, dass nach jedem kritischen Methodenaufruf, der 
 Rückgabewert geprüft wird und ggf. die entsprechende Aktion ausgeführt wird. (Rückgabe eines Fehlerwertes und/oder Abbruch des Programms mit 
-anschließendem "Aufräumen" der allozierten Resourcen.) Jedoch werden mögliche Probleme bei dem Programmablauf besprochen und wie diese zu Vermeiden sind.
+anschließendem "Aufräumen" der allozierten Ressourcen.) Jedoch werden mögliche Probleme bei dem Programmablauf besprochen und wie diese zu vermeiden sind.
 
 ### Initialisierung
 Bei der Initialisierungsfunktion des Treibers wird im Grunde die gleiche Methodik, wie in den zuvor programmierten Treibern, verwendet:
  - Reservierung der Gerätenummer mit `alloc_chredev_region()` mit der automatischen Zuweisung der Gerätenummer
- - Instanzierung und Registrierung eines zeichorientierten Gerätetreiber mit `cdev_alloc()` und `cdev_add()`
+ - Instanziierung und Registrierung eines zeichenorientierten Gerätetreiber mit `cdev_alloc()` und `cdev_add()`
  - Registrierung im Sysfs mit `device_create()` und `class_create()`
 
 Zusätzlich wird die Methode `ioremap()` bei der Initialisierung des Treibers verwendet um die physikalische Adresse der GPIO Pins zu erhalten.
-Diese Adresse wird später verwendet um an der richtige Stelle bestimmte Werte zu schreiben bzw. davon zu lesen.
+Diese Adresse wird später verwendet um an der richtigen Stelle bestimmte Werte zu schreiben bzw. davon zu lesen.
 
 Für den Zugriff auf User-Ebene werden die Funktionen Open, Close, Write, Read im Treiber implementiert.
 
 ### Öffnen der Datei
-Bei der initialisierung des Treibers angelegten Datei, kann nun aus der User-Ebene zugegriffen werden. Öffnet eine Applikation diese Datei
+Bei der Initialisierung des Treibers angelegten Datei, kann nun aus der User-Ebene zugegriffen werden. Öffnet eine Applikation diese Datei
 um darin zu schreiben oder zu lesen werden folgende Schritte im Treibercode ausgeführt.
-Es wird der GPIO pin 18 als Ausgang und 25 als Eingang konfiguriert. Bei diesem Vorgang muss ein korrektes
+Es wird der GPIO Pin 18 als Ausgang und 25 als Eingang konfiguriert. Bei diesem Vorgang muss ein korrektes
 Bitmuster in das zugehörige Register geschrieben werden. Dabei wird _zuerst_ das Register ausgelesen und 
 die relevanten Bits per UND-Operation gelöscht um danach die Richtung (Aus- oder Eingang)
 per ODER-Operation gesetzt. 
@@ -113,7 +113,7 @@ Register geschrieben wird. Dieses Bitmuster hängt von dem Wert, welches die App
 übergeben hat, hab. 
 
 ### Allgemeines
-Alle Addressberechnungen werden, wie auch schon die Adressen selbst, in Makros definiert. 
+Alle Adressberechnungen werden, wie auch schon die Adressen selbst, in Makros definiert. 
 Dies ermöglicht auch unteranderem die Wiederbenutzbarkeit im Code, sowie eine bessere
 Lesbarkeit. 
 
@@ -129,9 +129,12 @@ Eine Möglichkeit wäre es, die Anzahl der Treiberinstanzen zu beschränken, sod
 über diesen Treiber auf die LED zugreifen kann. _(vgl. V5)_ Damit ist zwar gewährleistet, dass die Datei nur einmal
 geöffnet werden kann, jedoch nicht dass mehrere Threads (der gleichen Applikation) aus der Datei lesen oder in sie schreiben.
 Schon gar nicht ist damit ausgeschlossen, dass eventuelle andere Treiber ebenfalls gleichzeitig auf die Hardware zugreifen.
+Um diesen Schutz zu gewährleisten, stellt der Treiber Schutzmechanismen zur Verfügung, die eingesetzt werden können.
+Es kann ein Mutex oder eine Atomare Variablen eingesetzt werden, die das Schreiben auf die GPIO Pins schützen.
+So ist sichergestellt, dass nur eine Instanz zur selben Zeit die Werte ändern kann.
 
-Um den erstgenannten Schutz zu gewährleisten, muss der Benutzer in der Anwendungsebene gewisse Mechanismen selbst 
-implementieren. Um also konsistente Daten zu erhalten, sollte der Benutzer seine Schreib- oder Lesezugriffe mit z.B. Mutexen schützen. (o.ä.
+Eine weitere Möglichkeit um den Schutz zu gewährleisten, ist die implementierung der Schutzmechanismen in der Anwendungsebene.
+Um also konsistente Daten zu erhalten, sollte der Benutzer seine Schreib- oder Lesezugriffe mit z.B. Mutexen schützen. (o.ä.
 siehe Betriebssysteme-Vorlesung) 
 
 
