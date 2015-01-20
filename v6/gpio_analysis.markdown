@@ -115,9 +115,23 @@ Register geschrieben wird. Dieses Bitmuster hängt von dem Wert, welches die App
 ### Allgemeines
 Alle Addressberechnungen werden, wie auch schon die Adressen selbst, in Makros definiert. 
 Dies ermöglicht auch unteranderem die Wiederbenutzbarkeit im Code, sowie eine bessere
-Lesbarkeit.
+Lesbarkeit. 
 
 Um gewisse Race Conditions zu vermeiden, wird nach jedem Lesen und Schreiben eine Barrier
 eingefügt, um den Compiler daran zu hindern gewisse Code Optimierungen vorzunehmen.
 
 ### Schutz kritischer Bereiche
+Da unseren Benutzerprogramme rein sequentiell ablaufen und es keine konkurrierende Zugriffe auf das Gerät 
+stattfinden, ist der Treiber ohne einen Schutz von kritischen Bereichen implementiert. Der Zugriff ist
+sozusagen nicht _thread-safe_. 
+
+Eine Möglichkeit wäre es, die Anzahl der Treiberinstanzen zu beschränken, sodass nur ein Prozess jeweils 
+über diesen Treiber auf die LED zugreifen kann. _(vgl. V5)_ Damit ist zwar gewährleistet, dass die Datei nur einmal
+geöffnet werden kann, jedoch nicht dass mehrere Threads (der gleichen Applikation) aus der Datei lesen oder in sie schreiben.
+Schon gar nicht ist damit ausgeschlossen, dass eventuelle andere Treiber ebenfalls gleichzeitig auf die Hardware zugreifen.
+
+Um den erstgenannten Schutz zu gewährleisten, muss der Benutzer in der Anwendungsebene gewisse Mechanismen selbst 
+implementieren. Um also konsistente Daten zu erhalten, sollte der Benutzer seine Schreib- oder Lesezugriffe mit z.B. Mutexen schützen. (o.ä.
+siehe Betriebssysteme-Vorlesung) 
+
+
