@@ -1,6 +1,6 @@
-busybox-1.22.1/
-linux-3.16.6/
-linux-3.17.2/
+
+
+
 */initramfs/bin/busybox
 *.tar
 buildroot
