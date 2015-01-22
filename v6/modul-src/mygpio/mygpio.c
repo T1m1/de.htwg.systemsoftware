@@ -79,10 +79,17 @@ static ssize_t driver_write(struct file *instanz, const char *user, size_t count
 static void gpio_write(unsigned long gpio_addr,  int gpio_value);
 static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_t *offset);
 
+
+static int driver_release(struct inode *geraetedatei, struct file *instanz)
+{
+	return 0;
+}
+
 static struct file_operations fobs =
 {
 	.owner = THIS_MODULE,
 	.open = driver_open,
+	.release = driver_release,
 	.write = driver_write,
 	.read = driver_read
 };
