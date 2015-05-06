@@ -40,7 +40,7 @@ static struct file_operations fobs =
 	.write = driver_write
 };
 
-/* stomic variable */
+/* atomic variable */
 /* information: makelinux.net/ldd3/chp-5-sect-7 */
 static atomic_t lock = ATOMIC_INIT(MAX_NUMBER_OF_PROCESS);
 
@@ -159,5 +159,3 @@ MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Timotheus Ruprecht and  Steffen Gorenflo");
 MODULE_DESCRIPTION("Modul openclose");
 MODULE_SUPPORTED_DEVICE("none");
-
-

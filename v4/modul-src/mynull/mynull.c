@@ -48,20 +48,6 @@ static int driver_release(struct inode *geraetedatei, struct file *instanz)
 
 static ssize_t driver_write(struct file *instanz, const char *user, size_t count, loff_t *offset)
 {
-/*	size_t to_copy = count;
-	
-	printk(KERN_INFO "NULL write called...\n");
-	
-	if(to_copy > sizeof(driver_buffer)) {
-		to_copy = sizeof(driver_buffer);
-	}
-	
-	if(copy_from_user(driver_buffer, user, to_copy) != 0) {
-		return -EFAULT;
-	}
-	printk(KERN_INFO "Read %s from user... byebye!", driver_buffer);
-	return to_copy;
- */
 	printk("MYNULL: Write\n");
 	printk("MYNULL: %d Bytes\n", count);
 	return count;
@@ -123,5 +109,3 @@ MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Timotheus Ruprecht and  Steffen Gorenflo");
 MODULE_DESCRIPTION("Modul Null");
 MODULE_SUPPORTED_DEVICE("none");
-
-

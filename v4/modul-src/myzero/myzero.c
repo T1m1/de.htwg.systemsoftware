@@ -132,5 +132,3 @@ MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Timotheus Ruprecht and  Steffen Gorenflo");
 MODULE_DESCRIPTION("Modul MyZero");
 MODULE_SUPPORTED_DEVICE("none");
-
-
